@@ -1,0 +1,4 @@
+Classes removed from dir:
+PSYCH 101
+RELIG 210
+PHIL 201

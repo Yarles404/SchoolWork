@@ -1,0 +1,128 @@
+% Preamble
+\documentclass[12pt]{article}
+
+\newcommand{\xor}{\oplus}
+
+\title{COM S 230 HW02}
+\author{Charles Yang}
+
+\addtolength{\oddsidemargin}{-.875in}
+\addtolength{\evensidemargin}{-.875in}
+\addtolength{\textwidth}{1.75in}
+\addtolength{\topmargin}{-.875in}
+\addtolength{\textheight}{1.75in}
+
+% Document
+\begin{document}
+    \maketitle
+
+    \begin{enumerate}
+        \item Where $x$ is all integers, and $P(x) =$ "x is odd" and $Q(x) =$ "x is even," Prove
+            \begin{center}
+                $(A)\:\forall x(P(x) \to Q(x))$\\ $\not\equiv$ \\$(B)\:\forall xP(x) \to \forall xQ(x)$,
+            \end{center}
+            \begin{description}
+                \item[1)] For proof by contradiction, Suppose (A) $\equiv$ (B)
+                \item[2)] Since $\forall xP(x)$ and $\forall xQ(x)$ are both false, (B) is True
+                \item[3)] (A) is false. Suppose x is odd. Then $P(x)$ is true while $Q(x)$ is false. P(x) does not imply Q(x) for all x. Alternatively, there exist some x where (A) is false.
+                \item[4)] Because of (2) and (3), (A) $\not\equiv$ (B)
+            \end{description}
+        \item Translate
+            \begin{description}
+                \item[(a)] For all faculty, there exists two different students who both have asked the faculty a question.
+                \item[(b)] $\exists x \exists y \forall z(F(x) \land F(y) \land (x \neq y) \and (S(z) \to \neg (A(x, z) \lor A(y, z))))$
+            \end{description}
+        \item True or False, Explain
+            \begin{description}
+                \item[(a)] False. Saying all freshmen take online classes does not give any information about not freshmen. Knowing Jim isn't a freshmen doesn't say anything about his classes.
+                \item[(b)] False. Mary may like all her computer science classes, but that doesn't mean she doesn't like all other classes. 'Discrete Math' can still be liked without being a computer science class.
+            \end{description}
+        \newpage
+        \item Define Predicates and formally prove the following:
+            \begin{description}
+                \item[(a)] \begin{center}x is any person.\\S(x) = x is a student in class; C(x) = x owns a personal computer; T(x) = x types up their homework\\ Prove $\exists x(S(x) \land T(x))$ \end{center}
+                    \underline{Premises:}
+                    \begin{description}
+                        \item[(a)] J = Jim. $S(J) \land C(J)$
+                        \item[(b)] $\forall x(C(x) \to T(x))$
+                    \end{description}
+                    \underline{Proof:}
+                    \begin{description}
+                        \item[(1)] $C(J)$ \null\hfill Simplification (a)
+                        \item[(2)] $S(J)$ \null\hfill Simplification (a)
+                        \item[(3)] $C(J) \to T(J)$ \null\hfill Universal Instantiation (b)
+                        \item[(4)] $T(J)$ \null\hfill Modus Ponens (1) \& (3)
+                        \item[(5)] $S(J) \land T(J)$ \null\hfill Conjunction (2) \& (4)
+                        \item[(6)] $\exists x(S(x) \land T(x))$ \null\hfill Existential Generalization (5); QED
+                    \end{description}
+                \item[(b)] \begin{center}x is all towns\\C(x) = x is a college town; F(x) = x is fun; M(x) = x is in the Midwest\\ Prove $\exists x(M(x) \land F(x))$ \end{center}
+                    \underline{Premises:}
+                    \begin{description}
+                        \item[(a)] $\exists x(C(x) \land M(x))$
+                        \item[(b)] $\forall x(C(x) \to F(x))$
+                    \end{description}
+                    \underline{Proof:}
+                    \begin{description}
+                        \item[(1)] There exists a place Ames where $C(Ames) \land M(Ames)$ \null\hfill Existential Instantiation (a)
+                        \item[(2)] $C(Ames)$ \null\hfill Simplification (1)
+                        \item[(3)] $M(Ames)$ \null\hfill Simplification (1)
+                        \item[(4)] $C(a) \to F(a)$ for arbitrary a \null\hfill Universal Instantiation (b)
+                        \item[(5)] $F(Ames)$ \null\hfill Modus Ponens (4) \& (2)
+                        \item[(6)] $F(Ames) \land M(Ames)$ \null\hfill Conjunction (3) \& (5)
+                        \item[(7)] $\exists x(M(x) \land F(x))$ \null\hfill Existential Generalization (6); QED
+                    \end{description}
+            \end{description}
+        \newpage
+        \item Consider the argument
+            \begin{description}
+                \item[(a)] \begin{center}x is any animal.\\B(x) = x is a bear; S(x) = x is a good swimmer; H(x) = x goes hungry; F(x) = x can catch fish\\ Prove $\forall x(B(x) \to \neg H(x))$ \end{center}
+                \underline{Premises:}
+                \begin{description}
+                    \item[(a)] $\forall x(B(x) \to S(x))$
+                    \item[(b)] $\forall x(F(x) \to \neg H(x))$
+                    \item[(c)] $\forall x(\neg F(x) \to \neg S(x))$
+                \end{description}
+                \underline{Proof:}
+                \begin{description}
+                    \item[(1)] $B(a) \to S(a)$ for any a \null\hfill Universal Instantiation (a)
+                    \item[(2)] $\neg F(a) \to \neg S(a)$ for any a \null\hfill Universal Instantiation (b)
+                    \item[(3)] $S(a) \to F(a)$ for any a \null\hfill Contrapositive of (2)
+                    \item[(4)] $F(a) \to \neg H(a)$ for any a \null\hfill Universal Instantiation (b)
+                    \item[(5)] $B(a) \to F(a)$ for any a \null\hfill Hypothetical Syllogism (1) \& (3)
+                    \item[(6)] $B(a) \to \neg H(a)$ for any a \null\hfill Hypothetical Syllogism (5) \& (4)
+                    \item[(7)] $\forall x(B(x) \to \neg H(x))$ \null\hfill Universal Generalization (6); QED
+                \end{description}
+                \item[(b)] Prove \emph{Universal Transitivity}:
+                    \begin{description}
+                        \item[(1)] $\forall x(P(x) \to Q(x))$ \null\hfill Hypothesis 1
+                        \item[(2)] $\forall x(Q(x) \to R(x))$ \null\hfill Hypothesis 2
+                        \item[(3)] $P(a) \to Q(a)$ for any a \null\hfill Universal Instantiation (1)
+                        \item[(4)] $Q(a) \to R(a)$ for any a \null\hfill Universal Instantiation (2)
+                        \item[(5)] $P(a) \to R(a)$ for any a \null\hfill Hypothetical Syllogism (3) \& (4)
+                        \item[(6)] $\forall x(P(x) \to R(x))$ \null\hfill Universal Generalization; QED
+                    \end{description}
+                \item[(c)] Prove \emph{Universal Contrapositive}:
+                    \begin{description}
+                        \item[(1)] $\forall x(P(x) \to Q(x))$ \null\hfill Hypothesis 1
+                        \item[(2)] $P(a) \to Q(a)$ for any a \null\hfill Universal Instantiation (1)
+                        \item[(3)] $\neg Q(a) \to \neg P(a)$ for any a \null\hfill Contrapositive of (2)
+                        \item[(4)] $\forall x(\neg Q(x) \to \neg P(x))$ \null\hfill Universal Generalization (3); QED
+                    \end{description}
+                \item[(d)] Proof but with new rules, faster, and using same premises:
+                    \begin{description}
+                        \item[(1)] $\forall x(S(x) \to F(x))$ \null\hfill Universal Contrapositive (c)
+                        \item[(2)] $\forall x(B(x) \to F(x))$ \null\hfill Universal Transitivity (1) \& (a)
+                        \item[(3)] $\forall x(B(x) \to \neg H(x))$ \null\hfill Universal Transitivity (2) \& (b); QED
+                    \end{description}
+            \end{description}
+        \item x is all non-negative ints. Define using the given predicates:
+            \begin{description}
+                \item[(a)] $Equal(m, n) : \neg (Greater(m, n) \lor Greater(n, m))$
+                \item[(b)] $One(n) : \forall k(M(k, k, n))$
+                \item[(c)] $Two(n) : \exists k(\neg Zero(n) \land A(k, n, n) \land M(k, n, n))$
+                \item[(d)] $Prime(p) : \exists i\:\exists j(M(p, i, j) \land One(i) \land Equal(p, j))$
+            \end{description}
+    \end{enumerate}
+
+
+\end{document}

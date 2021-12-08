@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="45c4253e-f1d0-44fc-82a4-14cd450c2b6d" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectId" id="1pwyW9TEzbit6gFk5vqMaFVKjM7" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="T:/yarles/yarles" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="45c4253e-f1d0-44fc-82a4-14cd450c2b6d" name="Default Changelist" comment="" />
+      <created>1616108475275</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1616108475275</updated>
+      <workItem from="1616108476763" duration="11464000" />
+      <workItem from="1616349883079" duration="100000" />
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="218" y="126" key="FileChooserDialogImpl" timestamp="1616349981884">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="218" y="126" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1616349981884" />
+  </component>
+</project>

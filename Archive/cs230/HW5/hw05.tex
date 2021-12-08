@@ -1,0 +1,143 @@
+\documentstyle[12pt]{article}
+\setlength{\oddsidemargin}{12pt}
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{9in}
+\pagestyle{empty}
+\setlength{\parskip}{7pt plus 2pt minus 2pt}
+
+\begin{document}
+
+    \begin{center}
+    {{\large CS 230 : Discrete Computational Structures}}
+        \\
+
+        {\bf Spring Semester, 2021}\\
+
+        {\sc Homework Assignment \#5}\\
+        {\bf Due Date:}  Monday, March 15
+    \end{center}
+
+    \noindent {\bf Suggested Reading:} Rosen Sections 9.1 and 9.5; Lehman et al. Chapter 10.5, 10.6 and 10.10
+
+    For the problems below, explain your answers and show your reasoning.
+
+    \begin{enumerate}
+
+        \item {\bf [10 Pts]} For each of these relations decide whether it is reflexive, anti-reflexive, symmetric, anti-symmetric and transitive. Justify your answers. $R_1$ and $R_2$ are over the set of real numbers.
+
+        \begin{enumerate}
+
+            \item $(x,y) \in R_1$ if and only if $xy \geq 0$ \\
+                Reflexive. $a \in R$, $a * a \geq 0$. \\
+                Not Anti-Reflexive. it's reflexive. \\
+                Symmetric. Communitative property of multiplication, $a, b \in R$, $a * b = b * a$, ab is in the relation if and only if its equivalent expression ba is in the relation. \\
+                Not Anti-Symmetric. it's Symmetric \\
+                Transitive. for $xy \geq 0$, x and y must be the same sign. for $z \in R$, $yz \geq 0$, y and z must be the same sign. Therefore, x and z have the same sign, so $xz \geq 0$
+
+            \item $(x,y) \in R_2$ if and only if $x = 2y$ \\
+                Not Reflexive. $x \neq 2y$ if $x = y \land x, y \neq 0$ \\
+                Not Anti-Reflexive. Consider $x = y = 0$ \\
+                Not Symmetric. Consider x = 6 and y = 3. $(6, 3) \in R_2$, but $(3, 6) \in R_2$ \\
+                Anti-Symmetric. $2x = y$ and $2y = x$ cannot be both be true, that is, a non-zero number's half cannot be equal to it's double \\
+                Not Transitive. Suppose a = 4, b = 2, and c = 1. (a, b) and (b, c) is in the relation. However, (a, c) gives 4 = 2(1).
+
+        \end{enumerate}
+
+        \item {\bf [8 Pts]} Let $R_3$ be the relation on $\cal Z^+ \times Z^+$ where
+        $((a,b), (c,d)) \in R_3$ if and only if $ad = bc$.
+
+        \begin{enumerate}
+
+            \item Prove that $R_3$ is an equivalence relation.
+                \begin{enumerate}
+                    \item Reflexive: $ab = ba \to (a,b) R (a,b)$ for all $(a,b) \in Z \times Z$
+                    \item Symmetric: $(a,b)R(c,d) \to ad = bc \to cb = da \to (c,d)R(a,b)$
+                    \item Transitive: Prove $(a,b)R(c,d) \land (c,d)R(e,f) \to (a,b)R(e,f)$ \\
+                            $ad = bc \land cf = de$, $c = \frac{de}{f}$ \\
+                            $ad = b*\frac{de}{f}$ \\
+                            $af = b*e) \to (a,b)R(e,f)$
+                \end{enumerate}
+            \item Define a function $f$ such that $f(a,b) = f(c,d)$ if and only if $((a,b), (c,d)) \in R_3$.
+                $f(x,y) = \frac{x}{y}$
+            \item Define the equivalence class containing $(1,1)$. \\
+                $[(1,1)]_R = \{ (a,b)\; |\; a = b, (a,b) \in Z \times Z \}$
+            \item Describe the equivalence classes. How many classes are there and how many elements in each class? \\
+                $\forall (a,b) \in Z \times Z$, $[(a,b)]_R = \{ (c,d)\; |\; ad = bc, (c,d) \in Z \times Z \}$ \\
+                There's a countably infinite no. of classes, because $(a,b) \in Z \times Z$ is countably infinite. \\
+                Each class has an infinitely countable no. of elements, because $(c,d) \in Z \times Z$ is countably infinite.
+
+        \end{enumerate}
+
+        \item {\bf [8 Pts]} Are these relations on the set of 5 digit numbers equivalence relations? If so, prove the properties satisfied, describe the equivalence classes and describe a new equivalence relation which is a refinement of the relation given. If not, describe which properties are violated.
+
+        \begin{enumerate}
+
+            \item $(a,b) \in R_4$ if and only if $a$ and $b$ start with the same two digits \\
+                \begin{enumerate}
+                    \item Reflexive: A number's first two digits are equal to it's doppleganger's two digits.
+                    \item Symmetric: When the first two digits match, comparing them in reverse order doesn't change the match
+                    \item Transitive: If number A's 2 digits match B's, and B matches C's, then A's digits = B's digits = C's digits.
+                    \item Each class contains 1000 elements, with ab000-ab999,
+                    \item There are 100 equivalence classes, where the first two digits are 00-99
+                    \item A refinement would be all five digits numbers with the same 3 first digits, with 1000 equivlance classes 000-999 and 100 elements per class
+                \end{enumerate}
+            \item $(a,b) \in R_5$ if and only if $a$ and $b$ have the same $k$th digit, where $k$ is a number from 1 to 5
+                \begin{enumerate}
+                    \item Reflexive: a five digit number has the same digits as it's doppleganger. this is true for all k locations
+                    \item Symmetric: Two numbers with the same kth digit compared in reversed order will not change the matching digit at location k
+                    \item Transitive: If A's kth digit matches B's digit, and B's matches C's, then kth digit of A = B = C
+                    \item There are five equivalance classes, for k 1-5
+                    \item Each class has 1000*10 elements, where 10 is number of possible values for the kth digit, and 1000 are the number of possible combinations of the four other digits.
+                    \item This relation could be refined by defining the set as all five digit numbers with the same kth and lth digits, where k and l are 1-5. This would have $\frac{5*4}{2}$ equivalence classes, and each class would have 100 elements.
+                \end{enumerate}
+        \end{enumerate}
+
+        \item {\bf [12 Pts]} Prove that these relations on the set of all functions from $\cal Z$ to $\cal Z$ are equivalence relations. Describe the equivalence classes.
+
+        \begin{enumerate}
+
+            \item $R_6 = \{(f,g) \mid f(0) = g(0) \; {\rm and} \; f(1) = g(1)\}$
+                \begin{enumerate}
+                    \item Reflexive: If f, g are the same function in the relation, then f(0) = g(0), f(1) = g(1)
+                    \item Symmetric: For f, g in the relation, If f(0) = g(0), f(1) = g(1), then g(0) = f(0), g(1) = f(1)
+                    \item Transitive: for functions f, g, h in the relation, f(0) = g(0) = h(0), f(1) = g(1) = h(1)
+                    \item There are an uncountably infinite number of piecewise functions where for arbitrary constant $C \in Z$, set f(0) = C, g(0) = C, and $D \in Z$ f(1) = D, g(1) = D.  Each function has a countably infinite number of elements because they will only vary by some number of constants. $Z \times Z \times Z \times ...$ is countably infinite.
+                \end{enumerate}
+            \item $R_7 = \{(f,g) \mid \exists C \in {\cal Z}, \forall x \in {\cal Z}, f(x) - g(x) = C\}$
+                \begin{enumerate}
+                    \item Reflexive: f(x) - f(x) = 0. $0 \in Z$
+                    \item Symmetric: f(x) - g(x) = C, g(x) - f(x) = -C. $C, -C \in Z$
+                    \item Transitive: Because we must consider $\forall x \in Z$, the domain of f and g must be Z. All Z have some output in Z, and any output $a, b \in Z$, $a - b \in Z$ All differences between the output of 3 functions with domain Z will exist in Z.
+                    \item There's an uncountably infinite number of functions with domain in Z, so there are an uncountably infinite number of classes. Each function has a countably infinite number of elements because they will only vary by up to an infinite number of constants. $Z \times Z \times Z \times ...$ is countably infinite.
+                \end{enumerate}
+        \end{enumerate}
+        \newpage
+
+        \item {\bf [12 Pts]} Consider the following relations on the set of positive real numbers. One is an equivalence relation and the other is a partial order. Which is which? For the equivalence relation, describe the equivalence classes. What is the equivalence class of $2$? of $\pi$? Justify your answers.
+
+        \begin{enumerate}
+
+            \item $(x,y) \in R_8$ if and only if $x/y \in \cal Z$. THIS IS THE PARTIAL ORDER
+                \begin{enumerate}
+                    \item Reflexive: for any number $a \neq 0$, $a/a = 1 \in Z$
+                    \item Anti-Symmetric: $\frac{y}{x}$ is the reciprocal of $\frac{x}{y}$. if $(x,y) \in R_8$, then the quotient is an integer. The reciprocal of an integer will never be an integer, except if x = y.
+                    \item Transitive: if $\frac{x}{y}$ is an integer, then that implies y divides x. If $\frac{y}{z}$ is an integer, then z divides y. z will then also be a factor of x, so z divides x.
+                \end{enumerate}
+
+            \item $(x,y) \in R_9$ if and only if $x-y \in \cal Z$. THIS IS THE EQUIVALENCE RELATION
+                \begin{enumerate}
+                    \item Since (a) is the partial order, this must be the equivalence relation.
+                    \item $(x, y) \in R \subset N \times N$ Countably infinite number of classes, where each class is determined by the value of x. Each class has a countably infinite number of y where x - y = an integer.
+                    \item The class for 2 is all integers. 2 is an integer, and any integer minus an integer will be in Z
+                    \item $[pi]_R = \{ \pi + n \;|\; n \in Z \} $
+                \end{enumerate}
+        \end{enumerate}
+
+
+    \end{enumerate}
+\end{document}
+
+\noindent
+For more practice, work on the problems from Sections 9.1 and 9.5; Lehman et al. Chapter 10.5, 10.6 and 10.10
+
+\end{document}

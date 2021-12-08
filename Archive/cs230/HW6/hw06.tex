@@ -1,0 +1,90 @@
+\documentclass[11pt]{article}
+\setlength{\oddsidemargin}{12pt}
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{9in}
+\pagestyle{empty}
+\setlength{\parskip}{7pt plus 2pt minus 2pt}
+
+\usepackage{amsmath}
+
+\begin{document}
+
+    \begin{center}
+    {{\large CS 230 : Discrete Computational Structures}}
+        \\
+
+%\vspace*{1cm}
+
+        {\bf Spring Semester, 2021}\\
+
+        {\sc Homework Assignment \#6}\\
+        {\bf Due Date:}  Monday, March 22
+    \end{center}
+
+    \noindent {\bf Suggested Reading:} Rosen Section 2.5
+
+    For the problems below, explain your answers and show your reasoning.
+
+    \begin{enumerate}
+
+        \item {\bf [14 Pts]} Show that the following sets are countably
+        infinite, by defining a bijection between $\cal N$ (or $\cal Z^+$) and that
+        set. You do not need to prove that your function is bijective.
+
+        \begin{enumerate}
+
+            \item {\bf [4 Pts]} the set of non-negative integers divisible by 5 \\
+            $\{ 5n\; |\; n \in N \}$
+
+            \item {\bf [5 Pts]} the set of integers divisible by 5 \\
+            $\{ (-5n, 5n)\; |\; n \in N \}$
+
+            \item {\bf [5 Pts]} $\{0,1,2,3\} \times {\cal N}$ \\
+            $\{ ((0, n),(1, n),(2, n),(3, n))\; |\; n \in N \}$
+
+        \end{enumerate}
+
+        \item {\bf [14 Pts]} Determine whether the following sets are countable or
+        uncountable. Prove your answer. To prove countable, describe your enumeration precisely, There is no need to define a bijection.
+
+        \begin{enumerate}
+
+            \item {\bf [7 Pts]} the set of real numbers with decimal representation
+            consisting of all 5's ($5.55$ and $55.555 \ldots$ are such numbers). \\
+            This can be enumerated by defining the set of all real numbers with n fives before and m fives after the decimal. $(n, m) \in N \times N$, where n and m count the number of fives before and after the decimal. $N \times N$ is countably infinite, so these numbers are also countably infinite.
+
+            \item {\bf [7 Pts]} the set of real numbers with decimal representation
+            consisting of 1's, 3's and 5's. \\
+            Suppose $r \in R$, where r = $0.d_{i1} d_{i2} d_{i3} ... d_{ij}$, for $d_{ij} \in \{ 1, 3 ,5 \} $ \\
+            \begin{tabular}{ c | c | c | c | c }
+                \hline
+                $r_1$ . & $d_{11}$ & $d_{12}$ & $d_{13}$ & ...  \\
+                $r_2$ . & $d_{21}$ & $d_{22}$ & $d_{23}$ & ...  \\
+                $r_3$ . & $d_{31}$ & $d_{32}$ & $d_{33}$ & ...  \\
+                $r_4$ . & $d_{41}$ & $d_{42}$ & $d_{43}$ & ...  \\
+                ... & ... & ... & ... & ...  \\
+                \hline
+            \end{tabular} \\
+            Now, $z = 0.z_1 z_2 z_2 z_3$, where
+            \[ z_i = \begin{cases}
+                   1 & d_{ii} \in \{3, 5 \} \\
+                   5 & d_{ii} \in \{1, 3 \}
+            \end{cases}
+            \] \\
+            In general, for all k, $z_k \neq d_{kk}$ so $z \neq r_k$ \\
+            So, $z \not\in \{ r_1, r_2, r_3, ... \} $, but z is in all numbers with digits 1, 3, 5 and within [0, 1] \\
+            We assume $[0, 1] \in \{ r_1, r_2, r_3, ... \} $. Contradiction! This set of numbers is uncountable.
+        \end{enumerate}
+
+        \item {\bf [6 Pts]} Prove that the set of functions from $\cal N$ to $\cal N$ is
+        uncountable, by using a diagonalization argument.
+        If all functions from $\cal N$ to $\cal N$ is countable, then these functions are listable as $F = \{f_1, f_2, f_3, ... \} $ \\
+        I define a function $g(x) = 2f(x)$. However, this makes $g(x) \not\in F$, but still from $\cal N$ to $\cal N$ \\
+        Contradiction! This set of functions is uncountable.
+
+        \item {\bf [6 Pts]} Argue that a countably infinite union of countable infinite sets is countably infinite. \\
+        Suppose $S_1, S_2, S_3, ..., S_i$ are countably infinite sets. These sets are countable as $\{ s_{i1}, s_{i2}, s_{i3}, ..., s_{ij} \} $. Even if all these sets are disjoint, the union can be counted as $\{ s_{11}, s_{12}, s_{13}, ..., s_{1j}, s_{21}, s_{22}, s_{23}, ..., s_{2j}, ...\} $. If they aren't disjoint, then those unions will too be countable. They simply have less elements because they will have repeated values between sets.
+
+    \end{enumerate}
+\end{document}
+

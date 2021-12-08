@@ -1,0 +1,151 @@
+\documentstyle[11pt]{article}
+\setlength{\oddsidemargin}{12pt}
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{9in}
+\pagestyle{empty}
+\setlength{\parskip}{7pt plus 2pt minus 2pt}
+
+\begin{document}
+
+    \begin{center}
+    {{\large CS 230 : Discrete Computational Structures}}
+        \\
+
+%\vspace*{1cm}
+
+        {\bf Spring Semester, 2021}\\
+
+        {\sc Assignment \#7}\\
+        {\bf Due Date:} Monday, March 29
+    \end{center}
+
+    \noindent {\bf Suggested Reading:} Rosen Section 5.1 - 5.2; Lehman et al. Chapter 5.1 - 5.3
+
+    These are the problems that you need to turn in. For more
+    practice, you are encouraged to work on the other problems. {\bf Always
+    explain your answers and show your reasoning.}
+
+    For Problems 1-4 and 6, prove the statements by mathematical induction. Clearly state your basis step and prove it. What is your inductive hypothesis? Prove the inductive step and show clearly where you used the inductive hypothesis.
+
+    \begin{enumerate}
+
+        \item {\bf [5 Pts]} $n+3 < 5n^2$, for all positive integers $n$.
+        \begin{enumerate}
+            \item Base case: $(1) + 3 < 5(1)^2$, $4 < 5$
+            \item Induction Hypothesis: Assume $k + 3 < 5k^2$
+            \item Prove $(k + 1) + 3 < 5(k+1)^2$
+            \item $(k + 3) + 1 < 5k^2 + 10k + 5$
+            \item by IH, $(k + 3 < 5k^2)$. It now follows that we should prove $1 < 10k + 5$
+            \item $1 < 10k + 5$ because 1 is always less than 5, regardless of positive k.
+            \item Therefore, $(k + 3) + 1 < 5k^2 + 10k + 5$; QED.
+        \end{enumerate}
+
+        \item {\bf [5 Pts]} $1 \cdot 1! + 2 \cdot 2! + \cdots + n \cdot n! = (n+1)! - 1$, for all positive integers $n$.
+        \begin{enumerate}
+            \item Base case: $(1)*(1)! = ((1) + 1)! - 1 = 1$
+            \item Induction Hypothesis: Assume $1*1! + 2*2! + ... + k*k! = (k + 1)! - 1$, $1*1! + 2*2! + ... + k*k! + 1 = (k + 1)!$
+            \item Prove $1*1! + 2*2! + ... + (k + 1)*(k + 1)! = (k + 1) + 1)! - 1$
+            \item $1*1! + 2*2! + ... + k*k! + (k + 1)*(k + 1)! = (k + 2)! - 1$
+            \item $1*1! + 2*2! + ... + k*k! + (k + 1)*(k + 1)! = (k + 1)!(k + 2) - 1$
+            \item $1*1! + 2*2! + ... + k*k! + 1 + (k + 1)*(k + 1)! = (k + 1)!(k + 2)$
+            \item By IH, $(k + 1)! + (k + 1)*(k + 1)! = (k + 1)!(k + 2)$
+            \item Dividing both sides by $(k + 1)!$: $1 + (k + 1)*1 = 1*(k + 2)$
+            \item Collecting terms, $k + 2 = k + 2$; QED
+        \end{enumerate}
+\newpage
+        \item {\bf [5 Pts]} $\frac{1}{1\cdot 2}+ \frac{1}{2\cdot 3} +\cdots +\frac{1}{n\cdot (n+1)} = \frac{n}{n+1}$, for all positive integers $n$.
+        \begin{enumerate}
+            \item Base case: $\frac{1}{(1)\cdot (1 + 1)} = \frac{(1)}{(1) + 1} = \frac{1}{2}$
+            \item Induction Hypothesis: Assume $\frac{1}{1\cdot 2}+ \frac{1}{2\cdot 3} +\cdots +\frac{1}{k\cdot (k+1)} = \frac{k}{k+1}$
+            \item Prove $\frac{1}{1\cdot 2}+ \frac{1}{2\cdot 3} +\cdots +\frac{1}{k\cdot (k+1)} +\frac{1}{(k + 1)\cdot ((k + 1)+1)} = \frac{(k + 1)}{(k + 1)+1}$
+            \item $\frac{1}{1\cdot 2}+ \frac{1}{2\cdot 3} +\cdots +\frac{1}{k\cdot (k+1)} +\frac{1}{(k + 1)\cdot (k + 2)} = \frac{k + 1}{k + 2}$
+            \item By IH, $\frac{k}{k+1} +\frac{1}{(k + 1)\cdot (k + 2)} = \frac{k + 1}{k + 2}$
+            \item $\frac{k(k + 2)}{(k + 1)(k + 2)} +\frac{1}{(k + 1)\cdot (k + 2)} = \frac{k + 1}{k + 2}$
+            \item $\frac{k^2 + 2k + 1}{(k + 1)(k + 2)} = \frac{k + 1}{k + 2}$
+            \item $\frac{(k + 1)(k + 1)}{(k + 1)(k + 2)} = \frac{k + 1}{k + 2}$
+            \item $\frac{k + 1}{k + 2} = \frac{k + 1}{k + 2}$; QED
+        \end{enumerate}
+
+        \item {\bf [5 Pts]} 15 divides $4^{2n}-1$, for all natural numbers $n$.
+        \begin{enumerate}
+            \item Base case: $\frac{4^{2(1)} - 1}{15} = 1$
+            \item Induction Hypothesis: $\frac{4^{2k} - 1}{15} = A$, $4^{2k} = 15A + 1$, $A \in N$
+            \item Prove $\frac{4^{2(k + 1)} - 1}{15} = B$, $B \in N$
+            \item $4^{2k + 2} = 15B + 1$
+            \item $4^2*4^{2k} = 15B + 1$
+            \item By IH, $4^2*(15A + 1) = 15B + 1$
+            \item $16*(15A + 1) = 15B + 1$
+            \item $16*15A + 16 = 15B + 1$
+            \item $16*15A = 15B - 15$
+            \item $16A = B - 1$
+            \item $B = 16A + 1$
+            \item Since $A \in N$, $B = 16A + 1 \in N$; QED
+        \end{enumerate}
+
+        \item {\bf [9 Pts]} Let $P(n)$ be the statement that $n$-cent postage can be formed using just
+        4-cent and 7-cent stamps. Prove that $P(n)$ is true for all $n \geq 18$, using the steps below.
+
+        \begin{enumerate}
+
+            \item First, prove $P(n)$ by regular induction. State your basis step and inductive step clearly and prove them.
+            \begin{enumerate}
+                \item Base Case: $P(18)$, $18 = 4 + (2)7$
+                \item Inductive Hypothesis: $k \geq 18$ can be made by some linear combination of 4 and 7
+                \item Prove $k + 1$ can be made by some linear combination of 4 and 7
+                \item CASE 1: Atleast 1 7 is used. Replace a 7 with 2 4's, $k - 7 + 2(4) = k + 1$
+                \item CASE 2: No 7's, $k = 4a$, $a \in N$. Since $k \geq 18$, $4a \geq 20$, $a \geq 5$. Atleast 5 4's. Replace 5 4's with 3 7's. $k - (5)4 + (3)7 = k + 1$ \\ \null\hfill QED
+            \end{enumerate}
+            \item Now, prove $P(n)$ by strong induction. Again, state and prove your basis step and inductive step. Your basis step should have multiple cases.
+            \begin{enumerate}
+                \item Base Cases: $P(18)$, $18 = 4 + (2)7$; $P(19)$, $19 = (3)4 + 7$, $P(20)$, $20 = (5)4$, $P(21)$, $21 = (3)7$
+                \item Inductive Hypothesis: Let $k \geq 21$. Assume all $l$ where $18 \leq l \leq k$ can be formed using 4 and 7.
+                \item Prove $k + 1$ can be formed.
+                \item Since $k \geq 21$, $k - 3 \geq 18$, so $k - 3$ is possible by IH
+                \item $k - 3 + (1)4 = k + 1$. \\ \null\hfill QED
+            \end{enumerate}
+        \end{enumerate}
+
+        \item {\bf [6 Pts]} Use mathematical induction to prove that DeMorgan's Law holds for the intersection of $n$ sets, $n \in \cal Z^+$:
+
+        $\displaystyle \overline{\left(\bigcap_{i=1}^n A_i\right)} = \bigcup_{i=1}^n \overline{A_i}$
+
+        You may use DeMorgan's Law for two sets.
+        \begin{enumerate}
+            \item Base Case: $\overline{A_1 \cap A_2 \cap A_3}$
+            \begin{enumerate}
+                \item $\overline{A_1 \cap (A_2 \cap A_3)}$ Intersection is Associative
+                \item $\overline{A_1} \cup \overline{A_2 \cap A_3)}$ De Morgan's for Two Sets
+                \item $\overline{A_1} \cup \overline{A_3} \cup \overline{A_3}$ De Morgan's for Two Sets \\ \null\hfill QED
+            \end{enumerate}
+            \item Induction Hypothesis: $\overline{A_1 \cap A_2 \cap ... \cap A_k} = \overline{A_1} \cup \overline{A_2} \cup ... \cup \overline{A_k}$
+            \item Prove: $\overline{A_1 \cap A_2 \cap ... \cap A_k \cap A_{k + 1}} = \overline{A_1} \cup \overline{A_2} \cup ... \cup \overline{A_k} \cup \overline{A_{k + 1}}$
+            \begin{enumerate}
+                \item $\overline{(A_1 \cap A_2 \cap ... \cap A_k) \cap A_{k + 1}}$ Intersection is Associative
+                \item $\overline{A_1 \cap A_2 \cap ... \cap A_k} \cup \overline{A_{k + 1}}$ De Morgan's for Two Sets
+                \item $\overline{A_1} \cup \overline{A_2} \cup ... \cup \overline{A_k} \cup \overline{A_{k + 1}}$ By IH \\ \null\hfill QED
+            \end{enumerate}
+        \end{enumerate}
+
+    \end{enumerate}
+
+    For more practice, you are encouraged to work on other problems in Rosen Sections 5.1 and 5.2, like the ones below.
+
+    \begin{enumerate}
+
+        \item Rosen Section 5.1 Problem 4
+
+        \item Rosen Section 5.1 Problem 12
+
+        \item Rosen Section 5.1 Problem 31
+
+        \item Rosen Section 5.2 Problem 26
+
+    \end{enumerate}
+
+\end{document}
+
+
+        
+
+
+

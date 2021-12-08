@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="ec699cd2-c82f-4de0-9295-bee6fae6f4cf" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectId" id="1rXPTnZWqV2583ONQHNX4wjDT72" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="T:/yarles/yarles-hw3" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ec699cd2-c82f-4de0-9295-bee6fae6f4cf" name="Default Changelist" comment="" />
+      <created>1619119471827</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1619119471827</updated>
+      <workItem from="1619119474462" duration="5859000" />
+      <workItem from="1619207978390" duration="136000" />
+      <workItem from="1619213434043" duration="11685000" />
+      <workItem from="1619362943836" duration="1042000" />
+      <workItem from="1619402305340" duration="76000" />
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="932" y="167" key="FileChooserDialogImpl" timestamp="1619402380857">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="932" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1619402380857" />
+  </component>
+</project>

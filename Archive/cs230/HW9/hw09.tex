@@ -1,0 +1,98 @@
+\documentclass[11pt]{article}
+\setlength{\oddsidemargin}{12pt}
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{9in}
+\pagestyle{empty}
+\setlength{\parskip}{7pt plus 2pt minus 2pt}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\begin{document}
+
+    \begin{center}
+    {{\large CS 230 : Discrete Computational Structures}}
+        \\
+
+%\vspace*{1cm}
+
+        {\bf Spring Semester, 2021}\\
+
+        {\sc Homework Assignment \#9}\\
+        {\bf Due Date:}  Monday, Apr 19
+    \end{center}
+
+    \noindent {\bf Suggested Reading:} Rosen Sections 6.1 - 6.3.
+
+    For the problems below, explain your answers and show your reasoning.
+
+    \begin{enumerate}
+
+        \item {\bf [4 Pts]} An ISU Computer Science shirt is sold in 6 colors, 5 sizes, striped or solid, and long sleeve or short sleeve. (a) How many different shirts are being sold? (b) What if the black and yellow shirts only come in short-sleeve and solid?
+        \begin{enumerate}
+            \item[a)] $6*5*2*2 = 120$
+            \item[b)] $120 - 2 * 5 * (2*2 - 1) = 90$
+        \end{enumerate}
+
+        \item {\bf [6 Pts]} How many integers between 10000 and 99999, inclusive, are divisible by 3 or 5 or 7?
+        \begin{enumerate}
+                \item $(\floor*{99999/3} + \floor*{99999/5} + \floor*{99999/7} - \floor*{99999/15} - \floor*{99999/35} - \floor*{99999/21} + \floor*{99999/105})$ \\
+                      $- (\floor*{10000/3} + \floor*{10000/5} + \floor*{10000/7} - \floor*{10000/15} - \floor*{10000/35} - \floor*{10000/21} + \floor*{10000/105})$ \\
+                      $= $ \\
+                      $(33333 + 19999 + 14285 - 6666 - 2857 - 4761 - 952)$ \\
+                      $- (3333 + 2000 + 1428 - 666 - 285 - 476 - 95)$ \\
+                      $= 60856 - 13714$ \\
+                      $= 48856$
+        \end{enumerate}
+
+        \item {\bf [10 Pts]} Let $A$ and $B$ be sets of 7 elements and 10 elements, respectively. \\
+        (a) How many different functions possible from $A$ to $B$? from $B$ to $A$? $10^7$, $7^{10}$; per the slides\\
+        (b) How many different relations possible from $A$ to $B$? $2^{7*10}$; number of possible pairs \\
+        (c) How many of the functions from $A$ to $B$ are one-to-one? $\frac{10!}{(10-7)!} = \frac{10!}{3!}$ \\
+        (d) How many of the functions from $B$ to $A$ are onto? \\
+        At least 7 elements of B needed for f to be onto. Subset from B of size 7 to A must be one-to-one to be onto. We don't care about the other 3 elements because a 7 to 7 function will still be onto if we add more elements to the input. So, all possible subsets of size 7 from B * number of one-to-one functions from subset of B to A * number of functions from subset of B of size 3 to A. $\frac{10!}{7!3!}*7!*7^3 = \frac{10!7^3}{3!}$
+
+        \item {\bf [6 Pts]} In how many ways can a photographer arrange 7 people in a row from a family of 10 people, if (a) Mom and Dad are in the photo, (b) Mom and Dad are next to each other in the photo, (c) either Mom or Dad is in the photo, not both. \\
+        \begin{enumerate}
+                \item[a)] Choose 5 ordered from 8 leftover, fill in 5 spots left to right. Multiply by number of ways to arrange parents. $\frac{8!}{3!}*(6*7)$
+                \item[b)] Treat parents as single object. Choose 7 ordered from 9, double to account for reversing order of parents. $\frac{9!}{2!}*2$
+                \item[c)] Exclude a parent from pool. Choose 6 ordered from 8 leftover, fill in 6 spots left to right. Multiply by number of ways to place single parent. Multiply by 2 to repeat for other parent. $\frac{8!}{2!}*7*2$
+        \end{enumerate}
+
+        \newpage
+        \item {\bf [6 Pts]} A sack contains 40 movie tickets, 5 for each of 8 different movies. Five friends want to go to a movie. How many tickets would you have to remove from the sack to guarantee that everyone will be able to watch the same movie? What principle did you use? What if everyone wants to go to `Godzilla vs Kong'? How many tickets would you have to remove from the sack in that case?
+        \begin{enumerate}
+                \item[a)] Worst case when removing 32 tickets: 8 unique tickets remain. Take 1 more and you will have all the tickets for atleast one movie, so 33 tickets need to be removed.
+                \item[b)] Pigeon Hole Principle
+                \item[c)] Remove all tickets. If we take 39, there's a chance the last ticket is for "Godzilla vs Kong."
+        \end{enumerate}
+
+        \item {\bf [6 Pts]} How many bit strings of length 7 contain (a) exactly three 1s? (b)  at most three 1's? (c) at least three 1's?
+        \begin{enumerate}
+                \item[a)] Choose 3 from 7 locations to place a 1. $\frac{7!}{3!4!}$
+                \item[b)] 0 1's + 1 1's + 2 1's + 3 1's = $1 + 7 + \frac{7!}{2!5!} + \frac{7!}{3!4!}$
+                \item[c)] 3 1's + 4 1's + 5 1's + 6 1's + 7 1's $\frac{7!}{3!4!} + \frac{7!}{4!3!} + \frac{7!}{5!2!} + 7 + 1$
+        \end{enumerate}
+
+        \item {\bf [6 Pts]} A coin is flipped nine times where each flip comes up either head or tails. How many possible outcomes contain at least five heads? Can you come up with two different ways to do this problem? How about three?
+        \begin{enumerate}
+                \item[1)] Subtract all combinations which have 5 or more tails from $2^9$ possible outcomes: \\ $2^9 - \frac{9!}{5!4!} - \frac{9!}{6!3!} - \frac{9!}{7!2!} - 9 - 1$
+                \item[2)] Add all combinations which have 5 or more heads. $\frac{9!}{5!4!} + \frac{9!}{6!3!} + \frac{9!}{7!2!} + 9 + 1$
+                \item[3)] Subtract all combinations which have 4 or less heads from from $2^9$ possible outcomes: $2^9 - \frac{9!}{4!5!} - \frac{9!}{3!6!} - \frac{9!}{2!7!} - 9 - 1$
+        \end{enumerate}
+        \item {\bf [6 Pts]} 10 women and 8 men are on the faculty. How many ways are there to pick a committee of 6 if (a) Claire and Jane will not serve together,  (b) at least one woman must be chosen, (c) at least one man and one woman must be chosen. Are there multiple ways to solve these problems? Explain.
+        \begin{enumerate}
+                \item[a)] Committee with Jane (16 choose 5) + Commitee with Claire (16 choose 5) + Committee with neither (16 choose 6) $\frac{16!}{5!11!} + \frac{16!}{5!11!} + \frac{16!}{6!10!}$
+                \item[b)] All possible committees (18 choose 6) - Committees without a gal (8 choose 6) $\frac{18!}{6!10!} - \frac{8!}{6!2!}$
+                \item[c)] All possible committees (18 choose 6) - Committees without a gal (8 choose 6) - Committees without a pal (10 choose 6) $\frac{18!}{6!10!} - \frac{8!}{6!2!} - \frac{10!}{6!4!}$
+        \end{enumerate}
+        There are multiple ways to solve these probelms: a) total committees - committees with Jane and Claire; b) add up committees with 1-6 gals c) start committee with any 1 guy and gal, pick 4 from 9 women and 7 men. Multiply by 8*10 unique pairs of men and women.
+    \end{enumerate}
+
+
+    \noindent
+    For more practice, work on the problems from Rosen Sections 6.1 - 6.3.
+
+\end{document}
+

@@ -1,0 +1,90 @@
+\documentclass[12pt]{article}
+
+\newcommand{\xor}{\oplus}
+
+\title{COM S 230 HW01}
+\author{Charles Yang}
+
+\addtolength{\oddsidemargin}{-.875in}
+\addtolength{\evensidemargin}{-.875in}
+\addtolength{\textwidth}{1.75in}
+\addtolength{\topmargin}{-.875in}
+\addtolength{\textheight}{1.75in}
+
+\begin{document}
+    \maketitle
+
+    \begin{enumerate}
+        \item Translations from english to logic
+        \begin{center}$F$: Passing the final; $A$: Attending class regularly; $P$: Pass the class.\end{center}
+            \begin{description}
+                \item[a)] The thing that is sufficient is first in implication \boldmath $ F \lor A \to P $
+                \item[b)] if P is true, then A is necessarily true \boldmath $ P \to A $
+                \item[c)] This is a straightforward translation \boldmath $ P \iff (A \land F) $
+            \end{description}
+        \item Implication is not associative; $((p \to q) \to r) \iff (p \to (q \to r))$ is not a tautology.
+            \begin{table}[h] \begin{center} \centering
+                  \begin{tabular}{ |c|c|c|c|c|c|c|c|}
+                       $p$ & $q$ & $r$ & $p \to q$ & $(p \to q) \to r$ & $q \to r$ & $p \to (q \to r)$ & $((p \to q) \to r) \iff (p \to (q \to r))$ \\ \hline
+                       0 & 0 & 0 & 1 & 0 & 1 & 1 & 0 \\
+                       0 & 0 & 1 & 1 & 1 & 1 & 1 & 1 \\
+                       0 & 1 & 0 & 1 & 0 & 0 & 1 & 0 \\
+                       0 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+                       1 & 0 & 0 & 0 & 1 & 1 & 1 & 1 \\
+                       1 & 0 & 1 & 0 & 1 & 1 & 1 & 1 \\
+                       1 & 1 & 0 & 1 & 0 & 0 & 0 & 1 \\
+                       1 & 1 & 1 & 1 & 1 & 1 & 1 & 1
+                  \end{tabular} \end{center}
+            \end{table}
+        \item Prove $(p \to \neg q) \land (q \to \neg r) \equiv (p \lor r) \to \neg q$
+            \begin{itemize}
+                \item $(\neg p \lor \neg q) \land (\neg q \lor \neg r)$ Implication 1 x 2
+                \item $ \neg \neg ((\neg p \lor \neg q) \land (\neg q \lor \neg r))$ Double Negation
+                \item $\neg (\neg (\neg p \lor \neg q) \lor \neg (\neg q \lor \neg r))$ De Morgan's
+                \item $\neg (( p \land q) \lor ( q \land r))$ De Morgan's x 2
+                \item $\neg (((p \land q) \lor q) \land ((p \land q) \lor r))$ Distribution
+                \item $\neg (q \land ((p \land q) \lor r))$ Absorption
+                \item $\neg (q \land ((p \lor r) \land (q \lor r)))$ Distributive
+                \item $\neg (q \land (q \lor r) \land (p \lor r))$ Associative
+                \item $\neg ((p \lor r) \land q)$ Absorption \& Commutative
+                \item $\neg (p \lor r) \lor \neg q$ De Morgan's
+                \item $(p \lor r) \to \neg q$ Implication 1
+            \end{itemize}
+        \item Who's lying? T is Tom's claim, and S is Sue's claim. C: $T \xor S \equiv TRUE$
+            \begin{description}
+                \item[1)] Suppose T is true.
+                \item[2)] Then S is also true.
+                \item[3)] (1) and (2) Contradicts C. T cannot be true.
+                \item[4)] If Tom is the SE Major, and Sue is the CS Major, then T is false and S remains true.
+                \item[5)] (4) Satisfies C. Tom is SE and Sue is CS.
+            \end{description}
+        \item Prove any compound proposition is logically equivalent to some proposition in CNF
+            \begin{itemize}
+                \item For all compound propositions, there exists $2^n$ combinations of basic propositions, where n is the number of basic propositions.
+                \item For all combinations, the compound proposition is either true or false.
+                \item CNF can be written as "as long as none of the variable combinations that make the proposition false are satisfied, then the compound proposition is true."
+                \item Basically, $\neg ((a_1 \land a_2 \land ... \land a_n) \lor (b_1 \land b_2 \land ... \land b_n) \lor ...)$ where a, b, ... are combinations of basic propositions that make the proposition false.
+                \item Applying De Morgan's, we get $\neg (a_1 \land a_2 \land ... \land a_n) \land \neg (b_1 \land b_2 \land ... \land b_n) \and ...$
+                \item Again. $ (\neg a_1 \lor \neg a_2 \lor ... \lor \neg a_n) \land (\neg b_1 \lor \neg b_2 \lor ... \lor \neg b_n) \land ...$
+                \item This is CNF. All conjugated clauses are the disjunction of the negation of basic propositions which make the compound proposition false.
+            \end{itemize}
+        \item Prove $\xor, \land, TRUE$ is functionally complete
+            \begin{itemize}
+                \item $\land$ is already present
+                \item $(p \xor TRUE) \equiv \neg p$
+                    \begin{description}
+                        \item[1)] $(p \land \neg TRUE) \lor (\neg p \land TRUE)$ Definition of $\xor$
+                        \item[2)] $(p \land FALSE) \lor \neg p$ Identity
+                        \item[3)] $FALSE \lor \neg p$ Domination
+                        \item[4)] $\neg p$ Identity
+                    \end{description}
+                \item $\lor$ is constructed by $\neg$ and $\land$ via De Morgan's. $\neg$ is implemented by previous proof.
+                    \begin{description}
+                        \item[1)] $p \lor q$
+                        \item[2)] $\neg \neg (p \lor q)$ Double negation
+                        \item[3)] $\neg (\neg p \land \neg q)$ De Morgan's; All necessary components for this definition are present
+                    \end{description}
+                \item $\neg, \land, \lor$ functionally complete, so ${\xor, \land, TRUE}$ is complete aswell.
+            \end{itemize}
+    \end{enumerate}
+\end{document}

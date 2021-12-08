@@ -1,0 +1,104 @@
+\documentclass[12pt]{article}
+\setlength{\oddsidemargin}{12pt}
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{9in}
+\pagestyle{empty}
+\setlength{\parskip}{7pt plus 2pt minus 2pt}
+
+\usepackage{amsmath}
+
+\begin{document}
+
+    \begin{center}
+    {{\large CS 230 : Discrete Computational Structures}}
+        \\
+
+        {\bf Spring Semester, 2021}\\
+
+        {\sc Homework Assignment \#4}\\
+        {\bf Due Date:}  Wednesday, March 3
+    \end{center}
+
+    \noindent {\bf Suggested Reading:} Rosen Sections 2.1 - 2.3; Lehman et al. Chapter 4.1, 4.3, 4.4.
+
+    For the problems below, explain your answers and show your reasoning.
+
+    \begin{enumerate}
+
+        \item {\bf [6 Pts]} Let $A$ and $B$ be non-empty sets. Prove that if $A \neq B$, then $A \times B \neq B \times A$.
+            The definition of the Cartesian Products described would be $\{(a, b) | a \in A \land b \in B\}$ and $\{(b, a) | b \in B \land a \in A\}$. If $A \neq B$, then there exists some (a, b) and (b, a) that are not equal. QED
+        \item {\bf [4 Pts]} Prove that $(A \cup B) - C = (A - C) \cup (B - C)$ using iff arguments and logical equivalences. \\
+                $$(A \cup B) - C$$
+            \begin{description}
+                \item[iff] $(x \in A \lor x \in B) \land x \not\in C$ \null\hfill Definition of $\cup$, Difference
+                \item[iff] $((x \in A \land x \not\in C) \lor (x \in B \land x \not\in C))$ \null\hfill Distribution
+                \item[iff] $(A - C) \cup (B - C)$ \null\hfill Definition of $\cup$, Difference; QED
+            \end{description}
+        \item {\bf [8 Pts]} Disprove the statements below.
+        \begin{enumerate}
+            \item If (1) $A \cup C \subseteq B \cup C$ then (2) $A \subseteq B$. \\
+                Suppose A = \{1\}, B = \{2\}, and C - \{1\} \\
+                $A \cup C = \{1\}$, $B \cup C = \{1, 2\}$ therefore $A \cup C \subseteq B \cup C$ (1) is satisfied. \\
+                However, $A \not\subseteq B$; (1) does not imply (2). QED
+            \item If (1) $A \cap C \subseteq B \cap C$ then (2) $A \subseteq B$. \\
+                Suppose A = \{1, 2\}, B = \{2\}, and C = \{2\} \\
+                $A \cap C = \{2\}$, $B \cap C = \{2\}$ therefore $A \cap C \subseteq B \cap C$ (1) is satisfied. \\
+                However, $A \not\subseteq B$; (1) does not imply (2). QED
+        \end{enumerate}
+
+        \item {\bf [8 Pts]} Prove by contradiction that if (U) $A \cup C \subseteq B \cup C$ and (I) $A \cap C \subseteq B \cap C$ then $A \subseteq B$.
+            \begin{description}
+                \item[(1)] Suppose $A \not\subseteq B$. By definition, $\forall x(x \in A \to x \not\in B)$.
+                \item[(2)] Assuming $x \in A$, this means that x is also in $A \cup C$, which is a subset of $B \cup C$.
+                \item[(3)] (2) implies that $x \in B \lor x \in C$ To prove this, $x \in B \land x \in C$ must be true.
+                \item[(4)] Unfortuantely, if $x \in A$, then $x \not\in B$. (4) Contradicts (3), so A must be a subset of B. QED
+            \end{description}
+        \item {\bf [8 Pts]} Prove that (H) $(A \cup B) - (A \cap B) = (A - B) \cup (B - A)$ using subset argument. You {\it may not} use logical equivalences in your proof. Use general proof techniques like `proof by contradiction' and `proof by cases'.
+            \begin{description}
+                \item[(1)] LHS of (H) is simply removing all common elements of A and B from the combination of A and B.
+                \item[(2)] RHS of (H) can be read as the combination of removing common elements of A and B from A and from B.
+                \item[(3)] Combining everything in (2), we get that this combination will not contain common elements of A and B, but everything that is not common.
+                \item[(4)] (1) and (3) are equivalent in English; QED
+            \end{description}
+
+        \item {\bf [4 Pts]} Prove that $f(n) = 5n + 9$ is one-to-one, where the domain and co-domain of $f$ is $\cal Z^+$. Show that $f$ is not onto. \\
+            $f$ is definitely not onto because there exists a positive integer, for example 2, in the co-domain that can't be an output.
+            \begin{center} $f$ is one-to-one if $\forall x \in Z^+ ,\forall y \in Z^+ (f(x) = f(y) \to x = y)$ \end{center}
+                \begin{align*}
+                    5x+9 &= 5y+9 \\
+                    5x &= 5y \\
+                    x &= y \\
+                    Q&ED
+                \end{align*}
+        \item {\bf [4 Pts]} Prove that $f(m,n) = m + n + mn$ is onto, where the domain of $f$ is ${\cal Z} \times {\cal Z}$ and the co-domain of $f$ is $\cal Z$. Show that $f$ is not one-to-one. \\
+            Let $y \in Z$. If $y = f(n, m)$, then $y = m + n + mn$. This implies that $n = \frac{y-m}{1+m}$ and $m = \frac{y-n}{1+n}$. so for every $y \in Z$, there exists some $m, n \in Z$ such that $f(m, n) = y$. QED \\
+            $f$ is not one-to-one because inputs (1,0) and (0,1) have the same output 1.
+
+        \item {\bf [8 Pts]} Let $g$ be a total function from $A$ to $B$ and $f$ be a total function from
+        $B$ to $C$.
+
+        \begin{enumerate}
+            \item If $f \circ g$ is one-to-one, then is $g$ one-to-one?
+            Prove or give a counter-example.
+            \begin{description}
+                \item[(1)] Suppose $g \circ f$ and $g$ is one-to-one.
+                \item[(2)] $g(x) = g(y)$ for arbitrary $x, y \in A$
+                \item[(3)] Composing: $f(g(x)) = f(g(y))$
+                \item[(4)] Taking the inverse of $f \circ g$ of both sides gives $x = y$. This is consistent with supposition (1). QED
+            \end{description}
+            \item If $f \circ g$ is onto, then is $g$ onto?
+            Prove or give a counter-example. \\
+            Counter-example: If the output of f is just a one element set, then $f \circ g$ will always be onto, regardless of g. QED
+
+        \end{enumerate}
+
+    \end{enumerate}
+
+    \noindent
+    For more practice, work on the problems from Sections 2.1 - 2.3; Lehman et al. Chapter 4.1, 4.3, 4.4.
+
+\end{document}
+
+
+
+

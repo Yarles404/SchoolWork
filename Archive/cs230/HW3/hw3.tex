@@ -1,0 +1,85 @@
+\documentclass[11pt]{article}
+
+\newcommand{\xor}{\oplus}
+
+\title{COM S 230 HW03}
+\author{Charles Yang}
+
+\addtolength{\oddsidemargin}{-.875in}
+\addtolength{\evensidemargin}{-.875in}
+\addtolength{\textwidth}{1.75in}
+\addtolength{\topmargin}{-.875in}
+\addtolength{\textheight}{1.75in}
+
+% Packages
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+
+% Document
+\begin{document}
+    \maketitle
+
+    \begin{enumerate}
+        \item Prove ($p^3$ is odd) $\iff (p$ is odd)\\\\
+            Assume $p^3$ is odd
+            \begin{align*}
+                p^3 &= 2n + 1, n \in \mathbb{Z}\\
+                2n &= p^3 - 1\\
+                2n &= (p-1)(p^2+p+1)
+            \end{align*}
+            $(p^2+p) = p(p+1)$ is even, because it is the product of an even and odd integer\\
+            Therefore, $p^2+p+1$ is odd\\
+            If $p^2+p+1$ is odd and $2n$ is even, then $p-1$ must be even for $2n = (p-1)(p^2+p+1)$ to remain consistent\\
+            If $p - 1$ is even, then $p$ must be odd; QED
+        \item If x, y is rational and z is irrational, prove $x+yz$ is irrational\\
+            We cannot use a diret proof because of the nature of irrational numbers\\
+            For proof by contradiction, assume that $x+yz$ is rational, such that
+            \begin{center}
+                $x = \frac{a}{b}$, $y = \frac{c}{d}$, and $\frac{a}{b}+\frac{c}{d}z = \frac{e}{f}$\\
+                $z=(\frac{e}{f}-\frac{a}{b})\frac{d}{c}$
+            \end{center}
+            Left hand side is z, an irrational, and right hand side is sum/product of rational integers, which is rational.
+            This is a contradiction. $x+yz$ cannot be rational; QED
+        \item Prove that if $mn > 35$, then $m \geq 6 \lor n \geq 8$
+            \begin{description}
+                \item[(1)] If $\neg (m \geq 6 \lor n \geq 8)$, then $mn \leq 35$ \null\hfill Contrapositive of proposition
+                \item[(2)] $\neg (m \geq 6 \lor n \geq 8)$ \null\hfill Assumed
+                \item[(3)] $(m < 6 \land n < 8)$ \null\hfill De Morgan's (2)
+                \item[(4)] $(m \leq 5 \land n \leq 7)$ \null\hfill implied in (3) because m \& n are integers
+                \item[(5)] Because of (4), $mn \leq 35$
+                \item[(6)] Contrapositive (1) of proposition is satisfied; QED
+            \end{description}
+        \item $fresh + soph + jun + sen = 32$. Prove $fresh \geq 5 \lor soph \geq 8 \lor jun \geq 10 \lor sen \geq 7$
+            \begin{description}
+                \item[(1)] $(fresh + soph + jun + sen = 32) \to (fresh \geq 5 \lor soph \geq 8 \lor jun \geq 10 \lor sen \geq 7)$ \null\hfill Hyp. 1
+                \item[(2)] $\neg (fresh \geq 5 \lor soph \geq 8 \lor jun \geq 10 \lor sen \geq 7) \to (fresh + soph + jun + sen \neq 32)$ \\\null\hfill Contrapositive (1)
+                \item[(3)] $\neg (fresh \geq 5 \lor soph \geq 8 \lor jun \geq 10 \lor sen \geq 7)$ \null\hfill Assumed
+                \item[(4)] $fresh < 5 \land soph < 8 \land jun < 10 \land sen < 7)$ \null\hfill De Morgan's (3)
+                \item[(5)] $fresh \leq 4 \land soph \leq 7 \land jun \leq 9 \land sen \leq 6)$ \null\hfill Implied in (4) because all vars are ints
+                \item[(6)] $(fresh + soph + jun + sen \neq 32)$ implied by (5); all vars could be 0
+                \item[(7)] (2) is satisfied; QED
+            \end{description}
+        \item Prove $(p \geq 3 \lor p \leq -7) \to ((p+2)^2) \geq 25$
+            \begin{description}
+                \item[(1)] Case 1: $p \geq 3$, add 2: $p+2 \geq 5$, square: $(p + 2)^2 \geq 25$
+                \item[(2)] Case 2: $p \leq -7$, add 2: $p + 2 \leq -5$, square: $(p + 2)^2 \geq 25$
+                \item[(3)] (1) \& (2); QED
+            \end{description}
+        \item Prove $\sqrt{5}$ is irrational
+            \begin{description}
+                \item[(1)] Assume $\sqrt{5}$ is rational, that is $\sqrt{5}=\frac{a}{b}$ for some integers a, b.
+                \item[(2)] Square it. $5 = \frac{a^2}{b^2}$
+                \item[(3)] $5b^2 = a^2$
+                \item[(4)] This implies 5 is a factor of $a^2$ or $a * a$
+                \item[(5)] According to \href{https://math.stackexchange.com/questions/4268/alternate-definition-of-prime-number#:~:text=A\%20prime\%20is\%20a\%20quantity,is\%20a\%20factor\%20of\%20b.}{StackExchange}, If a square is divisible by a prime, then its root is also divisible by the prime
+                \item[(6)] (4) and (5) imply that 5 is a factor of a, and $a = 5x$ for some int x
+                \item[(7)] $5b^2 = a^2$ and (6) implies that $5^2x^2$ is a factor of $b^2$
+                \item[(8)] (7) implies that 5 is also a factor of b.
+                \item[(9)] (8) contradicts (1). a and b cannot have common factors; $\sqrt{5}$ is irrational; QED
+            \end{description}
+    \end{enumerate}
+
+
+
+\end{document}
