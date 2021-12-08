@@ -1,0 +1,123 @@
+%! Author = 15155
+%! Date = 8/24/2021
+
+% Preamble
+\documentclass[11pt]{article}
+
+\title{STAT 347 HW1}
+\author{Charles Yang}
+
+\addtolength{\oddsidemargin}{-.875in}
+\addtolength{\evensidemargin}{-.875in}
+\addtolength{\textwidth}{1.75in}
+\addtolength{\topmargin}{-.875in}
+\addtolength{\textheight}{1.75in}
+
+% Packages
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+
+% Document
+\begin{document}
+    \maketitle
+
+    \begin{enumerate}
+        \item[2.5a] $A = A \cap S$ and $S = B \cup \bar{B} = $ The Universal Set, so
+        \begin{description}
+            \item[1] $A = (A \cap B) \cup (A \cap \bar{B})$
+            \item[2] $A = (A \cap B \cup A) \cap (A \cap B \cup \bar{B})$
+            \item[3] $A = (A \cap B \cup A) \cap (A \cap S)$
+            \item[4] $A = A \cap B \cup A \cap A$
+            \item[5] $A = A \cap B \cup A$ and $A \cap B \subset A$ by definition of intersection
+            \item[6] So, $A = A$
+        \end{description}
+        \item[2.5b] $B \subset A$
+        \begin{description}
+            \item[1] $A = B \cup (A \cap \bar{B})$
+            \item[2] $A = (B \cup A) \cap (B \cup \bar{B})$
+            \item[3] $A = A \cap (B \cup \bar{B})$ by definition of subset
+            \item[4] $A = A \cap S = A$
+        \end{description}
+        \item[2.5c] Show that $(A \cap B)$ and $(A \cap \bar{B})$ are mutually exclusive
+        \begin{description}
+            \item[1] $(A \cap B) \cap (A \cap \bar{B}) = \O$ by definition of mutually exclusive
+            \item[2] $(A \cap B \cap A) \cap (A \cap B \cap \bar{B}) = \O$
+            \item[3] $(A \cap B \cap A) \cap (A \cap \O) = \O$
+            \item[4] $(A \cap B \cap A) \cap \O = \O$
+            \item[5] $\O = \O$
+        \end{description}
+        \item[2.5d] Show that $b$ and $(A \cap \bar{B})$ are mutually exclusive
+        \begin{description}
+            \item[1] $B \cap (A \cap \bar{B}) = \O$ by definition of mutually exclusive
+            \item[2] $(B \cap A) \cap (B \cap \bar{B}) = \O$
+            \item[3] $(B \cap A) \cap \O = \O$
+            \item[4] $\O = \O$. And then:
+            \item[5] $A = B \cup (A \cap \bar{B})$
+            \item[6] $A = (B \cup A) \cap (B \cup \bar{B})$
+            \item[7] $A = A \cap (B \cup \bar{B})$ by definition of subset
+            \item[8] $A = A \cap S = A$
+        \end{description}
+        \newpage
+        \item[2.8a] $9 + 36 + 3 = 48$
+        \item[2.8b] $36 - 3 = 33$
+        \item[2.8c] Graduates $g = 60 - 36 = 24$, Grad off campus $go = 9 - 3 = 6$ \\
+                    So, Graduates on campus $g - go = 24 - 6 = 18$
+        \\
+        \item[2.15a] $1 - 0.01 - 0.09 - .81 = .09$
+        \item[2.15b] $1 - .81 = .19$
+        \\
+        \item[2.23 ] If $B \subset A$, then elements in B are also in A, but B does not contain all elements of A. After summing the probability of each element, $P(B) \leq P(A)$. \\
+                    (unless $A$ contains an element with negative probability, which is impossible)
+        \item[2.33a] L = income $\leq$ $\$43,318$, and H = income $> \$43,318$. \\
+                        $\{LLLL, LLLH, LLHL, LLHH, LHLL, LHLH, LHHL, LHHH,$\\
+                        $HLLL, HLLH, HLHL, HLHH, HHLL, HHLH, HHHL, HHHH\}$ \\
+                    If order doesn't matter: $\{4L:0H, 3L:1H, 2L:2H, 1L:3H, 0L:4H\}$
+        \item[2.33b] Simple events\\
+        \begin{enumerate}
+            \item[A:] $\{LLHH, LHLH, LHHL, LHHH,$ \\
+                        $HLLH, HLHL, HLHH, HHLL, HHLH, HHHL, HHHH\}$
+            \item[B:] $\{LLHH, LHLH, LHHL,$ \\
+                        $HLLH, HLHL, HHLL\}$
+            \item[C:] $\{LHHH,$ \\
+                        $HLHH, HHLH, HHHL\}$
+        \end{enumerate}
+        \item[2.33c] Since half of the sampling population is below or above the median,\\
+                    I can assume that the probability of selecting H or L are equal.
+                    \begin{align*}
+                    P(A) = \frac{11}{16} \\
+                    P(B) = \frac{6}{16} \\
+                    P(C) = \frac{4}{16}
+                    \end{align*}
+        \item[2.39a] Multiplication principle: $6*6 = 36$
+        \item[2.39b] By enumeration: $|\{(1,6), (2,5), (3,4), (4,3), (5,2), (6,1)\}| = 6$. \\
+                    So, $\frac{6}{36} = \frac{1}{6}$
+        \item[2.51] Sample space $= C(50,3) = 19600$
+        \begin{enumerate}
+            \item[a] $\frac{C(4,3)}{19600} = \frac{4}{19600}$
+            \item[b] $\frac{C(4,2)*C(46,1)}{19600} = \frac{276}{19600}$
+            \item[b] $\frac{C(4,1)*C(46,2)}{19600} = \frac{4140}{19600}$
+            \item[b] $\frac{C(46,3)}{19600} = \frac{15180}{19600}$
+        \end{enumerate}
+        \newpage
+        \item[2.41] select 6 from 10 digits: $10^6 = 1,000,000$
+        \item[2.64] $6^6 = 46656$ possibilities, $6! = 720$ desirable outcomes. $\frac{720}{46656}$
+        \item[2.69] Prove $C(n + 1,k) = C(n,k) + C(n,k - 1)$
+        \begin{description}
+            \item $C(n + 1,k) = C(n,k) + C(n,k - 1)$
+            \item $\frac{(n + 1)!}{k!(n + 1 - k)!} = \frac{n!}{k!(n - k)!} + \frac{n!}{(k - 1)!(n - k + 1)!}$
+            \item $\frac{(n + 1)n!}{k!(n + 1 - k)!} = \frac{n!}{k!(n - k)!} + \frac{n!}{(k - 1)!(n - k + 1)!}$
+            \item $\frac{(n + 1)}{k!(n + 1 - k)!} = \frac{1}{k!(n - k)!} + \frac{1}{(k - 1)!(n - k + 1)!}$
+            \item $\frac{n + 1}{k(k - 1)!(n + 1 - k)!} = \frac{1}{k(k - 1)!(n - k)!} + \frac{1}{(k - 1)!(n - k + 1)!}$
+            \item $\frac{n + 1}{k(n + 1 - k)!} = \frac{1}{k(n - k)!} + \frac{1}{(n - k + 1)!}$
+            \item $\frac{n + 1}{k(n + 1 - k)(n - k)!} = \frac{1}{k(n - k)!} + \frac{1}{(n - k + 1)(n - k)!}$
+            \item $\frac{n + 1}{k(n + 1 - k)} = \frac{1}{k} + \frac{1}{n - k + 1}$
+            \item $\frac{n + 1}{k} = \frac{(n + 1 - k)}{k} + 1$
+            \item $\frac{n + 1}{k} = \frac{n + 1 - k}{k} + \frac{k}{k}$
+            \item $\frac{n + 1}{k} = \frac{n + 1}{k}$
+        \end{description}
+    \end{enumerate}
+
+
+
+\end{document}

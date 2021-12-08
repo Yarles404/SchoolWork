@@ -1,0 +1,107 @@
+%! Author = 15155
+%! Date = 8/24/2021
+
+% Preamble
+\documentclass[11pt]{article}
+
+% Packages
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\setlist[enumerate]{font=\bfseries}
+
+\title{STAT 347 HW2}
+\author{Charles Yang}
+
+\addtolength{\oddsidemargin}{-.875in}
+\addtolength{\evensidemargin}{-.875in}
+\addtolength{\textwidth}{1.75in}
+\addtolength{\topmargin}{-.875in}
+\addtolength{\textheight}{1.75in}
+
+% Document
+\begin{document}
+    \maketitle
+
+    \begin{enumerate}
+
+        \item[2.71]
+        \begin{enumerate}
+            \item[a] $P(A|B) = \frac{P(A \cap B)}{P(B)} = \frac{0.1}{0.3} = \frac{1}{3}$
+            \item[b] $P(B|A) = \frac{P(B \cap A)}{P(A)} = \frac{0.1}{0.5} = 0.2$
+            \item[c] $P(A|A \cup B) = \frac{P(A \cap (A \cup B))}{P(A \cup B)} = \frac{P(A)}{P(A \cup B)} $ By Absorption $= \frac{P(A)}{P(A) + P(B) - P(A \cap B)} = \frac{0.5}{0.5 + 0.3 - 0.1} = \frac{5}{7}$
+            \item[d] $P(A|A \cap B) = \frac{P(A \cap A \cap B)}{P(A \cap B)} = \frac{P(A \cap B)}{P(A \cap B)} = 1$
+            \item[e] $P(A \cap B|A \cup B) = \frac{P((A \cap B) \cap (A \cup B))}{P(A \cup B)} = \frac{P((A \cap B \cap A) \cup (A \cap B \cap B))}{P(A \cup B)} = \frac{P(A \cap B)}{P(A \cup B)} = \frac{0.1}{0.5 + 0.3 - 0.1} = \frac{1}{7}$
+        \end{enumerate}
+
+        \item[2.75]
+        \begin{enumerate}
+            \item[a] 2 spade cards already removed. Next 3: $\frac{11}{50} * \frac{10}{49} * \frac{9}{48}$
+            \item[b] $\frac{10}{49} * \frac{9}{48}$
+            \item[c] $\frac{9}{48}$
+        \end{enumerate}
+
+        \item[2.83]
+        \begin{align*}
+            P(A|A \cup B) &= \frac{P(A \cap (A \cup B))}{P(A \cup B)} \text{ Absorption law for sets}\\
+            &= \frac{P(A)}{P(A \cup B)} \text{Probability of the union of mutually exclusive sets gives:}\\
+            &= \frac{P(A)}{P(A) + P(B)}
+        \end{align*}
+
+        \item[2.86]
+        \begin{enumerate}
+            \item[a] Suppose $P(A \cap B) = 0.1$. \\
+                    $1 \geq P(A \cup B) = P(A) + P(B) - P(A \cap B) = 0.8 + 0.7 - 0.1 = 1.4 > 1$. \\
+                    Contradiction! The supposition breaks the laws of probability.
+            \item[b] $1 \geq P(A \cup B) = P(A) + P(B) - P(A \cap B)$ \\
+                    $P(A) + P(A) - 1 \geq P(A \cap B)$ \\
+                    $0.5 \geq P(A \cap B)$ This probability must be greater than or equal to $0.5$.
+            \item[c] In b, we determined the maximum value is 0.7. So, 0.77 exceeds this, hence not possible.
+            \item[d] The largest possible value for $P(A \cap B)$ is 0.7 and this occurs when $B \subset A$.
+        \end{enumerate}
+
+        \item[2.91] The sum of probabilities of mutually exclusive events must be less than or equal to 1. \\
+                    Therefore, A and B cannot be mutually exclusive because $P(A) + P(B) = 1.1 > 1$ \\
+                    The second scenario does not break this rule, and is therefore possible.
+
+        \item[2.98] The series system needs both relays to be closed properly to work, which has a probability of $0.9 * 0.9 = 0.81$ \\
+                    Atleast one relay needs to work in the parallel system. $P(A \cup B) = 0.9 + 0.9 - 0.81 = 0.99$
+
+        \item[2.124] Using Bayes' Theorem: \\
+                     $P(Dem | Favor) = \frac{P(Favor | Dem)*P(Dem)}{P(Favor | GOP)*P(GOP) + P(Favor | Dem)*P(Dem)} = \frac{0.7 * 0.6}{0.4 * 0.3 + 0.7 * 0.6} = 7/9$
+
+        \newpage
+        \item[2.130]
+        \begin{align*}
+            P(Ship | Cancer) &= 0.22,\; P(Ship | Cancer^c) = 0.14,\; P(Cancer) = 0.0004 \\
+            P(Cancer | Ship) &= \frac{P(Ship | Cancer) * P(Cancer)}{P(Ship | Cancer) * P(Cancer) + P(Ship | Cancer^c) * P(Cancer^c)} \\
+            &= \frac{0.22 * 0.0004}{0.22 * 0.0004 + 0.14 * 0.9996} \\
+            &= 0.0006284
+        \end{align*}
+
+        \item[2.134]
+        \begin{align*}
+            P(Fail | A) &= 0.2,\; P(Fail | B) = 0.1,\; P(B) = 0.3,\; P(A) = 0.7 \\
+            P(A | Fail) &= \frac{P(Fail | A) * P(A)}{P(Fail | A) * P(A) + P(Fail | B) * P(B)} \\
+            &= \frac{0.2 * 0.7}{0.2 * 0.7 + 0.1 * 0.3} \\
+            &= .8235
+        \end{align*}
+
+        \item[2.135]
+        \begin{enumerate}
+            $P(Major) = 0.6$, $P(Private) = 0.3$, $P(Other) = 0.1$, \\
+            $P(Busy | Major) = 0.5$, $P(Busy | Private) = 0.6$, $P(Busy | Other) = 0.9$
+            \item[a] $0.5*0.6 + 0.3*0.6 + 0.1 * 0.9 = 0.57$
+            \item[b] $P(Busy \cap Private) = P(Busy | Private)*P(Private) = 0.6 * 0.3 = 0.18$
+            \item[c] $P(Private | Busy) = \frac{P(Private \cap Busy)}{P(Busy)} = \frac{0.18}{0.57} = 0.3158$
+            \item[d] Airline types are mutually exclusive. $P(Com) = P(Major \cup Other) = P(Major) + P(Other) = 0.7$\\
+                    Can calculate Commercial and Business as all Business - Business and Private \\
+                    $P(Com \cap Busy) = P(Busy) - P(Private \cap Busy) = 0.57 - 0.18 = 0.39$ \\
+                    $P(Busy | Com) = P(Com \cap Busy)P(Com) = 0.39 * 0.7 = 0.273$
+        \end{enumerate}
+    \end{enumerate}
+
+
+
+\end{document}
