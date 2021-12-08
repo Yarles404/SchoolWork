@@ -1,0 +1,8 @@
+"0","set.seed(1)"
+"0",""
+"0","n = 100"
+"0","x = rnorm(n)"
+"0","error = rnorm(n, 0, 1)"
+"0","y = x - 2*x^2 + error"
+"0",""
+"0","data = data.frame(x=x, y=y)"

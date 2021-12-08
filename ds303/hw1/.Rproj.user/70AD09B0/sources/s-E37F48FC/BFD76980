@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1630522393807.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "BFD76980",
+    "lastKnownWriteTime" : 1630522392,
+    "last_content_update" : 1630522392,
+    "path" : "C:/Users/15155/Downloads/IntroMLR.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "58,60",
+        "scrollLine" : "30"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

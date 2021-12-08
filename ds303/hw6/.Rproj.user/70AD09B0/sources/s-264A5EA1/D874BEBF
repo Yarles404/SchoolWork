@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1634148483928.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "D874BEBF",
+    "lastKnownWriteTime" : 1633400468,
+    "last_content_update" : 1633400468,
+    "path" : "C:/Users/15155/Desktop/ds303/hw4/hw4.Rmd",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "138,36",
+        "scrollLine" : "105",
+        "source_window_id" : "w69vw11yur6w1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

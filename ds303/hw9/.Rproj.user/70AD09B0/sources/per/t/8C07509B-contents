@@ -1,0 +1,94 @@
+---
+title: "hw9"
+author: "Charles Yang"
+date: "11/10/2021"
+output:
+  html_document:
+    code_folding: hide
+---
+
+<style type="text/css">
+@import url("https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css");
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(results="hide")
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(ggplot2)
+library(caret)
+library(tree)
+```
+
+```{r results="show"}
+spam = read.csv('spambase.data', header = FALSE)
+spam$V58 = as_factor(spam$V58)
+```
+```{r}
+sum(spam$V58==1)/nrow(spam)
+sum(spam$V58==0)/nrow(spam)
+```
+
+```{r results="show"}
+# 4b
+trainIndex = createDataPartition(spam$V58, p = .60, list = FALSE)
+train = spam[trainIndex,]
+test = spam[-trainIndex,]
+print("Train spam proportion")
+sum(train$V58==1)/nrow(train)
+print("Test spam proportion")
+sum(test$V58==1)/nrow(test)
+```
+
+```{r}
+glm.fit = glm(V58~., data=train, family='binomial')
+
+glm.prob = predict(glm.fit, test, type='response')
+
+
+glm.pred = rep(0, nrow(test))
+glm.pred[glm.prob > 0.5] = 1
+
+tab = table(glm.pred, test$V58)
+tab
+1 - sum(diag(tab)) / sum(tab)
+tab[2, 1] /sum(tab) # False positive
+tab[1, 2]/sum(tab) # False negative
+```
+```{r}
+
+```
+
+```{=html}
+<section class="section">
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      
+      1. ROC with Spam
+      
+    </p>
+  </header>
+  
+  <div class="card-content">
+    <div class="content">
+     
+        a. Reporting a meaningful email as spam, a false positive, is a more critical mistake. It's okay if some spam gets through, but a job offer in spam would be awful.
+
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="content">
+     
+        b. Reporting a meaningful email as spam, a false positive, is a more critical mistake. It's okay if some spam gets through, but a job offer in spam would be awful.
+
+    </div>
+  </div>
+  
+</div>
+</section>
+
+<hr/>
+```

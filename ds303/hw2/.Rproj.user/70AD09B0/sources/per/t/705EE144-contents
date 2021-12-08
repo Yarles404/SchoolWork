@@ -1,0 +1,194 @@
+---
+title: "DS 303 HW2"
+author: "Charles Yang 510 636 138"
+date: "9/10/2021"
+output:
+  html_document:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(results="hide")
+
+set.seed(42)
+
+library(ISLR2)
+library(tidyverse)
+library(ggplot2)
+library(cowplot)
+```
+<style type="text/css">
+@import url("https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css");
+</style>
+
+```{r results="hide"}
+x = matrix(NA,1000,200)
+
+beta0 = 1
+beta1 = 2
+beta2 = 3
+beta3 = 4
+beta4 = 5
+beta5 = 6
+
+for(i in 1:200){
+  x[,i] = rnorm(1000)
+}
+error = rnorm(1000)
+y = beta0 + beta1*x[,1] + beta2*x[,2] + beta3*x[,3] + beta4*x[,4] + beta5*x[,5]
+
+data = as.data.frame(cbind(y,x))
+
+model = lm(y~., data=data)
+summary(model)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>1. Multiple Testing Problem</p>
+  </div>
+  <div class="message-body">
+    According to the individual t-tests at an alpha level of 0.05, there are 11 significant predictors for y. However, there are only 5 predictors that actually represent the model. This shows that by coincidence, a variable could be correlated, but not necessarily a true contributor to the value of y. There is a chance of rejecting the idea that the variable doesn't contribute any information about y when you shouldn't (Type 1 Error). Hence, the individual t-tests cannot tell us about the relationship between an individual predictor and the response, and which variables are genuinely important in predicting the response.<br>
+    This could present an issue when using a regression model in any real world application. Should a company's dataset have many variables, there are bound to be some Type 1 errors. This could lead to inaccurate predictions when the model is used in predictions. Mistakes and losses are bound to occur. <br>
+    To resolve these issues, we can use the Overall F-test to determine if atleast one predictor is related to the response. To decide which variables are actually related, we can use model selection techniques such as subset or stepwise selection.
+  </div>
+</article>
+```
+
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>2. True or False</p>
+  </div>
+  <div class="message-body">
+    a. False: The LHS should not use the expected symbol (E). Additionally, it owuld be useful to leave room for additional predictors should they be relevant. <br>
+    b. False. An additional predictor may reduce error, which in turn reduces the RSS. <br>
+    c. False. Although not usual, the test MSE may be smaller than the train MSE due to random chance. <br>
+    d. False. y0 should be from the test set. <br>
+    e. True. An overcomplex model may no longer model the actual population data. <br>
+    f. True. Selecting an alpha level is selecting the risk of accepting a type 1 error.
+  </div>
+</article>
+```
+
+```{r include=FALSE}
+names(Carseats)
+```
+```{r message=FALSE}
+full_model = lm(Sales~., data=Carseats)
+summary(full_model)
+```
+
+
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>3. Statistical Inference</p>
+  </div>
+  <div class="message-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Predictor</th><th>Least-Square Estimate</th><th>Standard Error</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr> <td>CompPrice</td> <td>0.0928</td> <td>0.603</td> </tr>
+        <tr> <td>Income</td> <td>0.0158</td> <td>0.00185</td> </tr>
+        <tr> <td>Advertising</td> <td>0.123</td> <td>0.0111</td> </tr>
+        <tr> <td>Population</td> <td>0.000208</td> <td>0.000371</td> </tr>
+        <tr> <td>Price</td> <td>-0.0954</td> <td>0.00267</td> </tr>
+        <tr> <td>ShelveLocGood</td> <td>4.85</td> <td>0.153</td> </tr>
+        <tr> <td>ShelveLocMedium</td> <td>1.96</td> <td>0.126</td> </tr>
+        <tr> <td>Age</td> <td>-0.0460</td> <td>0.00318</td> </tr>
+        <tr> <td>Education</td> <td>-0.0211</td> <td>0.0197</td> </tr>
+        <tr> <td>UrbanYes</td> <td>0.123</td> <td>0.113</td> </tr>
+        <tr> <td>USYes</td> <td>-0.184</td> <td>0.150</td> </tr>
+      </tbody>
+    </table>
+    
+    <br>
+    
+    b. F-test alpha = 0.05 <br>
+    Null H: All regression coefficients are nill and zero. <br>
+    Alt. H: Atleast one predictor does not have a coefficient of zero (has some linear relationship). <br>
+    Our null distribution follows the F-Distribution with numerator df = 388, and denominator df = 11 <br>
+    P < 2.2e-16, There is overwhelming evidence that atleast one predictor has a significant linear relationship with Sales. <br><br>
+    
+    c. Testing ShelveLocGood. <br>
+    Null H: The coefficient for SHelveLocGood is 0. <br>
+    Alt. H: The coefficient for SHelveLocGood is not 0 (There is a linear relationship). <br>
+    T = 31.678, T-Distribution wtih df = 388, P < 2e-16. There is overwhelming evidence that there is a linear relationship between ShelveLoc and Sales <br><br>
+    
+    d. Residual Standard Error Squared = 1.019^2 = 1.038. <br><br>
+    
+    e. Approximately 87.34% of the variability in Sales is explained by the model. <br><br>
+    
+    f. Items with good shelf locations have an increase in about 4800 unit sales when holding all other variables constant <br>
+    Items with medium shelf locations have an increase in about 1950 unit sales when holding all other variables constant <br><br>
+  </div>
+</article>
+```
+
+```{r}
+x <- data.frame(
+      CompPrice = mean(Carseats$CompPrice),
+      Income = median(Carseats$Income),
+      Advertising = 15,
+      Population = 500,
+      Price = 50,
+      ShelveLoc = factor("Good", levels=c("Bad", "Medium", "Good")),
+      Age = 30,
+      Education = 10,
+      Urban = factor("Yes", levels=c("No", "Yes")),
+      US =  factor("Yes", levels=c("No", "Yes"))
+      )
+
+predict(full_model, x, interval="prediction", level = .99)
+predict(full_model, x, interval="confidence", level = .99)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>2g+h. Prediction vs Confidence Interval</p>
+  </div>
+  <div class="message-body">
+    Using the given values, we predict Sales to be 18.7, within the interval [16.0, 21.5]. <br>
+    Using the given values, we estimate Sales to be 18.7, within the interval [18.1, 19.4]. <br> <br>
+    
+    Here we see that the prediction interval is wider than the confidence interval. This is expected because predictions are always less certain than estimates. Confidence intervals are inaccurate to the degree which the coefficient estimates vary from their true values. Prediction intervals also attempt to quanitify irreducible error, that is random error in the model, which results in less certain predictions.
+  </div>
+</article>
+```
+
+```{r}
+x <- data.frame(
+      CompPrice = mean(Carseats$CompPrice),
+      Income = median(Carseats$Income),
+      Advertising = 15,
+      Population = 500,
+      Price = 450,
+      ShelveLoc = factor("Good", levels=c("Bad", "Medium", "Good")),
+      Age = 30,
+      Education = 10,
+      Urban = factor("Yes", levels=c("No", "Yes")),
+      US =  factor("Yes", levels=c("No", "Yes"))
+      )
+
+max(Carseats$Price)
+
+predict(full_model, x, interval="prediction", level = .99)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>2j. Extrapolation</p>
+  </div>
+  <div class="message-body">
+    Using the given values, we predict Sales to be -19.4 with an interval [-22.9, -15.9] <br><br>
+    
+    This is a useless prediction because Sales cannot be negative. Using a Price of 450 in making predictions is extrapolation, since the maximum Price in the training the data is 191. Extrapolating is a big no-no. This model should not be used to predict when values are not within a reasonable range of the training values.
+  </div>
+</article>
+```

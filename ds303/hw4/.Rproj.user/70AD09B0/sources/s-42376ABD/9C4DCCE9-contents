@@ -1,0 +1,337 @@
+---
+title: "hw3"
+author: "Charles Yang"
+date: "9/17/2021"
+output:
+  html_document:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(results="hide")
+
+library(ISLR2)
+library(tidyverse)
+library(ggplot2)
+library(cowplot)
+library(GGally)
+library(car)
+```
+<style type="text/css">
+@import url("https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css");
+</style>
+
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>1. Wrapping up MLRm</p>
+  </div>
+  <div class="message-body">
+    a. Linear regression attempts to estimate the relationship between some predictor variables and a response. It assumes that the relationship is linear, that is, a straight line. Additionally, it assumes the errors, or the difference between the line and actual data follow a bell curve distribution with a mean of 0 and are uncorrelated. <br> <br>
+    b. We find the coefficients for the predictors that make a line that minimizes the distance between the data points and the line. <br> <br>
+    c. Assuming our assumptions from (a) are met, we know that our estimates are trustworthy. We can use different training data to generate different coefficients for each predictor and they should average out to be close to the true coefficients. <br> <br>
+    d. We use the model equation and plug in our predictor values and it spits out a Y value. We use MSE or tMSE, aka Mean Square Errors or its test variant. Essentially, these are the average errors produced by the model and are used to create confidence intervals. These intervals describe the range of values our predicted Y could actually be after accounting for possible error. <br> <br>
+    e. We use a value called R-squared, which our computer calculates for us. It essentially describes the proportion of variability in the data that is explained by our model. Additionally, we may run an F-test, which tells us if at least one predictor in our model is significant in explaining the response. <br> <br>
+    f. Statistical inference, as I understand it, describes what conclusions about our target population can actually be made using statistical tools. Linear regression models are another statistical tool, and it is important to know when it is applicable, the limitations of our models, and what conclusions are valid. There are a variety of tools and calculated values we can use to make inferences from linear regression. <br> <br>
+    g. Here are three issues that might arise when fitting a linear regression: <br>
+    <ol type="1">
+    <li>
+      The relationship between a predictor and the response may not be a straight line. We can use transformation functions such as log or polynomials on the predictor to correct the curve.
+    </li>
+      
+    <li>
+      It is possible to conclude that a single predictor has a significant linear relationship with the response when it actually doesn't. This is a Type 1 Error caused by setting an insufficiently low risk level when performing our individual t-tests. We can mitigate these by setting a lower risk level (which may result in weaker inference) or performing an F-test to see if any of the predictors actually contribute to the response.
+    </li>
+    <li>
+      Fitting a model with two predictors that are highly correlated causes an issue known as multicollinearity. This causes the variance of our estimated coefficients to soar aggressively, greatly reducing our inference capabilities. We solve this by calculated the Variance Influence Factor for the variables in question. This tells us the ratio of the variances of the suspicious coefficients between the full model and a simple linear regression. If it is very high for a variable, we know that variable is causing multicollinearity and can be removed from the model.
+    </li>
+  </ol>
+
+  
+  </div>
+</article>
+```
+
+## 2a.
+```{r results="show"}
+str(Credit)
+```
+```{r}
+fit = lm(Balance~Income+Student, data=Credit)
+summary(fit)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>2. Interaction Terms</p>
+  </div>
+  <div class="message-body">
+    b. The fit shows that Income and StudentYes are significant predictors of credit card balance. The equation is Balance = 211.1430 + 5.9843*Income + 382.6705*StudentYes. <br> <br>
+    
+    c. Two different models: <br>
+    StudentNo: Balance = 211.1430 + 5.9843*Income <br>
+    StudentYes: Balance = 593.7037 + 5.9843*Income <br> <br>
+    
+    d. Holding everything else constant, a unit increase in income results in 5.98 increase in credit card balance regardless of student status.
+  </div>
+</article>
+```
+
+```{r}
+ggplot(Credit, aes(x=Income, y=Balance, color=Student)) +
+  geom_point() +
+  geom_smooth(method=lm)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>2. Interaction Terms (Continued)</p>
+  </div>
+  <div class="message-body">
+    e. The effect of Income on average Balance probably shouldn't be the same between students and non-students. The regression lines by seem to differ by student status. However, the slopes of each line are close enough to question the former conclusion. (In hindsight, the difference isn't all that significant)
+  </div>
+</article>
+```
+
+```{r}
+interactionFit <- lm(Balance ~ Income + Student + Income:Student, data=Credit)
+summary(interactionFit)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>2. Interaction Terms (Continued)</p>
+  </div>
+  <div class="message-body">
+    f. Balance = 200.62 + 6.22*Income + 476.68*StudentYes - 1.9992*Income*StudentYes <br> <br>
+    
+    g. Non-student credit card balance increases by 6.22 for every unit increase in Income, holding everything else constant. Student credit card balance increases by 4.22 for every unit increase in Income, holding everything else constant. <br> <br>
+    
+    h. A significant F-test simple tells us atleast one of the predictors is significant. This permits non-signficant terms to worsen the proportion of variance explained by the model. Judging by the high p-value for the interaction term, I conlude that the interaction term is not a significant part of the model. There is no contradiction between R-squared and F-test conclusions.
+  </div>
+</article>
+```
+
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>3. A Puzzling Problem</p>
+  </div>
+  <div class="message-body">
+    I notice that the standard s and P values for the coefficient estimates are inordinately large. Yet, our F-test shows that at least one of the predictors is a significant variable in explaining y. This is likely due to multicollinearity, which inflates the variance of the estimates, resulting in inconclusive T-tests. This inflation is caused by the linear algebra used to calculate the estimates. Removing one of the predictors should solve this puzzle.
+  </div>
+</article>
+```
+
+```{r}
+set.seed(42)
+
+n=100
+b0 = 3
+b1 = 2
+b2 = 4
+
+x1 = runif(100)
+x2 = 0.8*x1 + rnorm(n, 0, 0.1)
+y = b0 + b1*x1 + b2*x2 + rnorm(n, 0, 2)
+
+data <- data.frame(
+  x1 = x1,
+  x2 = x2,
+  y = y
+)
+
+
+cor(data$x1, data$x2)
+
+train_index = sample(1:n,n/2,rep=FALSE)
+
+train = data[train_index,]
+test = data[-train_index,]
+
+model = lm(y~x1+x2, data=train)
+
+predicted = predict(model, test)
+MSE_Test = mean((test$y - predicted)^2)
+print(MSE_Test)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>4. Predictions with multicollinearity</p>
+  </div>
+  <div class="message-body">
+    a. I don't think multicollinearity should be an issue in making accurate predictions. Having two correlated values contribute information to a response should still give similar predictions. However, this results in a false understanding of the underlying model, as one of the variables might not actually play a role in predicting the response. <br> <br>
+    
+    b. The correlation between x1 and x2 is 0.9404 <br> <br>
+    
+    c. Test MSE = 4.17 <br> <br>
+  </div>
+</article>
+```
+
+```{r}
+MSEs <- c()
+for (i in 1:2500) {
+  data$y = b0 + b1*x1 + b2*x2 + rnorm(n, 0, 2)
+  
+  train_index = sample(1:n,n/2,rep=FALSE)
+  train = data[train_index,]
+  test = data[-train_index,]
+  
+  model = lm(y~x1+x2, data=train)
+
+  predicted = predict(model, test)
+  MSEs = append(MSEs, mean((test$y - predicted)^2))
+}
+
+hist(MSEs)
+abline(v=mean(MSEs), col="blue", lw=5)
+print(mean(MSEs))
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>4. Predictions with multicollinearity (Continued)</p>
+  </div>
+  <div class="message-body">
+    d. After 2,500 simulations of a linear model with mutlicollinearity, the average MSE was 4.264. There appears to be a slight right skew in the histogram, but it is minimal.
+  </div>
+</article>
+```
+
+
+```{r}
+set.seed(24)
+x1 = runif(100)
+x2 = rnorm(100,0,1)
+y = b0 + b1*x1 + b2*x2 + rnorm(n, 0, 2)
+
+data <- data.frame(
+  x1 = x1,
+  x2 = x2,
+  y = y
+)
+
+cor(data$x1, data$x2)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>4. Predictions with multicollinearity (Continued)</p>
+  </div>
+  <div class="message-body">
+    e. The correlation coefficient for x1 and x2 is 0.0332. They are not correlated, so there will be no concerns of multicollinearity.
+  </div>
+</article>
+```
+
+```{r}
+MSEs <- c()
+for (i in 1:2500) {
+  data$y = b0 + b1*x1 + b2*x2 + rnorm(n, 0, 2)
+  
+  train_index = sample(1:n,n/2,rep=FALSE)
+  train = data[train_index,]
+  test = data[-train_index,]
+  
+  model = lm(y~x1+x2, data=train)
+
+  predicted = predict(model, test)
+  MSEs = append(MSEs, mean((test$y - predicted)^2))
+}
+
+hist(MSEs)
+abline(v=mean(MSEs), col="red", lw=5)
+print(mean(MSEs))
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>4. Predictions with multicollinearity (Continued)</p>
+  </div>
+  <div class="message-body">
+    d. After 2,500 simulations of a linear model without mutlicollinearity, the average MSE was 4.260 There appears to be a slight right skew in the histogram, but it is minimal. <br> <br>
+    
+    g. The distributions of MSEs between the models with and without collinearity were practically the same. Based on the two simulations, I conclude that multicollinearity is not a problem for making accurate predictions.
+  </div>
+</article>
+```
+
+```{r}
+Auto %>% select(-name) -> Auto
+```
+```{r}
+ggpairs(Auto, title="A Correlogram with all vars in Auto except Name")
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>5. Model Diagnostics</p>
+  </div>
+  <div class="message-body">
+    a. There seem to be strong positive relationships between displacement and horsepower, displacement and weight, and horsepower and weight. There are moderate negative correlations between displacement and acceleration, horsepower and acceleration, weight and acceleration, and origin and weight. The rest is messy, but correlations are reported in the plot. <br>
+    It's worth noting that mpg, our response, seems to have a nonlinear relationship with all other variables. That's sus.
+  </div>
+</article>
+```
+
+```{r}
+model = lm(mpg~., data=Auto)
+summary(model)
+vif(model)
+mean(model$residuals^2)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>5. Model Diagnostics (Continued)</p>
+  </div>
+  <div class="message-body">
+    b. Displacement, weight, year, and origin seem to be significant predictors of mpg. Cylinders, horsepower, and acceleration appear to not be significant in predicting mpg. <br> <br>
+    
+    c. According to our F-test, atleast one of the predictors is a significant predictor of mpg. <br> <br>
+    
+    d. Year's positive coefficient suggests that newer cars tend to get better mileage. <br> <br>
+    
+    e. Multicollinearity is likely to be an issue in this model because there are several pairs of variables with strong correlation, such as those listed in part (a). We can also see that that cylinders, displacement, horsepower, and weight all have problematically large VIF scores, which indicates multicollinearity.
+</article>
+```
+
+```{r}
+plot(x=Auto$mpg, y=model$residuals, xlab="MPG (Y)", ylab="Residuals")
+abline(h=0)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>5. Model Diagnostics (Continued)</p>
+  </div>
+  <div class="message-body">
+    f. From the residual plot, we can see issues with the constant variance and linearity assumption. The spread of the points tails off at higher values of MPG. The points are shaped like a checkmark with some values of MPG having more positive or negative residuals.
+</article>
+```
+
+```{r results="show"}
+model = lm((log(mpg))~poly(horsepower, 2)+acceleration+year+origin, data=Auto)
+summary(model)
+vif(model)
+mean(model$residuals^2)
+
+plot(x=Auto$mpg, y=model$residuals, xlab="MPG (Y)", ylab="Residuals")
+abline(h=0)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>5. Model Diagnostics (Continued)</p>
+  </div>
+  <div class="message-body">
+    g. The final model: <br> <br>
+    
+    log(mpg) = 1.41 - 5.46*horsepower + 1.47*horsepower^2 - 0.0310*acceleration + 0.0273*year + 0.0631*origin <br> <br>
+    
+    This model is far superior to the full untransformed model for a variety of reasons. First off, multicollinearity was solved by removing weight, cylinders, and displacement. Horsepower is the predictor that remained from that correlated mess. To fix some of the megaphone affect, mpg, the response, was log transformed. This still left a significant amount of non-linearity, so a 2nd degree polynomial transformation of horsepower ironed out much more. Although not perfect, this model better meets the equal variance and linear relationship assumptions. This model performs well, accounting for 86.17% of the variation in the data. Additionally, all predictors are inidividually significant and the overall F-test is significant. Additionally, the new model has an MSE of 0.0160, compared to the MSE of 10.8 for the full untransformed model.
+</article>
+```

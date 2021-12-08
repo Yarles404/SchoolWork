@@ -1,0 +1,1 @@
+{"frames":[{"character_number":0,"end_character_number":0,"end_line_number":0,"file":"","func":"capture.output(load_mnist(), file = \"NUL\")","line_number":0},{"character_number":0,"end_character_number":0,"end_line_number":0,"file":"","func":"withVisible(...elt(i))","line_number":0}],"message":"Error in load_mnist() : could not find function \"load_mnist\"\n"}

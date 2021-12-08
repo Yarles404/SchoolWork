@@ -1,0 +1,8 @@
+"0","# rows"
+"0","n = dim(Boston)[1]"
+"0",""
+"0","# response var"
+"0","y = Boston$crim"
+"0",""
+"0","# design matrix"
+"0","x = cbind(rep(1,n), Boston$lstat)"

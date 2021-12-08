@@ -1,0 +1,27 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1631893638659.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2192200115",
+    "id" : "568886D4",
+    "lastKnownWriteTime" : 1631903066,
+    "last_content_update" : 1631903066579,
+    "path" : "C:/Users/15155/Desktop/ds303/hw3/hw3.Rmd",
+    "project_path" : "hw3.Rmd",
+    "properties" : {
+        "cursorPosition" : "35,434",
+        "last_setup_crc32" : "12612BB8b5109ec7",
+        "scrollLine" : "17",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

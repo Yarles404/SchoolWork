@@ -1,0 +1,3 @@
+"0","capture.output(load_mnist(), file='NUL')"
+"2","Error in load_mnist() : could not find function ""load_mnist""
+"

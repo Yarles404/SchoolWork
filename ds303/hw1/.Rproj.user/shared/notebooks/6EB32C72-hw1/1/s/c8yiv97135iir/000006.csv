@@ -1,0 +1,6 @@
+"0","# least square estimators "
+"0","xtx = t(x)%*%x"
+"0","b = solve(xtx)%*%t(x)%*%y"
+"0",""
+"0","# predicted values"
+"0","yHat = x%*%b"

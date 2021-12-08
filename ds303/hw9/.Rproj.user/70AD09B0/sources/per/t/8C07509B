@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1636573148057.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "958656544",
+    "id" : "8C07509B",
+    "lastKnownWriteTime" : 1636991962,
+    "last_content_update" : 1636991962989,
+    "path" : "C:/Users/15155/Desktop/ds303/hw9/hw9.Rmd",
+    "project_path" : "hw9.Rmd",
+    "properties" : {
+        "cursorPosition" : "84,9",
+        "scrollLine" : "61"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

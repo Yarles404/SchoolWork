@@ -1,0 +1,17 @@
+"0","knitr::opts_chunk$set(echo = TRUE)"
+"2","Warning message:
+"
+"2","R graphics engine version 14 is not supported by this version of RStudio. The Plots tab will be disabled until a newer version of RStudio is installed. 
+"
+"0","knitr::opts_chunk$set(results=""hide"")"
+"0","knitr::opts_chunk$set(message=FALSE)"
+"0",""
+"0","library(tidyverse)"
+"0","library(ggplot2)"
+"0","library(leaps)"
+"0","library(caret)"
+"0","library(glmnet)"
+"0",""
+"0","library(ISLR2)"
+"0",""
+"0","set.seed(7)"

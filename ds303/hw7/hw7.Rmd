@@ -1,0 +1,825 @@
+---
+title: "hw7"
+author: "Charles Yang"
+date: "10/24/2021"
+output:
+  html_document:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(results="hide")
+knitr::opts_chunk$set(message=FALSE)
+
+library(tidyverse)
+library(leaps)
+library(e1071)
+library(klaR)
+library(caret)
+library(reshape2)
+library(class)
+
+options(warn=-1) 
+```
+
+<style type="text/css">
+@import url("https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css");
+</style>
+```{r}
+# 1b
+x1 = -2
+x2 = 5
+x3 = -1
+x4 = 10
+x5 = 5
+
+for (B0 in -15:0) {
+    B1 = 12
+    print(paste0("B0 = ", B0, ", B1 = ", B1, ", l = ", 1/(1+exp(B0 + B1*x1)) * exp(B0 + B1*x2)/(1+exp(B0 + B1*x2)) + 1/(1+exp(B0 + B1*x3)) * exp(B0 + B1*x4)/(1+exp(B0 + B1*x4)) * exp(B0 + B1*x5)/(1+exp(B0 + B1*x5))))
+}
+
+B0 = -15
+B1 = 12
+exp(B0 + B1*x5)/(1+exp(B0 + B1*x5))
+```
+```{r results="show"}
+# 1h
+n = 16
+x1 = c(sample(1:8, n/2), sample(9:16, n/2))
+x2 = c(sample(1:8, n/2), sample(9:16, n/2))
+
+sketchyData <- data.frame(
+  x1 = x1,
+  x2 = x2
+)
+
+sketchyData = cbind(sketchyData, sketchyData[1] > 8)
+names(sketchyData)[3] <- "Y"
+
+sketchyFit = glm(Y~., data=sketchyData, family='binomial')
+sketchyProb = predict(sketchyFit, sketchyData, type='response')
+sketchyProb
+sketchyPred = rep(FALSE, n)
+sketchyPred[sketchyProb > 0.5] = TRUE
+sketchyTable = table(sketchyPred, sketchyData[,3])
+sketchyTable
+1 - sum(diag(sketchyTable)) / sum(sketchyTable)
+
+```
+```{r results="show"}
+# 1i
+sketchy.lda.fit = lda(Y~., data=sketchyData)
+
+sketchy.lda.pred = predict(sketchy.lda.fit, sketchyData)
+
+table(sketchy.lda.pred$class, sketchyData$Y)
+mean(sketchy.lda.pred$class != sketchyData$Y)
+
+
+sketchy.qda.fit = qda(Y~., data=sketchyData)
+sketchy.qda.pred = predict(sketchy.qda.fit, data=sketchyData)
+
+table(sketchy.qda.pred$class, sketchyData$Y)
+mean(sketchy.qda.pred$class != sketchyData$Y)
+```
+```{=html}
+<section class="section">
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      
+      1. Concept Review
+      
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+     
+      a. (32 + 25) / 218 = 0.2615 overall misclassification rate. False negatives would be dangerous, because someone who is sick could go without treatment. We can bias the false positive rate by dereasing the probability threshold to classify someone as sick. This would increase overall misclassification, but would decrease false negatives.
+     
+    </div>
+  </div>
+  <div class="card-content">
+    <div class="content">
+     
+      b. P(Y1 = red | Xi < 5) = 2/5, P(Y1 = blue | Xi >= 5) = 3/5 <br>
+      First, I calculated likelihood using the provided formula. Through numerical analysis, I found that large negative values of B0 and large positive values of B1 seem to maximize likelihood, which asymtotically approaches +2. Additionally, when x = 5, these beta values accurately predict that an observation with x = 5 will be blue with probability 1 (per the given data). This is perfect separation.
+     
+    </div>
+  </div>
+  <div class="card-content">
+    <div class="content">
+     
+      c. Because there are so many predictors relative to observations, all observations will be relatively far away from eachother. KNN is unlikely to perform well in this setting.
+     
+    </div>
+  </div>
+  <div class="card-content">
+    <div class="content">
+     
+      d. <br>
+      i. LDA may be better. LDA requires predictors to be roughly normally distributed, and we know weight and height is roughly normally distributed in humans. Additionally, There are less likely to be gross outliers. <br>
+      ii. Use logistic regression. Income and Hours worked will certainly contain gross outliers, so LDA may not perform as well. <br>
+      iii. Use KNN because it is capabable of drawing incredily complicated and non-linear decision boundaries. This is due to it's flexibility.
+     
+    </div>
+  </div>
+  <div class="card-content">
+    <div class="content">
+     
+      e. QDA is is more flexible than QDA. If the true boundry is linear and the variances are constant, then QDA will overfit the data. As a result, it won't perform as well on new data compared to LDA. 
+     
+    </div>
+  </div>
+  <div class="card-content">
+    <div class="content">
+     
+      f. QDA will overfit the training set and minimize the misclassification rate on the training data. QDA will perform better because it fits closer to the training data.
+     
+    </div>
+  </div>
+  <div class="card-content">
+    <div class="content">
+     
+      g. False. I refer to my answer in e.
+     
+    </div>
+  </div>
+  <div class="card-content">
+    <div class="content">
+     
+      h. Logistic regression cannot converge because the coefficients of x1 and x2 do not exist. Likelihood can't really be maximized here.
+     
+    </div>
+  </div>
+  <div class="card-content">
+    <div class="content">
+     
+      i. The misclassification rate for both LDA and QDA is 0. This could be meaningful, if two real life categories are actually complete different in every measure. But, it could also be entirely useless depending on the application, especially if n is small.
+     
+    </div>
+  </div>
+</div>
+</section>
+
+<hr/>
+```
+
+```{r class.source='fold-show'}
+# 2a
+set.seed(1)
+x1 = rnorm(1000) # create 3 predictors
+x2 = rnorm(1000)
+x3 = rnorm(1000)
+#true population parameters
+B0 = 1
+B1 = 2
+B2 = 3
+B3 = 2
+
+pr = exp(B0 + B1*x1 + B2*x2 + B3*x3) / (1 + exp(B0 + B1*x1 + B2*x2 + B3*x3))
+
+y = as.factor(rbinom(1000, 1, pr))
+
+df = data.frame(y=y, x1=x1, x2=x2, x3=x3)
+
+train = sample(1:nrow(df),nrow(df)/2, replace=FALSE)
+test = (-train)
+```
+```{r results="show"}
+# 2b
+print("Logistic")
+glm.fit = glm(y~., data=df, subset=train, family='binomial')
+glm.prob = predict(glm.fit, df[test, ], type='response')
+
+glm.pred = rep('No', length(test))
+glm.pred[glm.prob > 0.5] ='Yes'
+tab = table(glm.pred, df[test, ]$y)
+tab
+1 - sum(diag(tab)) / sum(tab)
+```
+```{r results="show"}
+# 2c
+print("LDA")
+lda.fit = lda(y~., data=df, subset=train)
+
+lda.pred = predict(lda.fit, df[test, ])
+
+table(lda.pred$class, df[test, ]$y)
+mean(lda.pred$class != df[test, ]$y)
+```
+```{r results="show"}
+# 2d
+print("Default Naive Bayes")
+nb.fit = naiveBayes(y~., data=df, subset = train)
+
+nb.class = predict(nb.fit, df[test, ])
+
+table(nb.class, df[test, ]$y)
+mean(nb.class != df[test, ]$y)
+```
+```{r results="show"}
+# 2d
+print("Naive Bayes with Kernel")
+nb.fit2 = NaiveBayes(y~., data=df, subset=train, usekernel = TRUE)
+
+nb2.class = predict(nb.fit2, df[test, ])$class
+
+table(nb2.class, df[test, ]$y)
+mean(nb2.class != df[test, ]$y)
+```
+```{=html}
+<section class="section">
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      
+      2. Practicing Data Simpulations
+      
+    </p>
+  </header>
+  
+  <div class="card-content">
+    <div class="content">
+     
+     a. See code above.
+     
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="content">
+     
+      b. Logistic regression gives a misclassiciation rate of 0.11.
+     
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="content">
+     
+      c. LDA gives a misclassiciation rate of 0.112.
+     
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="content">
+     
+      d. Naive Bayes gives a misclassiciation rate of 0.116 and the Kernel version gives 0.122.
+     
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="content">
+     
+      e. Logistic regression had the highest accuracy, followed by LDA, Naive Bayes, and Naive Bayes with Kernel Density Estimation.
+     
+    </div>
+  </div>
+</div>
+</section>
+
+<hr/>
+```
+
+```{r}
+# 3a
+ggplot(data=Weekly, aes(x=Today, fill=Direction)) +
+  geom_histogram(alpha=0.6, position='identity') +
+  ggtitle("Today")
+
+ggplot(data=Weekly, aes(x=Lag1, fill=Direction)) +
+  geom_histogram(alpha=0.6, position='identity') +
+  ggtitle("Lag1")
+
+ggplot(data=Weekly, aes(x=Lag2, fill=Direction)) +
+  geom_histogram(alpha=0.6, position='identity') +
+  ggtitle("Lag2")
+
+ggplot(data=Weekly, aes(x=Lag3, fill=Direction)) +
+  geom_histogram(alpha=0.6, position='identity') +
+  ggtitle("Lag3")
+
+ggplot(data=Weekly, aes(x=Lag4, fill=Direction)) +
+  geom_histogram(alpha=0.6, position='identity') +
+  ggtitle("Lag4")
+
+ggplot(data=Weekly, aes(x=Lag5, fill=Direction)) +
+  geom_histogram(alpha=0.6, position='identity') +
+  ggtitle("Lag5")
+
+ggplot(data=Weekly, aes(x=Volume, fill=Direction)) +
+  geom_histogram(alpha=0.6, position='identity') +
+  ggtitle("Volume")
+
+get_lower_tri<-function(cormat){
+    cormat[upper.tri(cormat)] <- NA
+    return(cormat)
+}
+```
+```{r}
+# 3a
+upper_tri <- get_lower_tri(cor(Weekly[,-9]))
+melted_cormat <- melt(upper_tri, na.rm = TRUE)
+
+ggplot(data = melted_cormat, aes(Var2, Var1, fill = value))+
+ geom_tile(color = "white")+
+ scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+   midpoint = 0, limit = c(-1,1), space = "Lab", 
+   name="Pearson\nCorrelation") +
+  theme_minimal()+ 
+ theme(axis.text.x = element_text(angle = 45, vjust = 1, 
+    size = 12, hjust = 1))+
+ coord_fixed()
+```
+```{r}
+trainIndex = (Weekly$Year<2008)
+trainWeekly = Weekly[trainIndex,]
+testWeekly = Weekly[!trainIndex,]
+nrow(testWeekly)
+```
+```{r results="show"}
+# 3b
+glm.fit = glm(Direction~Lag2, data=trainWeekly, family='binomial')
+glm.prob = predict(glm.fit, testWeekly, type='response')
+
+glm.pred = rep('No', nrow(testWeekly))
+glm.pred[glm.prob > 0.5] ='Yes'
+
+print("Logistic")
+tab = table(glm.pred, testWeekly$Direction)
+tab
+sum(diag(tab)) / sum(tab)
+```
+
+```{r results="show"}
+# 3c
+lda.fit = lda(Direction~Lag2, data=trainWeekly)
+
+lda.pred = predict(lda.fit, testWeekly)
+
+print("LDA")
+table(lda.pred$class, testWeekly$Direction)
+mean(lda.pred$class == testWeekly$Direction)
+```
+```{r results="show"}
+# 3d
+qda.fit = qda(Direction~Lag2, data=trainWeekly)
+
+qda.pred = predict(qda.fit, testWeekly)
+
+print("QDA")
+table(qda.pred$class, testWeekly$Direction)
+mean(qda.pred$class == testWeekly$Direction)
+```
+```{r results="show"}
+# 3e
+K = c(3, 5, 7, 9, 11)
+standardizedX = scale(trainWeekly[, -9]$Lag2)
+flds <- createFolds(trainWeekly$Direction, k = 5, list = TRUE, returnTrain = FALSE)
+
+cvMisclassification = matrix(NA, 5, 5)
+
+for(j in 1:5){
+  k = K[j]
+  for(i in 1:5){
+    test_index = flds[[i]]
+    
+    testX = as.matrix(standardizedX[test_index])
+    trainX = as.matrix(standardizedX[-test_index])
+    
+    testY = trainWeekly$Direction[test_index]
+    trainY = trainWeekly$Direction[-test_index]
+    
+    knn.pred = knn(trainX, testX, trainY, k=k)
+    cvMisclassification[i,j] = mean(testY != knn.pred)
+  }
+}
+apply(cvMisclassification,2,mean)
+
+train.X = standardizedX
+train.Y = Weekly$Direction[trainIndex]
+knn.pred = knn(train.X, scale(testWeekly[,-9]$Lag2), train.Y, k=9)
+
+print("KNN")
+table(knn.pred, testWeekly$Direction)
+mean(testWeekly$Direction == knn.pred)
+```
+```{r results="show"}
+# 3f
+nb.fit = naiveBayes(Direction~Lag2, data=trainWeekly)
+
+nb.class = predict(nb.fit, testWeekly)
+
+print("Naive Bayes")
+table(nb.class, testWeekly$Direction)
+mean(testWeekly$Direction == nb.class)
+```
+```{r results="show"}
+# 3f
+nb.fit2 = NaiveBayes(Direction~Lag2, data=trainWeekly, usekernel = TRUE)
+
+nb2.class = predict(nb.fit2, testWeekly)$class
+
+print("Naive Bayes with Kernel")
+table(nb2.class, testWeekly$Direction)
+mean(nb2.class == testWeekly$Direction)
+```
+
+```{r results="show"}
+# 3h, Lag1
+glm.fit = glm(Direction~Lag1, data=trainWeekly, family='binomial')
+glm.prob = predict(glm.fit, testWeekly, type='response')
+
+glm.pred = rep('No', nrow(testWeekly))
+glm.pred[glm.prob > 0.5] ='Yes'
+
+print("Logistic")
+tab = table(glm.pred, testWeekly$Direction)
+tab
+sum(diag(tab)) / sum(tab)
+
+
+
+lda.fit = lda(Direction~Lag1, data=trainWeekly)
+
+lda.pred = predict(lda.fit, testWeekly)
+
+print("LDA")
+table(lda.pred$class, testWeekly$Direction)
+mean(lda.pred$class == testWeekly$Direction)
+
+
+
+qda.fit = qda(Direction~Lag1, data=trainWeekly)
+
+qda.pred = predict(qda.fit, testWeekly)
+
+print("QDA")
+table(qda.pred$class, testWeekly$Direction)
+mean(qda.pred$class == testWeekly$Direction)
+
+
+K = c(3, 5, 7, 9, 11, 13, 15, 17, 19, 21)
+standardizedX = scale(trainWeekly[, -9]$Lag1)
+flds <- createFolds(trainWeekly$Direction, k = 5, list = TRUE, returnTrain = FALSE)
+
+cvMisclassification = matrix(NA, 5, length(K))
+
+for(j in 1:length(K)){
+  k = K[j]
+  for(i in 1:5){
+    test_index = flds[[i]]
+    
+    testX = as.matrix(standardizedX[test_index])
+    trainX = as.matrix(standardizedX[-test_index])
+    
+    testY = trainWeekly$Direction[test_index]
+    trainY = trainWeekly$Direction[-test_index]
+    
+    knn.pred = knn(trainX, testX, trainY, k=k)
+    cvMisclassification[i,j] = mean(testY != knn.pred)
+  }
+}
+apply(cvMisclassification,2,mean)
+
+train.X = standardizedX
+train.Y = Weekly$Direction[trainIndex]
+knn.pred = knn(train.X, scale(testWeekly[,-9]$Lag1), train.Y, k=11)
+
+print("KNN")
+table(knn.pred, testWeekly$Direction)
+mean(testWeekly$Direction == knn.pred)
+
+
+
+nb.fit = naiveBayes(Direction~Lag1, data=trainWeekly)
+
+nb.class = predict(nb.fit, testWeekly)
+
+print("Naive Bayes")
+table(nb.class, testWeekly$Direction)
+mean(testWeekly$Direction == nb.class)
+
+
+
+nb.fit2 = NaiveBayes(Direction~Lag1, data=trainWeekly, usekernel = TRUE)
+
+nb2.class = predict(nb.fit2, testWeekly)$class
+
+print("Naive Bayes with Kernel")
+table(nb2.class, testWeekly$Direction)
+mean(nb2.class == testWeekly$Direction)
+```
+```{r results="show"}
+K = c(3, 5, 7, 9, 11, 13, 15, 17, 19, 21)
+standardizedX = scale(trainWeekly[, -9])
+flds = createFolds(trainWeekly$Direction, k = 5, list = TRUE, returnTrain = FALSE)
+
+cvMisclassification = matrix(NA, 5, length(K))
+
+for(j in 1:length(K)){
+  k = K[j]
+  for(i in 1:5){
+    test_index = flds[[i]]
+    
+    testX = as.matrix(standardizedX[test_index,])
+    trainX = as.matrix(standardizedX[-test_index,])
+    
+    testY = trainWeekly$Direction[test_index]
+    trainY = trainWeekly$Direction[-test_index]
+    
+    knn.pred = knn(trainX, testX, trainY, k=k)
+    cvMisclassification[i,j] = mean(testY != knn.pred)
+  }
+}
+apply(cvMisclassification,2,mean)
+
+train.X = standardizedX
+train.Y = Weekly$Direction[trainIndex]
+knn.pred = knn(train.X, scale(testWeekly[,-9]), train.Y, k=9)
+
+print("KNN")
+table(knn.pred, testWeekly$Direction)
+mean(testWeekly$Direction == knn.pred)
+```
+
+
+```{=html}
+<section class="section">
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      
+      3. Weekly Data
+      
+    </p>
+  </header>
+  
+  <div class="card-content">
+    <div class="content">
+     
+     a. From the Histograms, we can see that there are very few differences in the histograms for all predictors except for Lag1. For some reason, Volume is highly correlated with Year.
+     
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="content">
+     
+      b. 0.5513 classification rate for Logsitic Regression
+     
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="content">
+     
+      c. 0.5449 classification rate for LDA
+     
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="content">
+     
+      d.  0.5385 classification rate for QDA
+     
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="content">
+     
+      e. 0.4872 classification rate for KNN
+     
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="content">
+     
+      f. 0.5384 classification rate for Naive Bayes, 0.5833 with Kernel
+     
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="content">
+     
+      g. Logistic Regression did the best with a classification rate of 0.5513. Overall, all these models were pretty bad, with classification rates close to or even less than 0.5
+     
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="content">
+     
+      h. Tried same process as 3b-g but with Lag1, since Lag1 seems different by direction. <br>
+      Logisticc regression outperformed all others using Lag1 with a classification rate of 0.5641 See output for confusion matrix.
+      <br>
+      Tried KNN on all predictors for fun. Got an incredible classification rate of 0.8910. This is clearly the best of all models I've created.
+     
+    </div>
+  </div>
+  
+</div>
+</section>
+
+<hr/>
+```
+
+```{r}
+spam = read.csv('spambase.data', header = FALSE)
+spam$V58 = as_factor(spam$V58)
+```
+
+```{r results="show"}
+# 4a ... why won't length work? I have to use sum?
+sum(spam$V58==1)/nrow(spam)
+sum(spam$V58==0)/nrow(spam)
+```
+```{r results="show"}
+# 4b
+trainIndex = createDataPartition(spam$V58, p = .60, list = FALSE)
+train = spam[trainIndex,]
+test = spam[-trainIndex,]
+print("Train spam proportion")
+sum(train$V58==1)/nrow(train)
+print("Test spam proportion")
+sum(test$V58==1)/nrow(test)
+```
+```{r results="show"}
+# 4c+d
+glm.fit = glm(V58~., data=train, family='binomial')
+glm.prob = predict(glm.fit, test, type='response')
+
+print("First ten probabilities:")
+head(glm.prob, 10)
+
+glm.pred = rep(0, nrow(test))
+glm.pred[glm.prob > 0.5] =1
+
+tab = table(glm.pred, test$V58)
+tab
+1 - sum(diag(tab)) / sum(tab)
+46/sum(tab) # False positive
+88/sum(tab) # False negative
+```
+```{r results="show"}
+# 4f
+lda.fit = lda(V58~., data=train)
+
+lda.pred = predict(lda.fit, test)
+
+print("LDA")
+tab = table(lda.pred$class, test$V58)
+tab
+mean(lda.pred$class == test$V58)
+tab[2] / nrow(test)
+
+
+
+qda.fit = qda(V58~., data=train)
+
+qda.pred = predict(qda.fit, test)
+
+print("QDA")
+tab = table(qda.pred$class, test$V58)
+tab
+mean(qda.pred$class == test$V58)
+tab[2] / nrow(test)
+
+
+K = c(3, 5, 7, 9, 11, 13, 15, 17, 19, 21)
+standardizedX = scale(train[, -58])
+flds <- createFolds(train$V58, k = 5, list = TRUE, returnTrain = FALSE)
+
+cvMisclassification = matrix(NA, 5, length(K))
+
+for(j in 1:length(K)){
+  k = K[j]
+  for(i in 1:5){
+    test_index = flds[[i]]
+    
+    testX = as.matrix(standardizedX[test_index, ])
+    trainX = as.matrix(standardizedX[-test_index, ])
+    
+    testY = train$V58[test_index]
+    trainY = train$V58[-test_index]
+    
+    knn.pred = knn(trainX, testX, trainY, k=k)
+    cvMisclassification[i,j] = mean(testY != knn.pred)
+  }
+}
+apply(cvMisclassification,2,mean)
+
+train.X = standardizedX
+train.Y = train$V58
+knn.pred = knn(train.X, scale(test[,-58]), train.Y, k=5)
+
+print("KNN")
+tab = table(knn.pred, test$V58)
+tab
+mean(test$V58 == knn.pred)
+tab[2] / nrow(test)
+
+
+
+nb.fit = naiveBayes(V58~., data=train)
+
+nb.class = predict(nb.fit, test)
+
+print("Naive Bayes")
+tab = table(nb.class, test$V58)
+tab
+mean(test$V58 == nb.class)
+tab[2] / nrow(test)
+
+
+
+nb.fit2 = NaiveBayes(V58~., data=train, usekernel = TRUE)
+
+nb2.class = predict(nb.fit2, test)$class
+
+print("Naive Bayes with Kernel")
+tab = table(nb2.class, test$V58)
+tab
+mean(nb2.class == test$V58)
+tab[2] / nrow(test)
+```
+
+```{=html}
+<section class="section">
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      
+      4. Email Spam
+      
+    </p>
+  </header>
+  
+  <div class="card-content">
+    <div class="content">
+     
+     a. Proportion of emails that are spam is 0.3940.
+     
+    </div>
+  </div>
+
+  <div class="card-content">
+    <div class="content">
+     
+     b. Train spam proportion: 0.3940601 <br>
+        Test spam proportion: 0.3940217
+     
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="content">
+     
+     c. See output above.
+     
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="content">
+     
+     d. We have an overall misclassification rate of 0.0728. 0.0478 of this is false negative, that is, it was spam but not flagged. 0.025 was false positive.
+     
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="content">
+     
+     e. Reporting a meaningful email as spam is the most critical. We don't want to hide emails we need to read. It's happened to me recently and it's obnoxious. We can increase the threshhold required to classify an email as spam to reduce this false positive rate.
+     
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="content">
+     
+     f. See output.
+     
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="content">
+     
+     g. I recommend the LDA classifier because it has the lowest false positive rate of 0.02445652. It also has the second best classification rate of 0.88, right below 0.89 for KNN.
+     
+    </div>
+  </div>
+  
+</div>
+</section>
+```

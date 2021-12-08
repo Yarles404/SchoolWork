@@ -1,0 +1,129 @@
+---
+title: "hw6"
+author: "Charles Yang"
+date: "10/13/2021"
+output:
+  html_document:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(results="hide")
+knitr::opts_chunk$set(message=FALSE)
+
+library(tidyverse)
+library(ggplot2)
+library(leaps)
+library(caret)
+library(glmnet)
+
+library(ISLR2)
+
+set.seed(7)
+```
+<style type="text/css">
+@import url("https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css");
+</style>
+
+
+```{=html}
+<hr />
+
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      1. Concept Review
+    </p>
+  </header>
+</div>
+
+<section class="section">
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      1.1 Lasso vs. Ridge Coefficients
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+     
+     OFFICE HOURS?
+     
+    </div>
+  </div>
+</div>
+
+<br>
+
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      1.2 Effect of Lambda (Introducing Bias)
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+     <b>a.</b>
+     iv: Introducing bias decreases variance, causing our fitted model to be less able to fit the data, increasing our training error.
+     
+     <br> <br>
+     <b>b.</b>
+     ii. There is an ideal tradeoff between variance and bias that gives the best test MSE. Deviating from that point will increase test MSE.
+     
+     <br> <br>
+     <b>c.</b>
+     iv: Variance steadily decreases and bias increases.
+     
+     <br> <br>
+     <b>d.</b>
+     iii: We are introducing bias as Lambda increases, so bias squared should increase.
+     
+     <br> <br>
+     <b>e.</b>
+     v: Irreducible error never changes.
+     
+    </div>
+  </div>
+</div>
+</section>
+
+
+<hr />
+```
+
+```{r}
+n = nrow(Boston)
+p.max = ncol(Boston) - 1
+k = 10
+folds <- createFolds(Boston$crim, k = k, list = TRUE, returnTrain = FALSE)
+```
+```{r}
+thing = data.frame()
+
+for(i in 1:k){
+  test_index = folds[[i]]
+  test = Boston[test_index,]
+  train = Boston[-test_index,]
+  fits = summary(regsubsets(crim~., data=train, nvmax = p.max))
+  
+  MSEs = c()
+  for(i in 1:p.max) {
+    predictors = data.frame(train[, fits$which[i,-1] ])
+    colnames(predictors) <- names(Boston)[c(FALSE, fits$which[i,-1])]
+    
+    
+    model = lm(train$crim~., data=predictors)
+  
+    predicted = predict(model, test)
+    MSEs = append(MSEs, mean((test$crim - predicted)^2))
+  }
+  
+  thing = rbind(thing, MSEs)
+}
+
+for(i in 1:p.max) {
+  print(paste("CV test MSE for model", i, "is", mean(thing[,i])))
+}
+```
+

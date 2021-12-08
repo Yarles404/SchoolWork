@@ -1,0 +1,70 @@
+---
+title: "hw3"
+author: "Charles Yang"
+date: "9/17/2021"
+output:
+  html_document:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(results="hide")
+
+set.seed(42)
+
+library(ISLR2)
+library(tidyverse)
+library(ggplot2)
+library(cowplot)
+```
+<style type="text/css">
+@import url("https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css");
+</style>
+
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>1. Wrapping up MLRm</p>
+  </div>
+  <div class="message-body">
+    a. Linear regression attempts to estimate the relationship between some predictor variables and a response. It assumes that the relationship is linear, that is, a straight line. Additionally, it assumes the errors, or the difference between the line and actual data follow a bell curve distribution with a mean of 0 and are uncorrelated. <br> <br>
+    b. We find the coefficients for the predictors that make a line that minimizes the distance between the data points and the line. <br> <br>
+    c. Assuming our assumptions from (a) are met, we know that our estimates are trustworthy. We can use different training data to generate different coefficients for each predictor and they should average out to be close to the true coefficients. <br> <br>
+    d. We use the model equation and plug in our predictor values and it spits out a Y value. We use MSE or tMSE, aka Mean Square Errors or its test variant. Essentially, these are the average errors produced by the model and are used to create confidence intervals. These intervals describe the range of values our predicted Y could actually be after accounting for possible error. <br> <br>
+    e. We use a value called R-squared, which our computer calculates for us. It essentially describes the proportion of variability in the data that is explained by our model. Additionally, we may run an F-test, which tells us if at least one predictor in our model is significant in explaining the response. <br> <br>
+    f. Statistical inference, as I understand it, describes what conclusions about our target population can actually be made using statistical tools. Linear regression models are another statistical tool, and it is important to know when it is applicable, the limitations of our models, and what conclusions are valid. There are a variety of tools and calculated values we can use to make inferences from linear regression. <br> <br>
+    g. Here are three issues that might arise when fitting a linear regression: <br>
+    <ol type="1">
+    <li>
+      The relationship between a predictor and the response may not be a straight line. We can use transformation functions such as log or polynomials on the predictor to correct the curve.
+    </li>
+      
+    <li>
+      It is possible to conclude that a single predictor has a significant linear relationship with the response when it actually doesn't. This is a Type 1 Error caused by setting an insufficiently low risk level when performing our individual t-tests. We can mitigate these by setting a lower risk level (which may result in weaker inference) or performing an F-test to see if any of the predictors actually contribute to the response.
+    </li>
+    <li>
+      Fitting a model with two predictors that are highly correlated causes an issue known as multicollinearity. This causes the variance of our estimated coefficients to soar aggressively, greatly reducing our inference capabilities. We solve this by calculated the Variance Influence Factor for the variables in question. This tells us the ratio of the variances of the suspicious coefficients between the full model and a simple linear regression. If it is very high for a variable, we know that variable is causing multicollinearity and can be removed from the model.
+    </li>
+  </ol>
+  
+  </div>
+</article>
+```
+
+```{r}
+str(Credit)
+```
+
+
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>3. A Puzzling Problem</p>
+  </div>
+  <div class="message-body">
+    I notice that the standard s and P values for the coefficient estimates are inordinately large. Yet, our F-test shows that at least one of the predictors is a significant variable in explaining y. This is likely due to multicollinearity, which inflates the variance of the estimates, resulting in inconclusive T-tests. This inflation is caused by the linear algebra used to calculate the estimates. Removing one of the predictors should solve this puzzle.
+  </div>
+</article>
+```
+

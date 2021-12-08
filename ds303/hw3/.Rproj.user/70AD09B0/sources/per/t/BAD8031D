@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1631904557409.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1287164233",
+    "id" : "BAD8031D",
+    "lastKnownWriteTime" : 1631904517,
+    "last_content_update" : 1631904517,
+    "path" : "C:/Users/15155/Desktop/ds303/multiple_linear_regression/MLR_Transformations.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

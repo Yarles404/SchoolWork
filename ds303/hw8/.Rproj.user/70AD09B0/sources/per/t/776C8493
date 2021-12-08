@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1636424221107.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2205379212",
+    "id" : "776C8493",
+    "lastKnownWriteTime" : 1635108346,
+    "last_content_update" : 1635108346,
+    "path" : "C:/Users/15155/Desktop/ds303/classification/multi_logit.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "13,14",
+        "scrollLine" : "0",
+        "source_window_id" : "wxwrvd0jt9rei"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

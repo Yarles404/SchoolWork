@@ -1,0 +1,79 @@
+---
+title: "DS 303 HW1"
+author: "Charles Yang"
+date: "9/1/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(ISLR2)
+library(tidyverse)
+library(ggplot2)
+```
+
+#### 2a. How many rows and variables? What is lstat?
+```{r Boston}
+dim(Boston)
+```
+There are 506 rows and 13 columns/variables. lstat is the percent of the population with a lower status.
+
+#### 2b. Fit a simple linear regression with lstat and crim
+```{r}
+# rows
+n = dim(Boston)[1]
+
+# response var
+y = Boston$crim
+
+# design matrix
+x = cbind(rep(1,n), Boston$lstat)
+```
+
+```{r}
+# least square estimators 
+xtx = t(x)%*%x
+b = solve(xtx)%*%t(x)%*%y
+
+# predicted values
+yHat = x%*%b
+```
+
+```{r}
+model=lm(crim~lstat, data=Boston)
+summary(model)
+names(model)
+```
+The estimated intercept and crim coefficient is -3.33 and .549, respectively.
+
+#### Fit SLR for each predictor in Boston. Which ones are statistifically significant
+```{r}
+ggplotRegression <- function (fit) {
+ggplot(fit$model, aes_string(x = names(fit$model)[2], y = names(fit$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title = paste("Adj R2 = ",signif(summary(fit)$adj.r.squared, 5),
+                     "Intercept =",signif(fit$coef[[1]],5 ),
+                     " Slope =",signif(fit$coef[[2]], 5),
+                     " P =",signif(summary(fit)$coef[2,4], 5)))
+}
+
+vars = names(Boston)
+vars = vars[vars != "crim"]
+
+for (var in vars[vars != "crim"]) {
+  ggplotRegression(lm(formula= paste0("`crim`~", "`", var, "`"), data= Boston))
+}
+
+# allModels = lapply(vars, function(x){
+#   lm(formula= paste0("`crim`~", "`", x, "`"), data= Boston ,na.action = na.omit)
+#   
+#   ggplot(Boston, aes(x = paste0("`",), y = Boston$crim)) + 
+#   geom_point() +
+#   stat_smooth(method = "lm", col = "red")
+#   
+# })
+# for (model in allModels) {
+#   
+# }
+```
+

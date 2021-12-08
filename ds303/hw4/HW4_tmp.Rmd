@@ -1,0 +1,23 @@
+---
+title: "HW4 tmp"
+author: "Shigeki Kanamori"
+date: "10/22/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+```
+
+
+```{r}
+spam = read.csv("spambase/spambase.data",header=FALSE)
+spam %>% head
+```
+
+
+

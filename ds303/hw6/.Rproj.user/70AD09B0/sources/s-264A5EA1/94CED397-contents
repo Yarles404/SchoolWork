@@ -1,0 +1,443 @@
+---
+title: "hw5"
+author: "Charles Yang"
+date: "10/8/2021"
+output:
+  html_document:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(results="hide")
+knitr::opts_chunk$set(message=FALSE)
+
+library(tidyverse)
+library(ggplot2)
+library(glmnet)
+library(leaps)
+library(caret)
+```
+<style type="text/css">
+@import url("https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css");
+</style>
+
+```{=html}
+<section class="section">
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      1. Concept Review
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      1a. Not necessarily. It is possible that adding an additional predictor will cause another to become less signficant, especially if multicollinearity is present. Thus, another predictor could replace it in the larger model. A model of size A is selected independent from the result of model of size A - 1, or any other size.
+      <br><br>
+      1b. Stepwise selection requires larger models to nest the smaller models. This is because stepwise selection builds off of the previous model. It's a greedy algorithm that relies on the result of the smaller models.
+      <br><br>
+      1c. Best subset selection will exhaustively search for the model with the lowest training MSE.
+      <br><br>
+      1d. We don't know which method will give the lowest test MSE. We need to perform cross-validation to determine this.
+    </div>
+  </div>
+</div>
+</section>
+```
+
+```{r class.source='fold-show'}
+# 2a+b. Generating Data
+set.seed(2)
+n = 100
+x = rnorm(n)
+e = rnorm(n, 0, 1)
+b0 = b1 = b2 = b3 = 2
+
+y = b0 + b1*x + b2*x^2 + b3*x^3 + e
+
+data = data.frame(
+  x=x,
+  y=y
+)
+```
+```{r}
+regfit = regsubsets(y~poly(x, degree=10), data=data)
+regfit.sum = summary(regfit)
+n = dim(data)[1]
+p = rowSums(regfit.sum$which)
+rss = regfit.sum$rss
+
+adjr2 = regfit.sum$adjr2
+BIC = n*log(rss/n) + p*log(n)
+
+cbind(adjr2, BIC)
+
+which.min(BIC)
+which.max(adjr2)
+```
+```{r}
+cc <- coef(regfit, 3)
+eqn <- paste("Y =", paste(round(cc[1],2), paste(round(cc[-1],2), names(cc[-1]), sep=" * ", collapse=" + "), sep=" + "))
+(eqn <- gsub('\\+ -', '- ', gsub(' \\* ', '*', eqn)))
+
+cc <- coef(regfit, 5)
+eqn <- paste("Y =", paste(round(cc[1],2), paste(round(cc[-1],2), names(cc[-1]), sep=" * ", collapse=" + "), sep=" + "))
+(eqn <- gsub('\\+ -', '- ', gsub(' \\* ', '*', eqn)))
+```
+
+```{=html}
+<section class="section">
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      2c. Best Subsets
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      BIC gives the following model: <br>
+      Y = 4.73 + 92.93*x + 23.3*x^2 + 34.43*x^3
+      <br> <br>
+      adr2 gives the following model: <br>
+      Y = 4.73 + 92.93*x + 23.3*x^2 + 34.43*x^3 + 1.25*x^7 + 1.57*x^10
+    </div>
+  </div>
+</div>
+</section>
+```
+
+```{r}
+regfit.fwd = regsubsets(y~poly(x, 10), data=data, nvmax=10, method="forward")
+regfit.fwd.sum = summary(regfit.fwd)
+
+n = dim(data)[1]
+p = rowSums(regfit.fwd.sum$which)
+rss = regfit.fwd.sum$rss
+
+adjr2 = regfit.fwd.sum$adjr2
+BIC = n*log(rss/n) + p*log(n)
+
+cc = coef(regfit.fwd, which.min(BIC))
+eqn = paste("Y =", paste(round(cc[1],2), paste(round(cc[-1],2), names(cc[-1]), sep=" * ", collapse=" + "), sep=" + "))
+(eqn = gsub('\\+ -', '- ', gsub(' \\* ', '*', eqn)))
+
+cc = coef(regfit.fwd, which.max(adjr2))
+eqn = paste("Y =", paste(round(cc[1],2), paste(round(cc[-1],2), names(cc[-1]), sep=" * ", collapse=" + "), sep=" + "))
+(eqn = gsub('\\+ -', '- ', gsub(' \\* ', '*', eqn)))
+```
+```{r}
+regfit.bwd = regsubsets(y~poly(x, 10), data=data,nvmax=10, method="backward")
+regfit.bwd.sum = summary(regfit.bwd)
+
+n = dim(data)[1]
+p = rowSums(regfit.bwd.sum$which)
+rss = regfit.bwd.sum$rss
+
+adjr2 = regfit.bwd.sum$adjr2
+BIC = n*log(rss/n) + p*log(n)
+
+cc = coef(regfit.bwd, which.min(BIC))
+eqn <- paste("Y =", paste(round(cc[1],2), paste(round(cc[-1],2), names(cc[-1]), sep=" * ", collapse=" + "), sep=" + "))
+(eqn <- gsub('\\+ -', '- ', gsub(' \\* ', '*', eqn)))
+
+cc = coef(regfit.bwd, which.max(adjr2))
+eqn <- paste("Y =", paste(round(cc[1],2), paste(round(cc[-1],2), names(cc[-1]), sep=" * ", collapse=" + "), sep=" + "))
+(eqn <- gsub('\\+ -', '- ', gsub(' \\* ', '*', eqn)))
+```
+
+```{=html}
+<section class="section">
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      2d. Best Stepwise
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      Both stepwise methods give the same models when using BIC and adjr2. <br> <br>
+      BIC gives the following model: <br>
+      Y = 4.73 + 92.93*x + 23.3*x^2 + 34.43*x^3
+      <br> <br>
+      adr2 gives the following model: <br>
+      Y = 4.73 + 92.93*x + 23.3*x^2 + 34.43*x^3 + 1.25*x^7 + 1.57*x^10
+    </div>
+  </div>
+</div>
+</section>
+```
+
+```{r results="show"}
+grid = 10^seq(10,-2,length=100)
+X = model.matrix(y~poly(x, 10), data=data)[,-1]
+Y = data$y
+
+cv.out = cv.glmnet(X, Y, alpha = 1, lambda = grid) 
+plot(cv.out)
+bestlambda = cv.out$lambda.min
+bestlambda
+
+final = glmnet(X, Y, alpha= 1, lambda = bestlambda)
+coef(final)
+```
+```{=html}
+<section class="section">
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      2e. Lasso
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      Our best lambda is 0.07054802 <br>
+      See output for coefficients
+      <br> <br>
+      Lasso selected a model similar to what BIC selected for all the other methods. However, it has an additional 3 predictors, x^5, x^7, and x^10, all of which were clearly shrunk, which demonstrates their insignificance. The first 3 degrees of x and the intercept are all very similar to the BIC model. Note that x^5, the only predictor not present in either model from prior selection methods, is the closest to 0.
+    </div>
+  </div>
+</div>
+</section>
+```
+
+```{r}
+b7 = 2
+data = data.frame(
+  x=x,
+  y=b0 + b7*x^7 + e
+  )
+```
+```{r}
+regfit = regsubsets(y~poly(x, degree=10), data=data)
+regfit.sum = summary(regfit)
+n = dim(data)[1]
+p = rowSums(regfit.sum$which)
+rss = regfit.sum$rss
+
+adjr2 = regfit.sum$adjr2
+BIC = n*log(rss/n) + p*log(n)
+
+
+
+cc = coef(regfit, which.min(BIC))
+eqn <- paste("Y =", paste(round(cc[1],2), paste(round(cc[-1],2), names(cc[-1]), sep=" * ", collapse=" + "), sep=" + "))
+(eqn <- gsub('\\+ -', '- ', gsub(' \\* ', '*', eqn)))
+
+cc = coef(regfit, which.max(adjr2))
+eqn <- paste("Y =", paste(round(cc[1],2), paste(round(cc[-1],2), names(cc[-1]), sep=" * ", collapse=" + "), sep=" + "))
+(eqn <- gsub('\\+ -', '- ', gsub(' \\* ', '*', eqn)))
+
+```
+```{r results="show"}
+grid = 10^seq(10,-2,length=100)
+X = model.matrix(y~poly(x, 10), data=data)[,-1]
+Y = data$y
+
+cv.out = cv.glmnet(X, Y, alpha = 1, lambda = grid) 
+bestlambda = cv.out$lambda.min
+bestlambda
+
+final = glmnet(X, Y, alpha= 1, lambda = bestlambda)
+coef(final)
+```
+```{=html}
+<section class="section">
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      2f. Lasso and Subsets on new simulation
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      BIC selected: <br>
+      Y = -5.48 + 1089.09*x - 428.25*x^2 + 1032.95*polyx^3 - 289.3*x^4 + 399.94*x^5 - 57.18*x^6 + 59.67*x^7
+      <br> <br>
+      adjr2 selected: <br>
+      Y = -5.48 + 1089.09*x - 428.25*x^2 + 1032.95*x^3 - 289.3*x^4 + 399.94*x^5 - 57.18*x^6 + 59.67*x^7 + 1.57*x^10
+      <br> <br>
+      Our best lambda is 0.01 <br>
+      See output for coefficients
+      <br> <br>
+      All polynomial terms of x up to degree 7 have significantly large coefficients in all selection methods. However, we can see that lasso included x^8 and x^10, but they are clearly shrunken. Adjr2 selected x^10, but it's coefficient is also small compared to the rest. I imagine these models are struggling to capture the true relationship between x and y because of the small domain for x. Odd degree polynomials look similar for small values of x. However, each model caught on to the fact that the highest degree is 7.
+      
+    </div>
+  </div>
+</div>
+</section>
+```
+
+```{r}
+library(ISLR2)
+set.seed(12)
+```
+
+```{r class.source = 'fold-show'}
+# 3a. Train and Test Sets
+n = nrow(College)
+train_index = sample(1:n, n/2, replace = FALSE)
+train = College[train_index,]
+test = College[-train_index,]
+```
+```{r}
+linear.model = lm(Apps~., data=train)
+linear.pred = predict(linear.model, newdata=test)
+mean((test$Apps - linear.pred)^2)
+```
+```{r}
+# ridge data setup
+grid = 10^seq(10,-2,length=100)
+X = model.matrix(Apps~., data=College)
+Y = College$Apps
+
+X.train = X[train_index,-1]
+Y.train = Y[train_index]
+X.test = X[-train_index,-1]
+Y.test = Y[-train_index]
+```
+
+
+```{r}
+ridge.model = glmnet(X.train, Y.train, alpha=0, lambda = grid)
+cv.out = cv.glmnet(X.train, Y.train, alpha=0, nfolds = 5,lambda = grid)
+lambda.best = cv.out$lambda.min
+lambda.best
+
+
+ridge.pred = predict(ridge.model, s = lambda.best, newx=X.test)
+mean((Y.test - ridge.pred)^2)
+
+
+cv.out = cv.glmnet(X.train, Y.train, alpha=1, nfolds = 5,lambda = grid)
+lambda.best = cv.out$lambda.min
+lambda.best
+lasso.model = glmnet(X.train, Y.train, alpha=1, lambda = lambda.best)
+
+lasso.pred = predict(lasso.model, s = lambda.best, newx=X.test)
+mean((Y.test - lasso.pred)^2)
+```
+```{=html}
+<section class="section">
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      3. Ridge Regression
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      b. Linear model test MSE: 1416217
+      <br> <br>
+      c. Data must be regularized or they won't be equally weighted when calculating/penalizing coefficients. Non-normalized predictors would bias model that doesn't properly fit the model.
+      <br> <br>
+      d. Optimal ridge lambda: 4.64 <br>
+      e. Ridge model test MSE: 1431803. The MSE did not improve. <br>
+      f. Optimal lasso lambda: 14.17, Lasso model test MSE: 1482764 The MSE got worse. <br>
+      g. Our predictions are terrible, with an MSE over a million. Regularized regression worsened the prediction accuracy. On the bright side, the increase is small relative to the size of the MSE, anyways. I've done something wrong and I can't figure it out. I am pretty sure lasso and ridge are supposed to decrease test MSE.
+    </div>
+  </div>
+</div>
+</section>
+```
+
+```{r, results='show', class.source = 'fold-show'}
+# 4a. Data Wrangling
+Hitters = na.omit(Hitters)
+n = nrow(Hitters)
+X = model.matrix(Salary ~.,data=Hitters)[,-1] 
+
+Y = Hitters$Salary
+
+set.seed(1)
+train = sample(1:n, n/2)
+test=(-train)
+Y.test = Y[test]
+```
+```{r}
+ridge.train = glmnet(X[train,],Y[train],alpha=0,lambda=grid)
+cv.out.ridge = cv.glmnet(X[train,],Y[train],alpha = 0, lambda = grid)
+plot(cv.out.ridge)
+
+lambda_ridge_min = cv.out.ridge$lambda.min
+lambda_ridge_min
+lambda_ridge_1se = cv.out.ridge$lambda.1se
+lambda_ridge_1se
+```
+```{r results="show"}
+lasso.train = glmnet(X[train,],Y[train],alpha=1,lambda=grid)
+cv.out.lasso = cv.glmnet(X[train,],Y[train],alpha=1, lambda = grid)
+plot(cv.out.lasso)
+
+lambda_lasso_min = cv.out.lasso$lambda.min
+lambda_lasso_min
+lambda_lasso_1se = cv.out.lasso$lambda.1se
+lambda_lasso_1se
+```
+```{r results="show"}
+ridge.pred.min = predict(ridge.train, s = lambda_ridge_min, newx=X[test,])
+print(paste('Ridge best Lambda test MSE:', mean((ridge.pred.min-Y.test)^2)))
+
+ridge.pred.1se = predict(ridge.train, s = lambda_ridge_1se, newx=X[test,])
+print(paste('Ridge 1se Lambda test MSE:', mean((ridge.pred.1se-Y.test)^2)))
+
+
+lasso.pred.min = predict(lasso.train, s = lambda_lasso_min, newx=X[test,])
+print(paste('Lasso best Lambda test MSE:', mean((lasso.pred.min-Y.test)^2)))
+
+lasso.pred.1se = predict(lasso.train, s = lambda_lasso_1se, newx=X[test,])
+print(paste('Lasso 1se Lambda test MSE:', mean((lasso.pred.1se-Y.test)^2)))
+```
+```{=html}
+<section class="section">
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      4b-e. Regularized Regression Models
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      b. Ridge best lambda: 403.7017 <br>
+      c. Rdige 1se lambda: 6579.332 <br>
+      d. Lasso best and 1se lambda, respectively: 6.135907, 132.1941 <br>
+      e. See output above. It appears that the models with their best lambdas predicts the best. This is because these lambdas were selected based on test MSE minimization. The ridge model seems to perform better than lasso. It's possible that a closer-to-full model is more appropriate for this data. Ridge tends to perform better in those conditions because lasso tries more to remove predictors. Additionally, ridge models having irrelevant variables with small coefficients affects prediction accuracy minimally. 
+    </div>
+  </div>
+</div>
+</section>
+```
+
+```{r results='show'}
+ridge.final.min = glmnet(X,Y,alpha=0,lambda=lambda_ridge_min)
+ridge.final.1se = glmnet(X,Y,alpha=0,lambda=lambda_ridge_1se)
+lasso.final.min = glmnet(X,Y,alpha=1,lambda=lambda_lasso_min)
+lasso.final.1se = glmnet(X,Y,alpha=1,lambda=lambda_lasso_1se)
+
+coef(ridge.final.min)
+coef(ridge.final.1se)
+coef(lasso.final.min)
+coef(lasso.final.1se)
+```
+```{=html}
+<section class="section">
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      4f+g. Regularized Regression Models
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      f. First notice that the lasso model was able to set some coefficients to 0. Both place a massive negative weight on DivisionW. Both put a large positive weight on LeagueN. The weight of NewLeageN is the primary difference, as the ridge model places a small weight but lasso removes it. In lasso, Hits, Walks, and Years have a slightly higher magnitude weight than those of ridge. It seems that both lasso and ridge converged on DivisionW and LeagueN as the most important predictors. Lasso's intercept is nearly twice as large, indicating that the model predicts a higher base salary. <br>
+      When comparing the models using 1se lambdas, the predictors' influences are minized. Nearly all coefficients for lasso are zero, and the ridge 1se model only has a small weight on DivisionW. This is caused by the lambdas forcing the predictor coefficients to pay a disproportionately large price for existing. <br>
+      g. Hence, an ambitious baseball player should focus on playing in Division E and League N.
+    </div>
+  </div>
+</div>
+</section>
+```
+
+
+
+
+

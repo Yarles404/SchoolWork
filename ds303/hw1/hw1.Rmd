@@ -1,0 +1,336 @@
+---
+title: "DS 303 HW1"
+author: "Charles Yang 510 636 138"
+date: "9/1/2021"
+output:
+  html_document:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+library(ISLR2)
+library(tidyverse)
+library(ggplot2)
+library(cowplot)
+
+knitr::opts_chunk$set(results="hide")
+```
+
+<style type="text/css">
+@import url("https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css");
+</style>
+
+```{=html}
+<div class="card">
+  <header class="card-header" style="background-color: turquoise">
+    <h2 class="card-header-title">
+      1. Bias-Variance Decomposition
+    </h2>
+  </header>
+  <div class="card-image">
+    <figure class="image is-4by3">
+      <img src="C:/Users/15155/Desktop/ds303/hw1/bias_variance_curves.png" alt="Five Curves">
+    </figure>
+  </div>
+  <div class="card-content">
+    <div class="content">
+      Model flexibility plays a key role in the reliability and accuracy of statistical models. As flexibility increases, variance increases because model that fits a particular sample will not work for other samples, resulting in wildly different models depending on the sample. Conversely, bias^2 decreases as flexibility increases. This is a direct result of the model being capabable of "bending" to the sample. Without flexibility, a model may not be able to capture all features in the data, resulting in high bias. Additionally, the more flexible a model is, the lower its training MSE because it fits the training set better. However, this may cause the expected test MSE to increase as some point, as the variance between the trained model and the true population model may result in great error. Finally, the irreducible error is, as it sounds, irreducible. It is caused by randomness in the population data as is usually impossible to quanitify.
+    </div>
+  </div>
+</div>
+```
+
+```{r Boston}
+dim(Boston)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>2a. How many rows and variables are in the data, and what does <b>lstat</b> represent?</p>
+  </div>
+  <div class="message-body">
+    There are 506 rows and 13 columns/variables. lstat is the percent of the population with a lower status.
+  </div>
+</article>
+```
+
+
+```{r slr}
+# rows
+n = dim(Boston)[1]
+
+# response var
+y = Boston$crim
+
+# design matrix
+x = cbind(rep(1,n), Boston$lstat)
+
+# least square estimators 
+xtx = t(x)%*%x
+b = solve(xtx)%*%t(x)%*%y
+
+# predicted values
+yHat = x%*%b
+
+model=lm(crim~lstat, data=Boston)
+summary(model)
+names(model)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>2b. Fit a simple linear regression model with lstat and crim</p>
+  </div>
+  <div class="message-body">
+    The estimated intercept and lstat coefficient is -3.33 and .549, respectively.
+  </div>
+</article>
+```
+
+```{r}
+ggplotRegression <- function (fit) {
+
+require(ggplot2)
+
+ggplot(fit$model, aes_string(x = names(fit$model)[2], y = names(fit$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title = paste("Slope =",signif(fit$coef[[2]], 5),
+                     " P =",signif(summary(fit)$coef[2,4], 5)))
+}
+
+zn <- ggplotRegression(lm(formula=crim~zn, data= Boston))
+indus <- ggplotRegression(lm(formula=crim~indus, data= Boston))
+chas <- ggplotRegression(lm(formula=crim~chas, data= Boston))
+nox <- ggplotRegression(lm(formula=crim~nox, data= Boston))
+rm <- ggplotRegression(lm(formula=crim~rm, data= Boston))
+age <- ggplotRegression(lm(formula=crim~age, data= Boston))
+dis <- ggplotRegression(lm(formula=crim~dis, data= Boston))
+rad <- ggplotRegression(lm(formula=crim~rad, data= Boston))
+tax <- ggplotRegression(lm(formula=crim~tax, data= Boston))
+ptratio <- ggplotRegression(lm(formula=crim~ptratio, data= Boston))
+lstat <- ggplotRegression(lm(formula=crim~lstat, data= Boston))
+medv <- ggplotRegression(lm(formula=crim~medv, data= Boston))
+```
+
+```{r warning=FALSE, message=FALSE, error=FALSE, results='hide', fig.keep='all'}
+plot_grid(zn, indus, chas, nox, rm, age, dis, rad, tax, ptratio, lstat, medv, tags = TRUE, ncol = 2, nrow = 2)
+plot_grid(rm, age, dis, rad, tags = TRUE, ncol = 2, nrow = 2)
+plot_grid(tax, ptratio, lstat, medv, tags = TRUE, ncol = 2, nrow = 2)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>2c. Fit SLR for each predictor in Boston. Which ones are statistifically significant?</p>
+  </div>
+  <div class="message-body">
+    All variables have a statistically significant relationship with crim except for "chas," with P = .209. <br>
+    zn, rm, dis, and medv have a negative relationship with crim, while ptratio, tax, lstat, age, rad, indus, nox have a positive relationship. <br>
+    Many variables are candidates for transforms due to unequal variance or visual nonlinearity
+  </div>
+</article>
+```
+
+```{r results="show"}
+summary(lm(crim~.,data=Boston))
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>2d. Fit MLR predicting crim with all predictors</p>
+  </div>
+  <div class="message-body">
+    Using a significance level of 0.05, We can reject the null hypothesis for zn, dis, rad, and medv. Honorable mentions include nox and lstat.
+  </div>
+</article>
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>2e. How does the results in c differ from d?</p>
+  </div>
+  <div class="message-body">
+    Individually, most predictors have a significant relationship with crim. However, when fit together in a multiple regression, we find that many of them lose their significance. All predictors except for rad have drastically different coefficients between the models. This shows that relationships between variables change when considering more information.
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Predictor</th><th>SLR Coefficient</th><th>MLR Coefficient</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr> <td>zn</td><td>0.0457</td><td>-0.0739</td> </tr>
+        <tr> <td>indus</td><td>-0.0584</td><td>0.510</td> </tr>
+        <tr> <td>chas</td><td>-0.825</td><td>-1.89</td> </tr>
+        <tr> <td>nox</td><td>-9.958</td><td>31.2</td> </tr>
+        <tr> <td>rm</td><td>0.629</td><td>-2.68</td> </tr>
+        <tr> <td>age</td><td>-0.000848</td><td>0.108</td> </tr>
+        <tr> <td>dis</td><td>-1.01</td><td>-1.55</td> </tr>
+        <tr> <td>rad</td><td>0.612</td><td>0.618</td> </tr>
+        <tr> <td>tax</td><td>-0.00378</td><td>0.0297</td> </tr>
+        <tr> <td>ptratio</td><td>-0.304</td><td>1.15</td> </tr>
+        <tr> <td>lstat</td><td>0.139</td><td>0.549</td> </tr>
+        <tr> <td>medv</td><td>-0.220</td><td>-0.363</td> </tr>
+      </tbody>
+    </table>
+  </div>
+</article>
+```
+
+```{r}
+set.seed(1)
+train_index = sample(1:n,n/2,rep=FALSE)
+
+train = Boston[train_index,]
+test = Boston[-train_index,]
+
+full_model = lm(crim~.,data=train)
+MSE_train = mean((train$crim - full_model$fitted.values)^2)
+
+predicted_values = predict(full_model,test)
+MSE_test = mean((test$crim - predicted_values)^2)
+
+print(MSE_train)
+print(MSE_test)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>2f. Do a train/test split and report MSE's</p>
+  </div>
+  <div class="message-body">
+    Train MSE is 42.49345 and test MSE is 41.19923.
+  </div>
+</article>
+```
+
+```{r}
+model = lm(crim~zn+indus+nox+dis+rad+ptratio+medv,data=train)
+MSE_train = mean((train$crim - model$fitted.values)^2)
+
+predicted_values = predict(model,test)
+MSE_test = mean((test$crim - predicted_values)^2)
+
+print(MSE_train)
+print(MSE_test)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>2g. Fit MLR with zn, indux, nox, dis, rad, ptratio, and medv. Report new MSE's and note differences</p>
+  </div>
+  <div class="message-body">
+    New train MSE is 43.97466 and test MSE is 39.62763. The train MSE was higher, but the test MSE was lower. This is suprising, because we'd expect new data to be predicted less accurately. This is likely to be due to random chance, or the model itself is better.
+  </div>
+</article>
+```
+
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>3a. What are the true values for the Betas?</p>
+  </div>
+  <div class="message-body">
+    2, 3, and 5 respectively
+  </div>
+</article>
+```
+
+```{r results="show"}
+n = 100
+x1 = seq(0,10,length.out=n) #generates 100 equally spaced values from 0 to 10.
+x2 = runif(n) #generates 100 uniform values.
+
+beta_0 = 2
+beta_1 = 3
+beta_2 = 5
+
+error = rnorm(n, 0, 1)
+
+y = beta_0 + beta_1*x1 + beta_2*log(x2) + error
+
+print(y)
+
+
+```
+
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>3b. Generate 100 values of y using the given equation.</p>
+  </div>
+  <div class="message-body">
+    See output above.
+  </div>
+</article>
+```
+
+```{r }
+ggplot(data=NULL, aes(x=x1, y=y)) + geom_point()
+ggplot(data=NULL, aes(x=x2, y=y)) + geom_point()
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>3c. Scatter plots of x1, x2, and y</p>
+  </div>
+  <div class="message-body">
+    The plot with x1 shows a relatively strong correlation with y. It's a relatively straight line with a few outliers. <br>
+    The plot with x2 appears to have a moderate/weaker correlation with y, and may or may not be a linear relationship. There are no obvious outliers.
+  </div>
+</article>
+```
+
+```{r}
+B = 5000
+beta1hat = rep(NA,B)
+for(i in 1:B){
+  error = rnorm(n,0,1)
+  y = beta_0 + beta_1*x1 + error
+  fit = lm(y~x1)
+  beta1hat[i] = fit$coefficients[[2]]
+}
+
+hist(beta1hat)
+abline(v=beta_1, col="blue", lwd=3)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>3de. Show that B1 hat is an unbiased estimator of B1</p>
+  </div>
+  <div class="message-body">
+    The histogram is roughly normal and centered at B1, showing that the estimator is unbiased.
+  </div>
+</article>
+```
+
+```{r}
+B = 5000
+beta2hat = rep(NA,B)
+for(i in 1:B){
+  error = rnorm(n,0,1)
+  y = beta_0 + beta_2*x2 + error
+  fit = lm(y~x2)
+  beta2hat[i] = fit$coefficients[[2]]
+}
+
+hist(beta2hat)
+abline(v=beta_2, col="red", lwd=3)
+```
+```{=html}
+<article class="message is-primary">
+  <div class="message-header">
+    <p>3fg. Show that B2 hat is an unbiased estimator of B2</p>
+  </div>
+  <div class="message-body">
+    The histogram is roughly normal and centered at B2, showing that the estimator is unbiased.
+  </div>
+</article>
+```
+
+
+
+
+
+
+

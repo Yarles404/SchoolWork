@@ -1,0 +1,383 @@
+---
+title: "DS 303 Homework #7"
+author: "Brandon Rouse, University ID: 804745954"
+output: html_document
+---
+
+```{r, include = FALSE}
+library(ISLR2)
+library(ggplot2)
+library(tidyverse)
+library(car)
+library(MASS)
+library(leaps)
+library(ISLR)
+library(caret)
+library(glmnet)
+library(e1071)
+library(klaR)
+library(class)
+```
+
+#### 1a
+The misclassification rate for the LDS is .261. In the context of this problem, a false negative would be more troubling. If someone were to receive a false negative they wouldn't be getting the treatment they needed for their sickness. If they received a false positive, they would still receive treatment that wouldn't necessarily harm them. In order to decrease the false positive or false negative rate we would need to modify the threshold we are using for this specific classification. Increasing the threshold would increase the number of false positives and decrease the amount of false negatives, which would be what we want to an extent. We don't want to decrease this threshold so much that our classification is completely inaccurate. The threshold that would have the lowest overall misclassification rate would be 0.5.
+
+#### 1b
+In this specific example our data is perfectly separated. We can see that if X > 4 then Y will be blue. Also, if X <= 4 then Y will be red. From this, we know that logistic regression will give us unstable estimates causing it to not work that best. So we know that if x = 5 then the probability y is equal to blue is 1. So, we can choose a beta_0 = 0 and a beta_1 that would always approach to 1. This would me beta_1 would always increase and there would be no maximization. 
+
+#### 1c
+KNN might fail in this case due to the fact that p is large relative to the total number of observations. With p being so large, this could cause a small amount of training observations that have predictor values similar or being close to the test observation. The small amount of observations would make it hard to classify the test observation. 
+
+#### 1di
+LDA because we know that the population data of height and weight are normally distributed. If these values in this specific sample weren't normally distributed than logistic regression would be best.
+
+#### 1dii
+Logistic regression because annual income wouldn't follow a normal distribution. This would especially be evident including both genders based on th salary gap of today's society.
+
+#### 1diii
+KNN because the decision boundary is complicated and highly non-linear.
+
+#### 1e
+We expect LDA to perform better on the test set because of bias-variance tradeoff. QDA increases the flexibility and we know from the trade off that too much flexibility will cause QDA to overfit the test set. This would cause LDA to perform better on thee test set.
+
+#### 1f
+We expect QDA to perform better on the training set because QDA increases the flexibility of the model. We know from the bias/variance tradeoff that increasing the flexibility of the model will always decrease the training error, making QDA perform better on the training set. 
+
+#### 1g
+This statement is false. QDA can become too flexible and we know from the bias/variance tradeoff that this can cause overfitting of the data. This would cause LDA to have a better test error rate than QDA. 
+
+#### 1h
+```{r, echo = FALSE}
+set.seed(1)
+y = c(0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1)
+x1 = c(1,2,3,4,5,6,7,8,12,11,15,16,17,10,13,14)
+x2 = c(12,11,15,16,17,10,13,14,1,2,3,4,5,6,7,8)
+df = data.frame(y = y, x1=x1, x2=x2)
+
+train = sample(1:nrow(df),nrow(df)/2, replace=FALSE)
+test = (-train)
+
+glm.fit = glm(y~x1+x2, data=df,subset=train,family='binomial')
+
+glm.prob = predict(glm.fit,df[test,],type='response') 
+glm.prob
+```
+
+Logistic regression cannot converge on this data set because the observations are perfectly separated. This would mean that this logistic regression gives us unstable estimates and won't work well. We also know that this logistic regression won't find a maximizer, meaning it won't be able to converge on the data set. As you can see from the probabilities above, if y <=8 than the probability is basically 0 and if y > 8 than the probability is 1. 
+
+#### 1i
+```{r, echo = FALSE}
+lda.fit = lda(y~x1+x2,data=df, subset=train)
+lda.pred = predict(lda.fit,df[test,])
+lda.class = rep(0,length(test))
+lda.class[lda.pred$posterior[,2]>0.5] = 1
+table(lda.class,df[test,]$y)
+qda.fit = qda(y~x1+x2,data=df, subset=train)
+qda.pred = predict(qda.fit,df[test,])
+qda.class = rep(0,length(test))
+qda.class[qda.pred$posterior[,2]>0.5] = 1
+table(qda.class,df[test,]$y)
+capture.output(cat('LDA misclassification rate:', mean(lda.class!=df[test,]$y)))
+capture.output(cat('QDA misclassification rate:', mean(lda.class!=df[test,]$y)))
+```
+
+I would say we get somewhat meaningful results. When we compute the misclassification rates of each technique we can see that they are 0. This means that both techniques correctly classified every observation in the test set. Because we already know that this data set is perfectly separated we expected this to happen. This would make these results useless because we knew that they are perfectly separated. If this was a random data set though, these results would be more meaningful. If this happened, we would be able to conclude that the data we are trying to classify is perfectly separated. We could then use this information to help us decide where to go in the future. For this specific problem, these results are meaningless. In a different setting though, these results could be useful. 
+
+#### 2a
+```{r, echo = FALSE}
+set.seed(1)
+x1 = rnorm(1000)
+x2 = rnorm(1000)
+x3 = rnorm(1000)
+
+#true population parameters
+B0 = 1
+B1 = 2
+B2 = 3
+B3 = 2
+
+# construct the true probability of Y = 1 using the logistic function
+pr = (exp(B0 + B1*x1 + B2*x2 + B3*x3)) / (1 + (exp(B0 + B1*x1 + B2*x2 + B3*x3)))
+
+#randomly generate our response y based on these probabilities
+y = rbinom(1000,1,pr)
+
+df = data.frame(y=y, x1=x1, x2=x2, x3=x3)
+df$y = as_factor(df$y)
+```
+
+The sample code was executed.
+
+#### 2b
+```{r, echo = FALSE}
+train = sample(1:nrow(df),nrow(df)/2, replace=FALSE)
+test = (-train)
+
+glm.fit = glm(y~x1+x2+x3, data=df,subset=train,family='binomial')
+
+glm.prob = predict(glm.fit,df[test,],type='response') 
+glm.pred = rep(0,length(test))
+glm.pred[glm.prob >0.5] =1
+tab = table(glm.pred,df[test,]$y)
+tab
+
+capture.output(cat('Logistic regression misclassification rate:', 1 - sum(diag(tab))/sum(tab)))
+```
+
+#### 2c
+```{r, echo = FALSE}
+lda.fit = lda(y~x1+x2+x3,data=df, subset=train)
+lda.pred = predict(lda.fit,df[test,])
+lda.class = rep(0,length(test))
+lda.class[lda.pred$posterior[,2]>0.5] = 1
+table(lda.class,df[test,]$y)
+
+capture.output(cat('LDA misclassification rate:', mean(lda.class!=df[test,]$y)))
+```
+
+#### 2d
+```{r, echo = FALSE, warning = FALSE}
+nb.fit = naiveBayes(y~ x1+x2+x3, data=df, subset = train)
+nb.class = predict(nb.fit, df[test,])
+tab = table(nb.class, df[test,]$y)
+tab
+capture.output(cat('Naive Bayes misclassification rate:', 1 - sum(diag(tab))/sum(tab)))
+```
+
+#### 2e
+Between the three classification techniques we can see that logistic regression had the lowest misclassification rate. Second was LDA, which had a misclassification rate of only .002 higher than logistic regression. The technique that did the worst was Naive Bayes, which had a misclassification rate of 0.116. 
+
+#### 3a
+```{r, echo = FALSE, message = FALSE}
+ggplot(data = Weekly, aes(x = Lag1, fill = Direction)) + geom_histogram(alpha=0.6,position = 'identity') + ggtitle("Lag1 v. Direction")
+ggplot(data = Weekly, aes(x = Lag2, fill = Direction)) + geom_histogram(alpha=0.6,position = 'identity') + ggtitle("Lag2 v. Direction")
+ggplot(data = Weekly, aes(x = Lag3, fill = Direction)) + geom_histogram(alpha=0.6,position = 'identity') + ggtitle("Lag3 v. Direction")
+ggplot(data = Weekly, aes(x = Lag4, fill = Direction)) + geom_histogram(alpha=0.6,position = 'identity') + ggtitle("Lag4 v. Direction")
+ggplot(data = Weekly, aes(x = Lag5, fill = Direction)) + geom_histogram(alpha=0.6,position = 'identity') + ggtitle("Lag5 v. Direction")
+capture.output(cat('Proportion of Up Directions:', sum(Weekly$Direction == 'Up')/dim(Weekly)[1]))
+capture.output(cat('Proportion of Up Directions:', sum(Weekly$Direction == 'Down')/dim(Weekly)[1]))
+```
+
+We can see from the above histograms that each Lag variable had more 'Up' values than 'Down.' All of the  histograms are unimodal and are centered around 0. The histograms are very similar in shape too. Also, we can see from the proportions that there are more 'Up' values in the whole data set compared to 'Down.' 
+
+#### 3b
+```{r, echo = FALSE}
+train = (Weekly$Year<2009)
+test = Weekly[!train,]
+glm.fit = glm(Direction~Lag2, data=Weekly,subset=train,family='binomial')
+
+glm.prob = predict(glm.fit,test,type='response') 
+glm.pred = rep("Down",dim(test)[1])
+glm.pred[glm.prob >0.5] = "Up"
+tab = table(glm.pred,test$Direction)
+tab
+
+capture.output(cat('Logistic regression correct classification rate:', sum(diag(tab))/sum(tab)))
+```
+
+#### 3c
+```{r, echo = FALSE}
+lda.fit = lda(Direction~Lag2,data=Weekly, subset=train)
+lda.pred = predict(lda.fit,test)
+lda.class = rep("Down",dim(test)[1])
+lda.class[lda.pred$posterior[,2]>0.5] = "Up"
+table(lda.class,test$Direction)
+
+capture.output(cat('LDA correct classification rate:', mean(lda.class==test$Direction)))
+```
+
+#### 3d
+```{r, echo = FALSE}
+qda.fit = qda(Direction~Lag2,data=Weekly, subset=train)
+qda.pred = predict(qda.fit,test)
+qda.class = rep("Down",dim(test)[1])
+qda.class[qda.pred$posterior[,2]>0.5] = "Up"
+table(qda.class,test$Direction)
+
+capture.output(cat('QDA correct classification rate:', mean(qda.class==test$Direction)))
+```
+
+#### 3e
+```{r, echo = FALSE}
+train.Weekly = Weekly[train,]
+standardized.X = scale(train.Weekly[,-9])
+flds <- createFolds(train.Weekly$Direction, k = 5, list = TRUE, returnTrain = FALSE)
+K = c(1,3,5,7,9)
+cv_error = matrix(NA,5,5)
+
+for(j in 1:5){
+  k = K[j]
+  for(i in 1:5){
+    test_index = flds[[i]]
+    testX = standardized.X[test_index,]
+    trainX = standardized.X[-test_index,]
+    trainY = train.Weekly$Direction[-test_index]
+    testY = train.Weekly$Direction[test_index]
+    
+    knn.pred = knn(trainX,testX,trainY,k=k)
+    cv_error[i,j] = mean(testY != knn.pred)
+  }
+}
+
+#apply(cv_error,2,mean) 9 K had lowest cv error
+
+standardized.X = scale(Weekly[,-9])
+standardized.X.test = scale(test[,-9])
+train.X = standardized.X[train,]
+train.Y = Weekly$Direction[train]
+knn.pred = knn(train.X,standardized.X.test,train.Y,k=9)
+table(knn.pred, test[,9])
+capture.output(cat('KNN with 9 K correct classification rate:', mean(test[,9]==knn.pred)))
+```
+
+#### 3f
+```{r, echo = FALSE}
+nb.fit = naiveBayes(Direction~ Lag2, data=Weekly, subset = train)
+nb.class = predict(nb.fit, test)
+table(nb.class, test$Direction)
+
+capture.output(cat('Naive Bayes correct classification rate:', mean(nb.class==test$Direction)))
+```
+
+#### 3g
+Of all of these techniques, it is obvious that KNN provides the best results on this data set. This correct classification rate is way higher than the other techniques. 
+
+#### 3h
+```{r, echo = FALSE}
+train.Weekly = Weekly[train,]
+standardized.X = scale(train.Weekly[,-9])
+standardized.X = standardized.X[,-1]
+standardized.X = standardized.X[,-2:-5]
+flds <- createFolds(train.Weekly$Direction, k = 5, list = TRUE, returnTrain = FALSE)
+K = c(1,3,5,7,9)
+cv_error = matrix(NA,5,5)
+
+for(j in 1:5){
+  k = K[j]
+  for(i in 1:5){
+    test_index = flds[[i]]
+    testX = standardized.X[test_index,]
+    trainX = standardized.X[-test_index,]
+    trainY = train.Weekly$Direction[-test_index]
+    testY = train.Weekly$Direction[test_index]
+    
+    knn.pred = knn(trainX,testX,trainY,k=k)
+    cv_error[i,j] = mean(testY != knn.pred)
+  }
+}
+
+# apply(cv_error,2,mean) 7 K
+
+standardized.X = scale(Weekly[,-9])
+standardized.X = standardized.X[,-1]
+standardized.X = standardized.X[,-2:-5]
+standardized.X.test = scale(test[,-9])
+standardized.X.test = standardized.X.test[,-1]
+standardized.X.test = standardized.X.test[,-2:-5]
+train.X = standardized.X[train,]
+train.Y = Weekly$Direction[train]
+knn.pred = knn(train.X,standardized.X.test,train.Y,k=7)
+table(knn.pred, test[,9])
+capture.output(cat('KNN with 7 K correct classification rate:', mean(test[,9]==knn.pred)))
+```
+
+From the plots above we can see that all of the Lag variables act very similar to each other. Because of this, I used the other two predictors `Volume` and `Today` to see if they would help the classification rate on the test set. After running KNN again with only these three predictors, 7 was the optimal number of neighbors this time instead of 9. Also, you can see that there was a significant increase in the correct classification rate, jumping from 0.92 to 0.96. 
+
+#### 4a
+```{r, echo = FALSE}
+spam = read.csv('spambase.data', header = FALSE)
+spam$V58 = as_factor(spam$V58)
+capture.output(cat('Proportion of spam emails:', sum(spam$V58==1)/dim(spam)[1]))
+capture.output(cat('Proportion of non-spam emails:', sum(spam$V58==0)/dim(spam)[1]))
+```
+
+#### 4b
+```{r, echo = FALSE}
+index <- createDataPartition(spam$V58, p = .70, list = FALSE)
+trainset <- spam[index,]
+testset <- spam[-index,]
+capture.output(cat('Proportion of spam emails in training set:', sum(trainset$V58==1)/dim(trainset)[1]))
+capture.output(cat('Proportion of non-spam emails in training set:', sum(trainset$V58==0)/dim(trainset)[1]))
+
+capture.output(cat('Proportion of spam emails in test set:', sum(testset$V58==1)/dim(testset)[1]))
+capture.output(cat('Proportion of non-spam emails in test set:', sum(testset$V58==0)/dim(testset)[1]))
+```
+
+#### 4c
+```{r, echo = FALSE, warning = FALSE}
+glm.fit = glm(V58~., data=spam,subset=index,family='binomial')
+
+glm.prob = predict(glm.fit,testset,type='response') 
+glm.prob[1:10]
+```
+
+#### 4d
+```{r, echo = FALSE}
+glm.pred = rep(0,dim(testset)[1])
+glm.pred[glm.prob >0.5] = 1
+tab = table(glm.pred,testset$V58)
+tab
+capture.output(cat('Overall misclassification rate:', 1 - sum(diag(tab))/sum(tab)))
+
+capture.output(cat('False negative rate:', (tab[1,"1"])/sum(tab)))
+capture.output(cat('False postitive rate:', (tab[2,"0"])/sum(tab)))
+```
+
+#### 4e
+I think that reporting a meaningful email as spam is more critical than reporting a spam email meaningful. A lot of people don't check their spam email folder often, and if there is a meaningful email placed there, they might not read it in time. If a spam email ends up in the regular inbox, people can just instantly delete it and there would be no problem. In order to accommodate for this, we can increase the threshold of our classification. This would decrease the false positive rate and increase the false negative rate. A positive in this setting would be if the email was a spam email. We want to decrease the number of times we say an email was a spam when it actually wasn't. This is a false positive, meaning we want to decrease the false positive rate. We can do this by increasing our classification threshold. 
+
+#### 4f
+```{r, echo = FALSE}
+lda.fit = lda(V58~.,data=spam, subset=index)
+lda.pred = predict(lda.fit,testset)
+lda.class = rep(0,dim(testset)[1])
+lda.class[lda.pred$posterior[,2]>0.5] = 1
+table(lda.class,testset$V58)
+
+capture.output(cat('LDA misclassification rate:', mean(lda.class!=testset$V58)))
+
+qda.fit = qda(V58~.,data=spam, subset=index)
+qda.pred = predict(qda.fit,testset)
+qda.class = rep(0,dim(testset)[1])
+qda.class[qda.pred$posterior[,2]>0.5] = 1
+table(qda.class,testset$V58)
+
+capture.output(cat('QDA misclassification rate:', mean(qda.class!=testset$V58)))
+
+nb.fit = naiveBayes(V58~., data=spam, subset = index)
+nb.class = predict(nb.fit, testset)
+table(nb.class, testset$V58)
+capture.output(cat('Naive Bayes misclassification rate:', mean(nb.class!=testset$V58)))
+
+standardized.X = scale(trainset[,-58])
+flds <- createFolds(trainset$V58, k = 5, list = TRUE, returnTrain = FALSE)
+K = c(1,3,5,7,9)
+cv_error = matrix(NA,5,5)
+
+for(j in 1:5){
+  k = K[j]
+  for(i in 1:5){
+    test_index = flds[[i]]
+    testX = standardized.X[test_index,]
+    trainX = standardized.X[-test_index,]
+    trainY = trainset$V58[-test_index]
+    testY = trainset$V58[test_index]
+    
+    knn.pred = knn(trainX,testX,trainY,k=k)
+    cv_error[i,j] = mean(testY != knn.pred)
+  }
+}
+
+#apply(cv_error,2,mean) 5 K
+
+standardized.X = scale(spam[,-58])
+standardized.X.test = scale(testset[,-58])
+train.X = standardized.X[index,]
+train.Y = spam$V58[index]
+knn.pred = knn(train.X,standardized.X.test,train.Y,k=5)
+table(knn.pred, testset[,58])
+capture.output(cat('KNN with 5 K correct misclassification rate:', mean(testset[,58]!=knn.pred)))
+```
+
+#### 4g
+I would recommend using the KNN classifier for this data set. The `spam` data set contains a large amount of data, something that is needed for KNN to be effective. Also, this data set contains a high amount of predictors. Because of this high amount of data and high amount of predictors, I assume that the decision boundary is non-linear and/or irregular. This means that KNN will dominate other classifiers. This is also possible because of the high amount of data we are given. We can see from the above misclassification rates that KNN has the lowest of all the classifiers. 

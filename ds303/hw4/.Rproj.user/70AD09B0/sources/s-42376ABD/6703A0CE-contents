@@ -1,0 +1,310 @@
+---
+title: "hw4"
+author: "Charles Yang"
+date: "10/1/2021"
+output:
+  html_document:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(results="hide")
+
+library(tidyverse)
+library(ggplot2)
+library(leaps)
+library(caret)
+
+prostate = read.table('C:/users/15155/desktop/ds303/hw4/prostate.data', header=TRUE)
+```
+
+<style type="text/css">
+@import url("https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css");
+</style>
+
+```{r}
+regfit = regsubsets(lpsa~., data=prostate)
+fitSum = summary(regfit)
+fitSum
+```
+```{r results="show"}
+n = dim(prostate)[1]
+p = rowSums(fitSum$which)
+adjr2 = fitSum$adjr2
+cp = fitSum$cp
+rss = fitSum$rss
+AIC = n*log(rss/n) + 2*p
+BIC = n*log(rss/n) + p*log(n)
+
+cbind(p,rss,adjr2,cp,AIC,BIC)
+```
+```{=html}
+<table class="table">
+  <thead>
+    <tr>
+      <th>Criteria</th> <th>Model Selected</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr> <td>RSS</td> <td>lpsa~.</td> </tr>
+    <tr> <td>Adjusted R^2</td> <td>lpsa~lcavol+lweight+age+lbph+svi+lcp+pgg45</td> </tr>
+    <tr> <td>CP</td> <td>lpsa~lcavol+weight+age+lbph+svi</td> </tr>
+    <tr> <td>AIC</td> <td>lpsa~lcavol+weight+age+lbph+svi</td> </tr>
+    <tr> <td>BIC</td> <td>lpsa~lcavol+lweight+lbph</td> </tr>
+  </tbody>
+</table>
+    
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      1a. Model Selection by Selection Criteria
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      Clearly, we can see that these model selection criteria can lead to different results. I personally would pick model 5, because both CP and AIC chose it. Additionally, it contains age, which is an essential variable in medical research.
+    </div>
+  </div>
+</div>
+```
+
+```{r}
+train = subset(prostate, train==TRUE)[,1:9]
+test = subset(prostate, train==FALSE)[,1:9]
+
+
+fits = summary(regsubsets(lpsa~., data=train))
+fits$which <- fits$which[, 2:9]
+fits$which
+```
+```{r}
+MSEs = c()
+for(i in 1:8) {
+  predictors = train[, fits$which[i,] ]
+  
+  model = lm(train$lpsa~., data=predictors)
+  
+  predicted = predict(model, test)
+  MSEs = append(MSEs, mean((test$lpsa - predicted)^2))
+}
+
+which.min(MSEs)
+
+finalModel = lm(prostate$lpsa~., data=prostate[, fits$which[3,] ][,1:3] )
+summary(finalModel)
+```
+```{=html}
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      1b. Model Selection by Test MSE
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      Based of test MSEs and regsubsets, M3 is the best.
+      <br> <br>
+      lpsa = -0.77716 + 0.52585*lcavol + 0.66177*lweight + 0.66567*svi
+    </div>
+  </div>
+</div>
+```
+
+```{r}
+k = 10
+folds <- createFolds(prostate$lpsa, k = k, list = TRUE, returnTrain = FALSE)
+```
+
+```{r results="show"}
+thing = data.frame()
+
+for(i in 1:k){
+  test_index = folds[[i]]
+  test = prostate[test_index,1:9]
+  train = prostate[-test_index,1:9]
+  fits = summary(regsubsets(lpsa~., data=train))
+  
+  MSEs = c()
+  for(i in 1:8) {
+    predictors = train[, fits$which[i,2:8] ]
+  
+    model = lm(train$lpsa~., data=predictors)
+  
+    predicted = predict(model, test)
+    MSEs = append(MSEs, mean((test$lpsa - predicted)^2))
+  }
+  
+  thing = rbind(thing, MSEs)
+}
+
+for(i in 1:8) {
+  print(paste("CV test MSE for model", i, "is", mean(thing[,i])))
+}
+
+
+```
+```{=html}
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      1c. Model Selection by k-fold Cross-Validated Test MSE
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      See output above.
+    </div>
+  </div>
+</div>
+```
+
+```{=html}
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      2a. k-fold Cross Validation
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      First, we define a certain number of folds, which are roughly equal sized test sets from the data. For each fold, we fit our model(s) with whatever data isn't in the fold and compute the tMSE using said fold. We repeat for each fold. Upon completion, we can average out our tMSEs to get a "cross validated" error. We can then use this new information to make decisions.
+    </div>
+  </div>
+</div>
+```
+
+```{=html}
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      2b. k-fold vs Validation Set Approach vs LOOCV
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      k-fold CV will provide a more accurate estimate of which model is better compared to to the validation set approach. However, k-fold Cv may be more difficult to compute. Now, when compared to LOOCV, k-fold is computationally cheaper when we aren't using a linear model. For linear models, we can compute LOOCV error using PRESS. k-fold may have a far higher variance than LOOCV if the dataset is relatively small because the training in each fold becomes more sensitive to noise.
+    </div>
+  </div>
+</div>
+```
+
+```{r echo=TRUE}
+set.seed(1)
+
+n = 100
+x = rnorm(n)
+error = rnorm(n, 0, 1)
+y = x - 2*x^2 + error
+
+data = data.frame(x=x, y=y)
+```
+```{=html}
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      2c. Fill in the blank
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      See code above.
+    </div>
+  </div>
+</div>
+```
+
+```{r results="show"}
+PRESS <- function(model,n) {
+    i <- residuals(model)/(1 - lm.influence(model)$hat)
+    sum(i^2)/n
+}
+set.seed(NULL)
+
+m1 = lm(y~x, data=data)
+m2 = lm(y~poly(x, degree=2), data=data)
+m3 = lm(y~poly(x, degree=3), data=data)
+m4 = lm(y~poly(x, degree=4), data=data)
+
+print(paste("Model 1 PRESS:", PRESS(m1, n)))
+print(paste("Model 2 PRESS:", PRESS(m2, n)))
+print(paste("Model 3 PRESS:", PRESS(m3, n)))
+print(paste("Model 4 PRESS:", PRESS(m4, n)))
+```
+```{r results="show"}
+set.seed(NULL)
+
+m1 = lm(y~x, data=data)
+m2 = lm(y~poly(x, degree=2), data=data)
+m3 = lm(y~poly(x, degree=3), data=data)
+m4 = lm(y~poly(x, degree=4), data=data)
+
+print(paste("Model 1 PRESS:", PRESS(m1, n)))
+print(paste("Model 2 PRESS:", PRESS(m2, n)))
+print(paste("Model 3 PRESS:", PRESS(m3, n)))
+print(paste("Model 4 PRESS:", PRESS(m4, n)))
+```
+```{=html}
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      2d+e. LOOCV Errors
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      Because these are linear models, we can use the PRESS formula to calculate LOOCV error. Repeats of fitting models and calculating PRESS. We get the same results when refitting models and recalculating PRESS because there is no randomness in these processes.
+    </div>
+  </div>
+</div>
+```
+
+```{=html}
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      2f. Smallest LOOCV
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      Model 2 had the smallest error. This is expected because we know the true model is a polynomial of degree 2. The model closest to the true model will likely have the smallest LOOCV error.
+    </div>
+  </div>
+</div>
+```
+
+```{r}
+summary(m1)
+summary(m2)
+summary(m3)
+summary(m4)
+```
+```{=html}
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      2g. Estimate Signifcance and LOOCV
+    </p>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      In every polynomial model, the x^2 term was extremely significant. However, the x^3 and x^4 terms find themselves insignificant. Model 1's linear has some significance, but it isn't extreme. That is likely due to the model being insufficient in describing the relationship. This approach agrees with our LOOCV approach because they both found the same correct model.
+    </div>
+  </div>
+</div>
+```
+
+```{r}
+library(ISLR2)
+```
+```{r}
+n = length(College[,1])
+test_index = sample(1:n,n/10,rep=FALSE)
+
+train = College[-test_index,]
+test = College[test_index,]
+
+
+```
+

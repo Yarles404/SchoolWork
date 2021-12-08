@@ -1,0 +1,4 @@
+"0","load_mnist()"
+"2","Error in train <<- load_image_file(""train-images-idx3-ubyte"") : 
+  cannot change value of locked binding for 'train'
+"
