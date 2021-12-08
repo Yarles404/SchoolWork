@@ -1,0 +1,57 @@
+use project2;
+
+-- users is the table name, you can replace to your corresponding defined table name
+update users set ofstate = 'Florida' where ofstate = 'FL';
+update users set ofstate = 'Alabama' where ofstate = 'AL';
+update users set ofstate = 'Alaska' where ofstate = 'AK';
+update users set ofstate = 'Arizona' where ofstate = 'AZ';
+update users set ofstate = 'Arkansas' where ofstate = 'AR';
+update users set ofstate = 'California' where ofstate = 'CA';
+update users set ofstate = 'Connecticut' where ofstate = 'CT';
+update users set ofstate = 'Delaware' where ofstate = 'DE';
+update users set ofstate = 'District of Columbia' where ofstate = 'DC';
+update users set ofstate = 'Florida' where ofstate = 'FL';
+update users set ofstate = 'Georgia' where ofstate = 'GA';
+update users set ofstate = 'Hawaii' where ofstate = 'HI';
+update users set ofstate = 'Idaho' where ofstate = 'ID';
+update users set ofstate = 'Illinois' where ofstate = 'IL';
+update users set ofstate = 'Indiana' where ofstate = 'IN';
+update users set ofstate = 'Iowa' where ofstate = 'IA';
+update users set ofstate = 'Kansas' where ofstate = 'KS';
+update users set ofstate = 'Kentucky' where ofstate = 'KY';
+update users set ofstate = 'Louisiana' where ofstate = 'LA';
+update users set ofstate = 'Maine' where ofstate = 'ME';
+update users set ofstate = 'Maryland' where ofstate = 'MD';
+update users set ofstate = 'Massachusetts' where ofstate = 'MA';
+update users set ofstate = 'Michigan' where ofstate = 'MI';
+update users set ofstate = 'Minnesota' where ofstate = 'MN';
+update users set ofstate = 'Mississippi' where ofstate = 'MS';
+update users set ofstate = 'Missouri' where ofstate = 'MO';
+update users set ofstate = 'Montana' where ofstate = 'MT';
+update users set ofstate = 'Nebraska' where ofstate = 'NE';
+update users set ofstate = 'Nevada' where ofstate = 'NV';
+update users set ofstate = 'New Hampshire' where ofstate = 'NH';
+update users set ofstate = 'New Jersey' where ofstate = 'NJ';
+update users set ofstate = 'New Mexico' where ofstate = 'NM';
+update users set ofstate = 'New York' where ofstate = 'NY';
+update users set ofstate = 'North Carolina' where ofstate = 'NC';
+update users set ofstate = 'North Dakota' where ofstate = 'ND';
+update users set ofstate = 'Ohio' where ofstate = 'OH';
+update users set ofstate = 'Oklahoma' where ofstate = 'OK';
+update users set ofstate = 'Oregon' where ofstate = 'OR';
+update users set ofstate = 'Pennsylvania' where ofstate = 'PA';
+update users set ofstate = 'Rhode Island' where ofstate = 'RI';
+update users set ofstate = 'South Carolina' where ofstate = 'SC';
+update users set ofstate = 'South Dakota' where ofstate = 'SD';
+update users set ofstate = 'Tennessee' where ofstate = 'TN';
+update users set ofstate = 'Texas' where ofstate = 'TX';
+update users set ofstate = 'Utah' where ofstate = 'UT';
+update users set ofstate = 'Vermont' where ofstate = 'VT';
+update users set ofstate = 'Virginia' where ofstate = 'VA';
+update users set ofstate = 'Washington' where ofstate = 'WA';
+update users set ofstate = 'West Virginia' where ofstate = 'WV';
+update users set ofstate = 'Wisconsin' where ofstate = 'WI';
+update users set ofstate = 'Wyoming' where ofstate = 'WY';
+
+
+-- select * from users where ofstate = 'FL';

@@ -1,0 +1,1 @@
+All data files and databases deleted from project to reduce git push size
