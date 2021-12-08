@@ -1,0 +1,35 @@
+Brief Introduction and Notes
+
+Insertion, Merge, and Quick Sort were all run to sort 1 million total words, at varying list sizes. Total time, average time per sort, words per minute, and total comparisons made were noted.
+Each size had it’s own unique list and alphabet, but were used consistently accross all Sorters.
+Notes:
+	Insertion sort was not run for list sizes n >= 100,000. At n = 10,000, the program took nearly an hour to complete.Merge and Quick sort ran within a minute in all cases, so they were ran at greater list sizes.
+	Anywhere in this document where a “graph” is mentioned is meant to be accompanied by actual graphs in a separate document. If you aren’t compelled to look at the corresponding HTML document, you can interpret graph as “pattern discovered by analyzing data.”
+	All data is stored SortData.xlsx.
+
+
+Time Analysis
+
+Insertion Sort’s graph for list size v. time appears to be exponential/polynomial or some other higher degree despite base-10 logarithmically transforming the x-axis.
+This is consistent with the expected worst case scenario of O(n^2).
+ Merge and Quick Sort’s graphs appear the same and linear when transforming the x-axis logarthmically.
+This implies that the algorithms are roughly O(logn).
+This is somewhat consistent with Merge Sort’s expected O(nlogn).
+However, Quicksort has a worst case O(n^2), but is a very rare case.
+Perhaps this accounts for the slight difference in sort times, average times per sort, and comparison’s per second between Merge and Quick Sort.
+
+Average Sort Time and Words Per Minute
+
+Average Sort Time and Words Per Minute follow a similar analysis.
+Insertion sorter, sorts exponentially less words per minute as n increases, while Merge and Quick Sort sort also exponentialy less words, but to a much lesser degree.
+This is consistent with their expected runtimes with respect to list size.
+Insertion Sorter’s time per list increases exponentially, while Merge and Quick Sort’s time per list increases exponentially, but to a lesser degree.
+
+
+.Total Comparisons Analysis
+
+Quick Sort’s total comparisons seem to increase tenfold as you mutliply the list size by 10.
+The graph demonstrates this when transforming n and total comparisons by base-10 logarithm.
+Merge and Quick sort’s total comparison’s appear linear when transforming list size logarthmically.
+As you multiply the list size by 10, we have a linear increase in total comparisons.
+Quick Sort has notably more comparisons that Merge Sort, which may account for the higher sort time.

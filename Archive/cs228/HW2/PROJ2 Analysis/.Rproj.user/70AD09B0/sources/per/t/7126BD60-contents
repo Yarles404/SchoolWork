@@ -1,0 +1,21 @@
+---
+title: "HW4"
+author: "Charles Yang"
+date: "9/30/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(nycflights13)
+```
+
+```{r}
+head(airlines)
+head(airports)
+head(flights)
+head(planes)
+head(weather)
+```
+

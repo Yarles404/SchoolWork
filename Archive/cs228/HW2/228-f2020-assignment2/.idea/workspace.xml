@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="46cb4bb9-02a2-47e2-b8cd-79ac7ab8df3a" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JUnit5 Test Class" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1hvFciAh8U5Y5MJ1EJqMM06wIy4" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="Downloaded.Files.Path.Enabled" value="false" />
+    <property name="Repository.Attach.Annotations" value="false" />
+    <property name="Repository.Attach.JavaDocs" value="false" />
+    <property name="Repository.Attach.Sources" value="false" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5" value="" />
+    <property name="create.test.in.the.same.root" value="true" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/src/tests/edu/iastate/cs228/hw2" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="tests" />
+      <recent name="edu.iastate.cs228.hw2" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="edu.iastate.cs228.hw2" />
+      <recent name="" />
+      <recent name="tests" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+      <recent name="edu.iastate.cs228.hw2.Sorter" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.All in 228-f2020-assignment2">
+    <configuration name="Sorter" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="edu.iastate.cs228.hw2.Sorter" />
+      <module name="228-f2020-assignment2" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SorterFramework" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="edu.iastate.cs228.hw2.SorterFramework" />
+      <module name="228-f2020-assignment2" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;10000.alphabet.txt&quot; &quot;10000.wordlist.txt&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="All in 228-f2020-assignment2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="228-f2020-assignment2" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SortingTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="228-f2020-assignment2" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="SortingTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SortingTest.stats" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="228-f2020-assignment2" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="SortingTest" />
+      <option name="METHOD_NAME" value="stats" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.SorterFramework" />
+      <item itemvalue="Application.Sorter" />
+      <item itemvalue="JUnit.All in 228-f2020-assignment2" />
+      <item itemvalue="JUnit.SortingTest" />
+      <item itemvalue="JUnit.SortingTest.stats" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.All in 228-f2020-assignment2" />
+        <item itemvalue="Application.SorterFramework" />
+        <item itemvalue="JUnit.SortingTest.stats" />
+        <item itemvalue="Application.Sorter" />
+        <item itemvalue="JUnit.SortingTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="46cb4bb9-02a2-47e2-b8cd-79ac7ab8df3a" name="Default Changelist" comment="" />
+      <created>1600883739780</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1600883739780</updated>
+      <workItem from="1600883742495" duration="8042000" />
+      <workItem from="1600961169470" duration="6914000" />
+      <workItem from="1601055401078" duration="9288000" />
+      <workItem from="1601154462319" duration="7863000" />
+      <workItem from="1601224310446" duration="14676000" />
+      <workItem from="1601307967263" duration="3911000" />
+      <workItem from="1601384812000" duration="12250000" />
+      <workItem from="1601410981877" duration="667000" />
+      <workItem from="1601493616178" duration="4946000" />
+      <workItem from="1601572062468" duration="972000" />
+      <workItem from="1602104611404" duration="686000" />
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="371" y="16" key="#All_in_228-f2020-assignment2" timestamp="1601090590477">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="371" y="16" key="#All_in_228-f2020-assignment2/0.0.1536.824@0.0.1536.824" timestamp="1601090590477" />
+    <state x="361" y="71" key="#Project_Structure" timestamp="1601387350138">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="361" y="71" key="#Project_Structure/0.0.1536.824@0.0.1536.824" timestamp="1601387350138" />
+    <state x="0" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1601516698630">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="0" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1601516698630" />
+    <state x="548" y="117" key="#com.intellij.ide.macro.MacrosDialog" timestamp="1601244300410">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="548" y="117" key="#com.intellij.ide.macro.MacrosDialog/0.0.1536.824@0.0.1536.824" timestamp="1601244300410" />
+    <state x="816" y="193" key="#com.intellij.ide.util.PackageChooserDialog" timestamp="1601090735349">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="816" y="193" key="#com.intellij.ide.util.PackageChooserDialog/0.0.1536.824@0.0.1536.824" timestamp="1601090735349" />
+    <state x="883" y="184" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1601068852902">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="883" y="184" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1536.824@0.0.1536.824" timestamp="1601068852902" />
+    <state x="561" y="253" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1601068938434">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="561" y="253" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1536.824@0.0.1536.824" timestamp="1601068938434" />
+    <state width="724" height="255" key="GridCell.Tab.0.bottom" timestamp="1602132680457">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="724" height="255" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1602132680457" />
+    <state width="724" height="255" key="GridCell.Tab.0.center" timestamp="1602132680457">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="724" height="255" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1602132680457" />
+    <state width="724" height="255" key="GridCell.Tab.0.left" timestamp="1602132680457">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="724" height="255" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1602132680457" />
+    <state width="724" height="255" key="GridCell.Tab.0.right" timestamp="1602132680457">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="724" height="255" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1602132680457" />
+    <state width="1493" height="239" key="GridCell.Tab.1.bottom" timestamp="1601304933116">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="239" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1601304933116" />
+    <state width="1493" height="239" key="GridCell.Tab.1.center" timestamp="1601304933116">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="239" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1601304933116" />
+    <state width="1493" height="239" key="GridCell.Tab.1.left" timestamp="1601304933116">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="239" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1601304933116" />
+    <state width="1493" height="239" key="GridCell.Tab.1.right" timestamp="1601304933116">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="239" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1601304933116" />
+    <state x="322" y="152" key="chooseDestDirectoryDialog" timestamp="1601090517942">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="322" y="152" key="chooseDestDirectoryDialog/0.0.1536.824@0.0.1536.824" timestamp="1601090517942" />
+    <state x="414" y="58" key="com.intellij.ide.util.TipDialog" timestamp="1601572070456">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="414" y="58" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1601572070456" />
+    <state x="498" y="301" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1600895713293">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="498" y="301" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/0.0.1536.824@0.0.1536.824" timestamp="1600895713293" />
+    <state x="667" y="105" key="com.intellij.testIntegration.createTest.CreateTestDialog" timestamp="1601090864623">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="667" y="105" key="com.intellij.testIntegration.createTest.CreateTestDialog/0.0.1536.824@0.0.1536.824" timestamp="1601090864623" />
+    <state x="762" y="0" width="781" height="830" key="dock-window-1" timestamp="1601185543076">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="762" y="0" width="781" height="830" key="dock-window-1/0.0.1536.824@0.0.1536.824" timestamp="1601185543076" />
+    <state x="809" y="190" key="run.anything.popup" timestamp="1601386216694">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="809" y="190" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1601386216694" />
+  </component>
+</project>

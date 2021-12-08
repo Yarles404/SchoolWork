@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="e40723e3-a7c5-4bbc-ab8e-9764a5d1704d" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1gJwFvKB06D6mWBE0UOnBHpIVOb" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e40723e3-a7c5-4bbc-ab8e-9764a5d1704d" name="Default Changelist" comment="" />
+      <created>1597845902209</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1597845902209</updated>
+      <workItem from="1597845905584" duration="718000" />
+      <workItem from="1598453361976" duration="762000" />
+      <workItem from="1598624756353" duration="129000" />
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="932" y="146" key="FileChooserDialogImpl" timestamp="1598624853594">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="932" y="146" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1598624853594" />
+    <state x="834" y="111" key="NewModule_or_Project.wizard" timestamp="1598624882975">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="834" y="111" key="NewModule_or_Project.wizard/0.0.1536.824@0.0.1536.824" timestamp="1598624882975" />
+    <state x="828" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1598624834849">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="828" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1598624834849" />
+  </component>
+</project>

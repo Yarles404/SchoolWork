@@ -1,0 +1,4 @@
+3 3
+C E C 
+C C C 
+C C C

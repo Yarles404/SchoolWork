@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="2e7f2f3f-646f-4228-af0b-0e95a8487a9f" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JUnit5 Test Class" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1iSlN13cCTsHILKWNRBvlOOXoKh" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="Downloaded.Files.Path.Enabled" value="false" />
+    <property name="Repository.Attach.Annotations" value="false" />
+    <property name="Repository.Attach.JavaDocs" value="false" />
+    <property name="Repository.Attach.Sources" value="false" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5" value="" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="edu.iastate.cs228.hw3" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\15155\Desktop\CS_228\HW3\228-f2020-assignment3\src\edu\iastate\cs228\hw3" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.StoutListTestPiazza">
+    <configuration name="StoutList" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="edu.iastate.cs228.hw3.StoutList" />
+      <module name="228-f2020-assignment3" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StoutListTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="228-f2020-assignment3" />
+      <option name="PACKAGE_NAME" value="edu.iastate.cs228.hw3" />
+      <option name="MAIN_CLASS_NAME" value="edu.iastate.cs228.hw3.StoutListTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StoutListTestPiazza" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="228-f2020-assignment3" />
+      <option name="PACKAGE_NAME" value="edu.iastate.cs228.hw3" />
+      <option name="MAIN_CLASS_NAME" value="edu.iastate.cs228.hw3.StoutListTestPiazza" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StoutListTest.listIterator1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="228-f2020-assignment3" />
+      <option name="PACKAGE_NAME" value="edu.iastate.cs228.hw3" />
+      <option name="MAIN_CLASS_NAME" value="edu.iastate.cs228.hw3.StoutListTest" />
+      <option name="METHOD_NAME" value="listIterator1" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StoutListTest.remove" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="228-f2020-assignment3" />
+      <option name="PACKAGE_NAME" value="edu.iastate.cs228.hw3" />
+      <option name="MAIN_CLASS_NAME" value="edu.iastate.cs228.hw3.StoutListTest" />
+      <option name="METHOD_NAME" value="remove" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.StoutListTestPiazza" />
+        <item itemvalue="Application.StoutList" />
+        <item itemvalue="JUnit.StoutListTest" />
+        <item itemvalue="JUnit.StoutListTest.remove" />
+        <item itemvalue="JUnit.StoutListTest.listIterator1" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2e7f2f3f-646f-4228-af0b-0e95a8487a9f" name="Default Changelist" comment="" />
+      <created>1601908829733</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1601908829733</updated>
+      <workItem from="1601908834577" duration="11065000" />
+      <workItem from="1602045776843" duration="49349000" />
+      <workItem from="1602350708402" duration="2750000" />
+      <workItem from="1602527094201" duration="1407000" />
+      <workItem from="1602647227602" duration="732000" />
+      <workItem from="1602781472318" duration="1122000" />
+      <workItem from="1602891659455" duration="390000" />
+      <workItem from="1603217189685" duration="290000" />
+      <workItem from="1603756003914" duration="602000" />
+      <workItem from="1603857745399" duration="19000" />
+      <workItem from="1604379614030" duration="609000" />
+      <workItem from="1611113303819" duration="620000" />
+      <workItem from="1611168296586" duration="33000" />
+      <workItem from="1623786219072" duration="702000" />
+      <workItem from="1623866351176" duration="2305000" />
+      <workItem from="1623882486458" duration="234000" />
+      <workItem from="1624298922103" duration="254000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1611168327577">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1611168327577" />
+    <state x="476" y="154" key="com.intellij.ide.util.TipDialog" timestamp="1603857756117">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="476" y="154" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1603857756117" />
+    <state x="414" y="0" key="new project wizard" timestamp="1603217409154">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="414" y="0" key="new project wizard/0.0.1536.824@0.0.1536.824" timestamp="1603217409154" />
+  </component>
+</project>
