@@ -1,0 +1,4 @@
+"0","fires <- dbReadTable(con, ""Fires"")"
+"0","summary(fires)"
+"2","Error: `summary.blob()` not implemented.
+"

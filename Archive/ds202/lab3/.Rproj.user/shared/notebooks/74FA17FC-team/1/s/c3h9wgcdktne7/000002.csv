@@ -1,0 +1,5 @@
+"0","library(readxl)"
+"2","package ‘readxl’ was built under R version 3.6.3"
+"0","gss <- readxl::read_xls('/Users/juliahernesman/Downloads/GSS.xls')"
+"2","Error: `path` does not exist: â€˜/Users/juliahernesman/Downloads/GSS.xlsâ€™
+"

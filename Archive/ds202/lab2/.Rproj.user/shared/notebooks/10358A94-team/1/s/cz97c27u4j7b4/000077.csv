@@ -1,0 +1,6 @@
+"0","bp <- barplot(head(MeanRatingByOrigin, 10)$x,"
+"0","        ylab=""Mean Chocolate Rating"","
+"0","        ylim = c(3, 4),"
+"0","        xpd = FALSE,"
+"0","        names=head(MeanRatingByOrigin, 10)$Group.1,"
+"0","        las=3)"

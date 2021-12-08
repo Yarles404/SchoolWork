@@ -1,0 +1,147 @@
+---
+title: "lab4_noTeam"
+author: "Charles Yang"
+date: "10/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+```
+
+```{r}
+defense <- read_excel('cyclonesFootball2019.xlsx', sheet='Defensive')
+offense <- read_excel('cyclonesFootball2019.xlsx', sheet='Offensive')
+bio <- read_excel('cyclonesFootball2019.xlsx', sheet='Biography')
+str(defense)
+str(offense)
+str(bio)
+```
+
+# Cleaning
+```{r}
+defense %>%
+  mutate(Name = as.factor(Name), Opponent_Opponent = as.factor(Opponent_Opponent), across(where(is.character), as.numeric)) -> defClean
+offense %>%
+  mutate(Name = as.factor(Name), Opponent_Opponent = as.factor(Opponent_Opponent), across(where(is.character), as.numeric)) -> offClean
+bio %>%
+  mutate(Name = as.factor(Name), Weight = as.numeric(Weight), Height = 12*as.numeric(substr(Height, 1, 1)) + as.numeric(substr(Height, 3, 3))) -> bioClean
+str(defClean)
+str(offClean)
+str(bioClean)
+```
+
+# Tidying
+```{r}
+defLonger <- defClean %>%
+  pivot_longer(cols = !(Name | Opponent_Opponent), names_to="stat")
+```
+
+# Rare Defensive Skills
+```{r}
+defLonger %>%
+  group_by(stat) %>%
+  summarise(median = mean(value))
+```
+
+### Notes:
+* Turnover FF, FR, and INT are rare
+
+# ISU Defense Against Iowa and Notre Dame
+```{r}
+defLonger[which((defLonger$Opponent_Opponent == "Iowa" | defLonger$Opponent_Opponent == "Notre Dame") & defLonger$stat == "Tackles_Solo"),] %>%
+  pivot_wider(names_from = Opponent_Opponent, values_from = value) %>%
+  ggplot(aes(x = Iowa, y = `Notre Dame`)) +
+    geom_point(alpha=.1) +
+    ggtitle("Solo Tackles by Player by Game") +
+    xlab("Iowa Solo Tackles") +
+    ylab("Notre Dame Solo Tackles")
+  
+```
+
+### Notes:
+* Players seemed to have more Solo_Tackles vs. Notre Dame
+
+# Getting City and State from Hometown, Players per State
+```{r}
+bioClean <- bioClean %>%
+  separate(col = Hometown, into = c("City", "State"), sep = ", ")
+
+bioClean %>%
+  distinct(Name, .keep_all = TRUE) %>%
+  group_by(State) %>%
+  summarise(Players = n(), .groups="keep")
+```
+
+# States which Offensive Players Come From
+```{r}
+offClean %>%
+  left_join(bioClean, by = "Name") %>%
+  distinct(Name, .keep_all = TRUE) %>%
+  group_by(State) %>%
+  summarise(Players = n(), .groups = "keep")
+```
+
+# States which Defensive Players Come From
+```{r}
+defClean %>%
+  left_join(bioClean, by = "Name") %>%
+  distinct(Name, .keep_all = TRUE) %>%
+  group_by(State) %>%
+  summarise(Players = n(), .groups = "keep")
+```
+
+# Brock Purdy Performance, measured by sum of all yards
+```{r}
+everything <- offClean %>%
+  full_join(defClean, by = c("Name", "Opponent_Opponent")) %>%
+  full_join(bio, by = "Name")
+
+everything %>%
+  group_by(Name) %>%
+  mutate(score = sum(Rushing_YDS, na.rm = TRUE) + sum(Passing_YDS, na.rm = TRUE) + sum(Receiving_YDS, na.rm = TRUE)) -> everything
+
+everything %>%
+  filter(score > 0) %>%
+  distinct(Name, .keep_all = TRUE) %>%
+  ggplot(aes(x=score)) +
+  geom_boxplot(width=.5) +
+  ylim(-1,1) +
+  ggtitle("Score Distribution") +
+  theme(axis.text.y=element_blank())
+```
+
+### Notes:
+* Purdy's the outlier. He's pretty damn good.
+
+# ISU Player Progress
+```{r}
+defenseOld <- read_excel('cyclonesFootball2018.xlsx', sheet='Defensive')
+offenseOld <- read_excel('cyclonesFootball2018.xlsx', sheet='Offensive')
+
+defenseOld %>%
+  mutate(Name = as.factor(Name), Opponent_Opponent = as.factor(Opponent_Opponent), across(where(is.character), as.numeric)) -> defOldClean
+offenseOld %>%
+  mutate(Name = as.factor(Name), Opponent_Opponent = as.factor(Opponent_Opponent), across(where(is.character), as.numeric)) -> offOldClean
+
+OffDefOld <- full_join(defenseOld, offenseOld, by = c("Name", "Opponent_Opponent"))
+
+everythingOld <- offOldClean %>%
+  full_join(defOldClean, by = c("Name", "Opponent_Opponent"))
+
+everythingOld %>%
+  group_by(Name) %>%
+  mutate(score = sum(Rushing_YDS, na.rm = TRUE) + sum(Passing_YDS, na.rm = TRUE) + sum(Receiving_YDS, na.rm = TRUE)) %>%
+  inner_join(everything, by = c("Name", "Opponent_Opponent"), suffix = c(".2018", ".2019")) %>%
+  mutate(YearScoreDiff = score.2019 - score.2018) %>%
+  distinct(Name, .keep_all = TRUE) %>%
+  arrange(-YearScoreDiff) %>%
+  select(Name, YearScoreDiff)
+```
+
+### Notes:
+* Brock, DesHaunte, Charlie, and Tarique had the biggest improvements in score!
+
+

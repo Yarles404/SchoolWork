@@ -1,0 +1,561 @@
+---
+title: "Final Project Analysis"
+author: "Charles Yang, Isaac Tegeler, Carter Wunsch, Bennet Brosseau, Nicholas Heger"
+date: "11/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+
+# Data was stored in CSV (Comma Delimited), but was tab delimited.
+data <- read.table("VIQT_data.csv", sep="\t", header=TRUE)
+originalData <- data
+```
+
+# Exploratory Analysis
+### Charles S1-6, education v. Full Score
+```{r}
+data %>%
+  group_by(S1) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S1 > 0) %>%
+  ggplot(aes(x=S1, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S1 Response")
+```
+
+```{r}
+data %>%
+  group_by(S2) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S2 > 0) %>%
+  ggplot(aes(x=S2, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S2 Response")
+```
+
+```{r}
+data %>%
+  group_by(S3) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S3 > 0) %>%
+  ggplot(aes(x=S3, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S3 Response")
+```
+
+```{r}
+data %>%
+  group_by(S4) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S4 > 0) %>%
+  ggplot(aes(x=S4, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S4 Response")
+```
+
+```{r}
+data %>%
+  group_by(S5) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S5 > 0) %>%
+  ggplot(aes(x=S5, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S5 Response")
+
+```
+
+# Discrimination Index
+### [Source](http://www.specialconnections.ku.edu/?q=assessment/quality_test_construction/teacher_tools/item_analysis)
+```{r}
+answers <- read.table("answers.tsv", sep="\t", header=TRUE)
+answers %>% pivot_wider(names_from = item, values_from = ans) -> answers
+
+data %>% select(1:45, score_full) %>% arrange(-score_full) %>% top_frac(.5, score_full) -> topHalf
+data %>% select(1:45, score_full) %>% arrange(-score_full) %>% top_frac(-.5, score_full) -> botHalf
+
+discrimIdx <- data.frame(Question=character(), Discrimination=numeric())
+
+#print("DISCRIMINATION INDICES BY QUESTION")
+for (i in 1:45) {
+  discrimIdx <- rbind(discrimIdx, data.frame(Question=paste(sep="","Q", i), Discrimination=as.numeric(table(as.numeric(topHalf[,i]) == as.numeric(answers[1,i]))[2]) / nrow(topHalf) - as.numeric(table(as.numeric(botHalf[,i]) == as.numeric(answers[1,i]))[2]) / nrow(botHalf)))
+  
+  #paste(sep="","Q", i, " ", as.numeric(table(as.numeric(topHalf[,i]) == as.numeric(answers[1,i]))[2]) / nrow(topHalf) - as.numeric(table(as.numeric(botHalf[,i]) == as.numeric(answers[1,i]))[2]) / nrow(botHalf)) %>% print
+  
+}
+discrimIdx %>% arrange(-Discrimination)
+```
+
+```{r}
+data %>%
+  group_by(S6) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S6 > 0) %>%
+  ggplot(aes(x=S6, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S6 Response")
+```
+
+```{r}
+data$education <- recode(data$education, `1`="< HS", `2`="HS", `3`="UNI", `4`="GRAD") %>% factor(levels=c("< HS", "HS", "UNI", "GRAD"))
+data %>%
+  group_by(education) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  ggplot(aes(x=education, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by Education")
+```
+
+### Notes
+* Education has a strong positive correlation with Scores
+
+### Isaac S7 - 12, urban v. Full Score
+
+We will first look a the impact of specific questions on the final score to see if there are any questons that were particullarly harder than the others.
+```{r}
+#Answer distribution for questions 7 - 12
+x <- data %>% select(Q7, Q8, Q9, Q10, Q11, Q12) %>%
+  pivot_longer(cols=Q7:Q12, names_to="question", values_to="answer")
+x$question = factor(x$question, levels=c("Q7", "Q8", "Q9", "Q10", "Q11", "Q12"))
+ggplot(x, aes(x=answer)) + geom_histogram(binwidth = 1) + facet_wrap(~question) + ggtitle("Which questons are the hardest?")
+```
+
+Question 7 appears to be the hardest to answer as it has the largest distribution of responses. The question asked which two words have the same meaning from the following list: [ deal claim plea recoup sale ]. We also see that people are much more likely to answer this questions rather than say they don't know (there are fewer answers of 0 which indicates they did not answer the question).
+
+Which supplimental affect the final score the most?
+```{r}
+x <- data %>% select(S7, S8, S9, S10, S11, S12, score_full) %>%
+  pivot_longer(cols=S7:S12, names_to="question", values_to="answer")
+x$question = factor(x$question, levels=c("S7", "S8", "S9", "S10", "S11", "S12"))
+x <- x%>%filter(answer!=0)
+ggplot(x%>%filter(question=="S7"), aes(x=score_full)) + geom_histogram() + facet_wrap(~answer, scales="free_y")
+ggplot(x%>%filter(question=="S8"), aes(x=score_full)) + geom_histogram() + facet_wrap(~answer, scales="free_y")
+ggplot(x%>%filter(question=="S9"), aes(x=score_full)) + geom_histogram() + facet_wrap(~answer, scales="free_y")
+ggplot(x%>%filter(question=="S10"), aes(x=score_full)) + geom_histogram() + facet_wrap(~answer, scales="free_y")
+ggplot(x%>%filter(question=="S11"), aes(x=score_full)) + geom_histogram() + facet_wrap(~answer, scales="free_y")
+ggplot(x%>%filter(question=="S12"), aes(x=score_full)) + geom_histogram() + facet_wrap(~answer, scales="free_y")
+
+avgs <- x %>% 
+  group_by(question, answer) %>%
+  summarise(avgs = mean(score_full)) %>%
+  ungroup()
+
+ggplot(avgs, aes(x=answer, y=avgs)) + geom_bar(stat="identity") + facet_wrap(~question)
+```
+
+Next we will see if how urban of a location you live impacts the final score.
+
+```{r}
+data$urban <- recode(data$urban, `1`="Rural", `2`="Suburban", `3`="Urban", ) %>% factor(levels=c("Rural", "Suburban", "Urban"))
+
+ggplot(data, aes(x=score_full)) +geom_histogram() +facet_wrap(~urban, scales="free_y")
+```
+
+The distributions show that students in Rural and Suburban areas have similar levels of vocabulary while those in urban areas have weaker vocuabularies. Where there are even some in the rural areas that scored negativly on the test while there are none who did so in suburban and rural areas.
+
+Are there correlations between the questions? i.e. if a person marks agree on one question they are likely to mark agree on another.
+
+```{r}
+x <- data %>% select(S1:S30)
+
+c <- cor(x)
+c <- data.frame(Var1 = row.names(c), c)
+c <- c %>% pivot_longer(cols=S1:S30, names_to="Var2", values_to="value")
+
+ggplot(c,aes(x=Var1, y=Var2, fill=value)) + geom_tile() + scale_fill_distiller(palette='YlGn')
+```
+
+### Nicholas S13 - 18, Gender vs Full Score, Answers to Supplemental Questions by Education  
+The next set of supplemental questions we looked at were S13-S18. Similar to before, we have plotted the responses to each of these questions on the x-axis and the mean full score on the y-axis.  
+
+###### I have been very interested in historical wars  
+```{r}
+data %>%
+  group_by(S13) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S13 > 0) %>%
+  ggplot(aes(x=S13, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S13 Response") +
+  xlab('Response (1=Disagree, 5=Agree)')
+```
+  
+###### I think ancient philosophy still is meaningful today  
+```{r}
+data %>%
+  group_by(S14) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S14 > 0) %>%
+  ggplot(aes(x=S14, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S14 Response") +
+  xlab('Response (1=Disagree, 5=Agree)')
+```
+  
+###### I have kept a personal journal  
+```{r}
+data %>%
+  group_by(S15) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S15 > 0) %>%
+  ggplot(aes(x=S15, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S15 Response") +
+  xlab('Response (1=Disagree, 5=Agree)')
+```
+  
+###### I have lots of my own theories  
+```{r}
+data %>%
+  group_by(S16) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S16 > 0) %>%
+  ggplot(aes(x=S16, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S16 Response") +
+  xlab('Response (1=Disagree, 5=Agree)')
+```
+  
+###### I could do an impressive amount of push ups  
+```{r}
+data %>%
+  group_by(S17) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S17 > 0) %>%
+  ggplot(aes(x=S17, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S17 Response") +
+  xlab('Response (1=Disagree, 5=Agree)')
+```
+  
+###### I put work first  
+```{r}
+data %>%
+  group_by(S18) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S18 > 0) %>%
+  ggplot(aes(x=S18, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S18 Response") +
+  xlab('Response (1=Disagree, 5=Agree)')
+```
+  
+We can see that answers to most of the above supplemental questions do not strongly correspond to higher or lower full scores. S13, S15, S17, S18 in particular have very little...  
+
+Scores by Gender  
+```{r}
+dataGender <- data
+dataGender$gender <- as.factor(dataGender$gender)
+levels(dataGender$gender)[levels(dataGender$gender)==0] <- 'Did not answer'
+levels(dataGender$gender)[levels(dataGender$gender)==1] <- 'Male'
+levels(dataGender$gender)[levels(dataGender$gender)==2] <- 'Female'
+levels(dataGender$gender)[levels(dataGender$gender)==3] <- 'Other'
+ggplot(dataGender, aes(x=gender, y=score_full)) + geom_boxplot() + ggtitle('Gender vs Full Score') + xlab('Gender') + ylab('Full Score')
+```
+  
+From the above boxplot, we see that those who did not answer their gender had the highest median score followed by Males, Other, and then Females.  
+
+Answers to Supplemental Questions by Education  
+```{r}
+dataEducation <- originalData %>% 
+  filter(education > 0)
+dataEducation$education <- as.factor(dataEducation$education)
+levels(dataEducation$education)[levels(dataEducation$education)==1] <- '< High School'
+levels(dataEducation$education)[levels(dataEducation$education)==2] <- 'High School'
+levels(dataEducation$education)[levels(dataEducation$education)==3] <- 'University Degree'
+levels(dataEducation$education)[levels(dataEducation$education)==4] <- 'Graduate Degree'
+
+x <- dataEducation %>% 
+  select(S1, S2, S3, S4, S5, S6, education) %>%
+  group_by(education, S1, S2, S3, S4, S5, S6) %>% 
+  summarise(count = n()) %>% 
+  pivot_longer(cols=S1:S6, names_to="question", values_to="answer")
+x$question = factor(x$question, levels=c("S1", "S2", "S3", "S4", "S5", "S6"))
+x <- x%>%filter(answer!=0)
+ggplot(x, aes(x=answer, y=count, fill=education)) + geom_bar(stat="identity") + facet_wrap(~question) + ggtitle("S1-S6 Responses by Education") + xlab('Response (1=Disagree, 5=Agree)')
+
+x <- dataEducation %>% 
+  select(S7, S8, S9, S10, S11, S12, education) %>%
+  group_by(education, S7, S8, S9, S10, S11, S12) %>% 
+  summarise(count = n()) %>% 
+  pivot_longer(cols=S7:S12, names_to="question", values_to="answer")
+x$question = factor(x$question, levels=c("S7", "S8", "S9", "S10", "S11", "S12"))
+x <- x%>%filter(answer!=0)
+ggplot(x, aes(x=answer, y=count, fill=education)) + geom_bar(stat="identity") + facet_wrap(~question) + ggtitle("S7-S12 Responses by Education") + xlab('Response (1=Disagree, 5=Agree)')
+
+x <- dataEducation %>% 
+  select(S13, S14, S15, S16, S17, S18, education) %>%
+  group_by(education, S13, S14, S15, S16, S17, S18) %>% 
+  summarise(count = n()) %>% 
+  pivot_longer(cols=S13:S18, names_to="question", values_to="answer")
+x$question = factor(x$question, levels=c("S13", "S14", "S15", "S16", "S17", "S18"))
+x <- x%>%filter(answer!=0)
+ggplot(x, aes(x=answer, y=count, fill=education)) + geom_bar(stat="identity") + facet_wrap(~question) + ggtitle("S13-S18 Responses by Education") + xlab('Response (1=Disagree, 5=Agree)')
+
+x <- dataEducation %>% 
+  select(S19, S20, S21, S22, S23, S24, education) %>%
+  group_by(education, S19, S20, S21, S22, S23, S24) %>% 
+  summarise(count = n()) %>% 
+  pivot_longer(cols=S19:S24, names_to="question", values_to="answer")
+x$question = factor(x$question, levels=c("S19", "S20", "S21", "S22", "S23", "S24"))
+x <- x%>%filter(answer!=0)
+ggplot(x, aes(x=answer, y=count, fill=education)) + geom_bar(stat="identity") + facet_wrap(~question) + ggtitle("S19-S24 Responses by Education") + xlab('Response (1=Disagree, 5=Agree)')
+
+x <- dataEducation %>% 
+  select(S25, S26, S27, S28, S29, S30, education) %>%
+  group_by(education, S25, S26, S27, S28, S29, S30) %>% 
+  summarise(count = n()) %>% 
+  pivot_longer(cols=S25:S30, names_to="question", values_to="answer")
+x$question = factor(x$question, levels=c("S25", "S26", "S27", "S28", "S29", "S30"))
+x <- x%>%filter(answer!=0)
+ggplot(x, aes(x=answer, y=count, fill=education)) + geom_bar(stat="identity") + facet_wrap(~question) + ggtitle("S25-S30 Responses by Education") + xlab('Response (1=Disagree, 5=Agree)')
+
+dataEducation %>%
+  filter(S26 > 0) %>%
+  group_by(education, S26) %>% 
+  summarise(count = n()) %>% 
+  ggplot(aes(x = S26, y = count, fill = education)) +
+  geom_bar(stat="identity") + ggtitle("S26 Responses by Education") +
+  xlab('Response (1=Disagree, 5=Agree)')
+
+dataEducation %>%
+  filter(S30 > 0) %>%
+  group_by(education, S30) %>% 
+  summarise(count = n()) %>% 
+  ggplot(aes(x = S30, y = count, fill = education)) +
+  geom_bar(stat="identity") + ggtitle("S30 Responses by Education") +
+  xlab('Response (1=Disagree, 5=Agree)')
+```
+  
+26 and 30 are slightly notable but most are not at all correlated
+
+
+
+### Carter S19 - 24, engnat v. Full Score
+```{r}
+group_by(data, S19) %>%
+  summarise(`Full Score` = mean(score_full), .groups = 'drop') %>%
+  filter(S19 > 0) %>%
+  ggplot(aes(x = S19, y = `Full Score`)) +
+  geom_bar(stat = 'identity', width = 0.7) +
+  ggtitle("Mean Full Scores by S19 Response") +
+  xlab('Response (1 = Disagree, 5 = Agree)')
+
+group_by(data, S20) %>%
+  summarise(`Full Score` = mean(score_full), .groups = 'drop') %>%
+  filter(S20 > 0) %>%
+  ggplot(aes(x = S20, y = `Full Score`)) +
+  geom_bar(stat = 'identity', width = 0.7) +
+  ggtitle("Mean Full Scores by S20 Response") +
+  xlab('Response (1 = Disagree, 5 = Agree)')
+
+group_by(data, S21) %>%
+  summarise(`Full Score` = mean(score_full), .groups = 'drop') %>%
+  filter(S21 > 0) %>%
+  ggplot(aes(x = S21, y = `Full Score`)) +
+  geom_bar(stat = 'identity', width = 0.7) +
+  ggtitle("Mean Full Scores by S21 Response") +
+  xlab('Response (1 = Disagree, 5 = Agree)')
+
+group_by(data, S22) %>%
+  summarise(`Full Score` = mean(score_full), .groups = 'drop') %>%
+  filter(S22 > 0) %>%
+  ggplot(aes(x = S22, y = `Full Score`)) +
+  geom_bar(stat = 'identity', width = 0.7) +
+  ggtitle("Mean Full Scores by S22 Response") +
+  xlab('Response (1 = Disagree, 5 = Agree)')
+
+group_by(data, S23) %>%
+  summarise(`Full Score` = mean(score_full), .groups = 'drop') %>%
+  filter(S23 > 0) %>%
+  ggplot(aes(x = S23, y = `Full Score`)) +
+  geom_bar(stat = 'identity', width = 0.7) +
+  ggtitle("Mean Full Scores by S23 Response") +
+  xlab('Response (1 = Disagree, 5 = Agree)')
+
+group_by(data, S24) %>%
+  summarise(`Full Score` = mean(score_full), .groups = 'drop') %>%
+  filter(S24 > 0) %>%
+  ggplot(aes(x = S24, y = `Full Score`)) +
+  geom_bar(stat = 'identity', width = 0.7) +
+  ggtitle("Mean Full Scores by S24 Response") +
+  xlab('Response (1 = Disagree, 5 = Agree)')
+
+group_by(data, engnat) %>%
+  summarise(`Full Score` = mean(score_full), .groups = 'drop') %>%
+  filter(engnat > 0) %>%
+  mutate(engnat = ifelse(engnat == 1, "Yes", "No")) %>%
+  ggplot(aes(x = engnat, y = `Full Score`, fill = engnat)) + 
+  geom_bar(stat = 'identity') +
+  ggtitle("Mean Full Scores by Native English Speakers") +
+  xlab("Native English Speaker")
+
+group_by(data, urban) %>%
+  filter(urban > 0) %>%
+  mutate(urban = ifelse(urban == 1, "Rural", ifelse(urban == 2, "Suburban", "Urban"))) %>%
+  top_frac(n = 0.1, w = score_wrong) %>%
+  ggplot(aes(x = urban, y = score_wrong)) +
+  geom_bar(stat = 'identity', width = 0.7) +
+  ggtitle("Questions Missed by Childhood Living Area") +
+  xlab("Childhood Living Area") +
+  ylab("Total points lost")
+  
+```
+
+### Bennet S25-30, age v. Full Score
+### S25 - I wish people were more spiritual.
+```{r}
+data %>%
+  group_by(S25) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S25 > 0) %>%
+  ggplot(aes(x=S25, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S25 Response")
+```
+
+
+### S26 - I always do the bare minimum I need to get by.
+```{r}
+data %>%
+  group_by(S26) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S26 > 0) %>%
+  ggplot(aes(x=S26, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S26 Response")
+```
+
+
+### S27 - I like to play devils advocate.
+```{r}
+data %>%
+  group_by(S27) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S27 > 0) %>%
+  ggplot(aes(x=S27, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S27 Response")
+```
+
+
+### S28 - I am not bothered by messy people.
+```{r}
+data %>%
+  group_by(S28) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S28 > 0) %>%
+  ggplot(aes(x=S28, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S28 Response")
+```
+
+
+### S29 - I am more artistic than scientific.
+```{r}
+data %>%
+  group_by(S29) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S29 > 0) %>%
+  ggplot(aes(x=S29, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S29 Response")
+
+```
+
+
+### S30 - I am not quite sure what I want.
+```{r}
+data %>%
+  group_by(S30) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S30 > 0) %>%
+  ggplot(aes(x=S30, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S30 Response")
+```
+
+
+### Mean Full Scores by Age
+```{r}
+data %>%
+  group_by(age) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(age < 100) %>%
+  ggplot(aes(x=age, y=`Full Score`)) +
+  geom_line(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by Age")
+```
+
+
+### Linear Regression of the most impactful suplemental questions.
+Out of all 30 Supplemental Questions, S5, S15, S16, S25, S26, S27 seemed to be the most impactful.
+
+S5 = I would be interested in getting my fortune told.
+```{r}
+data %>%
+  group_by(S5) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S5 > 0) %>%
+  ggplot(aes(x=S5, y=`Full Score`)) +
+  geom_point() +
+  stat_smooth(method = "lm", col = "red")
+```
+
+S15 = I have kept a personal journal.
+```{r}
+data %>%
+  group_by(S15) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S15 > 0) %>%
+  ggplot(aes(x=S15, y=`Full Score`)) +
+  geom_point() +
+  stat_smooth(method = "lm", col = "red")
+```
+
+S16 = I have lots of my own theories.
+```{r}
+data %>%
+  group_by(S16) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S16 > 0) %>%
+  ggplot(aes(x=S16, y=`Full Score`)) +
+  geom_point() +
+  stat_smooth(method = "lm", col = "red")
+```
+
+S25 = I wish people were more spiritual.
+```{r}
+data %>%
+  group_by(S25) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S25 > 0) %>%
+  ggplot(aes(x=S25, y=`Full Score`)) +
+  geom_point() +
+  stat_smooth(method = "lm", col = "red")
+```
+
+S26 = I always do the bare minimum I need to get by.
+```{r}
+data %>%
+  group_by(S26) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S26 > 0) %>%
+  ggplot(aes(x=S26, y=`Full Score`)) +
+  geom_point() +
+  stat_smooth(method = "lm", col = "red")
+```
+
+S27 = I like to play devils advocate. 
+```{r}
+data %>%
+  group_by(S27) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S27 > 0) %>%
+  ggplot(aes(x=S27, y=`Full Score`)) +
+  geom_point() +
+  stat_smooth(method = "lm", col = "red")
+```
+

@@ -1,0 +1,2 @@
+"0","markets <- read.csv(""markets.csv"", na.strings=c("""","" "",""-""))"
+"0","head(markets)"

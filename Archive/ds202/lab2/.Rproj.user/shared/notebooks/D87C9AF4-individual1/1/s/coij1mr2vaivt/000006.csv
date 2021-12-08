@@ -1,0 +1,6 @@
+"0","cor(choco$Rating, choco$Cocoa_Percent)"
+"1","[1]"
+"1"," -0.1510178"
+"1","
+"
+"0","plot(choco$Rating, choco$Cocoa_Percent)"

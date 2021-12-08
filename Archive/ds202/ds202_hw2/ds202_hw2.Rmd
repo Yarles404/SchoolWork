@@ -1,0 +1,76 @@
+---
+title: "ds202_hw2"
+author: "Charles Yang"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+```
+# **R Commands**
+## Convert F to C
+```{r}
+cel <- c((85 - 32) * 5 / 9, (67 - 32) * 5 / 9)
+cel
+```
+
+## 200 -> 1, every third entry is 0
+```{r}
+vec200 <- 200:1
+vec200[seq(3,200, by=3)] <- 0
+vec200
+```
+
+## Perfect Squares from 1 -> 2001
+```{r}
+numPerfect <- 1:2001
+numPerfect <- numPerfect[sqrt(numPerfect) == round(sqrt(numPerfect), digits = 0)]
+numPerfect
+```
+
+# **Cars and MPG**
+```{r}
+names(mpg)
+```
+
+## 5 Cars with the worst highway MPG
+```{r}
+worst5 <- head(mpg[order(mpg$hwy),], 5)
+worst5
+```
+### Notes:
+* Four cars with the worst Mileage are Ford brand. The fifth is Jeep.
+* They all have a city and highway mpg of 9 and 12, respectively.
+
+## Number of unique pickup models
+```{r}
+numPickups <- length(table(subset(mpg, class=="pickup")$model))
+numPickups
+```
+### Notes:
+* There are 4 unqiue pickup models.
+
+## Plot city vs highway MPG
+```{r}
+plot(mpg$hwy, mpg$cty)
+```
+### Notes:
+* There is a strong positive correlation between highway mpg and city mpg.
+* There are a limited amount of points because there are points with the same value hidden within eachother. Giving the points an opacity value would help visualize where this is occuring.
+
+## MPG comparison between Ford and Toyota
+```{r}
+ford <- subset(mpg, manufacturer == "ford")
+toyota <- subset(mpg, manufacturer == "toyota")
+boxplot(ford$cty, ford$hwy, toyota$cty, toyota$hwy, main="Ford vs Toyota MPG",ylab="MPG", xlab="Manufacturer and MPG Type", names=c("Ford City", "Ford Highway", "Toyota City", "Toyota Highway"), col=c("red", "red", "grey", "grey"))
+abline(h=mean(ford$cty), col="red")
+abline(h=mean(ford$hwy), col="red", lty=2)
+abline(h=mean(toyota$cty), col="grey")
+abline(h=mean(toyota$hwy), col="grey", lty=2)
+```
+### Notes:
+* From the graph, we can see Toyota has the highest possible MPG
+* Ford's median MPG in city or highway is less than Toyota's
+* Additionally, when comparing means, as denoted by the horizontal lines, we can see that Toyota outperforms Ford in city and highway MPG
+* Overall, Toyota outperforms ford in MPG

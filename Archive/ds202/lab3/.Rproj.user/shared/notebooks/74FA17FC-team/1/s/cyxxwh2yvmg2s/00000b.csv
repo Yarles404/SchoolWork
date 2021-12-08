@@ -1,0 +1,5 @@
+"0","dat5 <- gss[gss$happy %in% c('Very happy', 'Pretty happy', 'Not too happy'),]"
+"0","dat6 <- dat5[dat5$schoolyrcat %in% c('less education', 'more education'),]"
+"0","ggplot(dat6, aes(x=schoolyrcat , fill=happy)) +"
+"0","  geom_bar(position='fill') +"
+"0","  xlab(""Education"")"

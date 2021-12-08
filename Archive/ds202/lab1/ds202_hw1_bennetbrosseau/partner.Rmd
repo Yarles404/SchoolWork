@@ -1,0 +1,22 @@
+---
+title: "partner.Rmd"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Partner's full name and GitHub username
+* Bennet Brosseau
+* bennetbrosseau
+
+### What did the owner do in the most recent commit? Commit ID?
+* "adding files"
+* commit 359dc0623f7d82a664c92b84a83a5a3b63ec6050
+
+### Knit owner's hw1.Rmd. Errors?
+* No errors. The HTML output appeared as expected
+
+### Errors/Difficulties?
+* The primary difficulty was using Git Bash. I am not used to using terminals to do tasks.

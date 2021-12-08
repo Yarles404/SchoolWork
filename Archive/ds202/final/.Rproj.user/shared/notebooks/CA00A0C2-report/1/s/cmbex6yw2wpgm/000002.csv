@@ -1,0 +1,8 @@
+"0","group_by(data, engnat) %>%"
+"0","  summarise(`Full Score` = mean(score_full), .groups = 'drop') %>%"
+"0","  filter(engnat > 0) %>%"
+"0","  mutate(engnat = ifelse(engnat == 1, ""Yes"", ""No"")) %>%"
+"0","  ggplot(aes(x = engnat, y = `Full Score`, fill = engnat)) + "
+"0","  geom_bar(stat = 'identity') +"
+"0","  ggtitle(""Mean Full Scores by Native English Speakers"") +"
+"0","  xlab(""Native English Speaker"")"

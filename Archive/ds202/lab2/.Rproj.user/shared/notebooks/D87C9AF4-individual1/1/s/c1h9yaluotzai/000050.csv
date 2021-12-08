@@ -1,0 +1,1 @@
+"0","barplot(top10Chars, xlab=""Count"", las=2, horiz=TRUE, xaxt=""n"")"

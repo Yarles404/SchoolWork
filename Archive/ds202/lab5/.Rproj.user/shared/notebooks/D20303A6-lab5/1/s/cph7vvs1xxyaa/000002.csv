@@ -1,0 +1,6 @@
+"0","acc %>%"
+"0","  group_by(DAY_WEEK) %>%"
+"0","  summarise(Count=n(), .groups=""keep"") %>%"
+"0","  ggplot(aes(x=DAY_WEEK, y=Count)) +"
+"0","  geom_bar(stat=""identity"", width=.7, aes(fill=DAY_WEEK)) +"
+"0","  scale_fill_brewer(palette=""Reds"")"

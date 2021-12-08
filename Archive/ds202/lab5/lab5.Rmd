@@ -1,0 +1,198 @@
+---
+title: 'Lab 5: FARS Data'
+author: "Charles Yang"
+date: "11/5/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+acc <- read.csv("https://raw.githubusercontent.com/xdaiISU/ds202materials/master/hwlabs/fars2017/accident.csv", stringsAsFactors = FALSE)
+per <- read.csv("https://raw.githubusercontent.com/xdaiISU/ds202materials/master/hwlabs/fars2017/person.csv", stringsAsFactors = FALSE)
+```
+
+```{r libraries, include=FALSE}
+library(RColorBrewer)
+library(tidyverse)
+library(lubridate)
+library(ggrepel)
+library(readxl)
+library(ggthemes)
+```
+
+# Data Structure
+```{r}
+str(acc)
+str(per)
+```
+
+# Accidents by Day of Week
+```{r}
+acc$DAY_WEEK %>% recode("2"="Mon", "3"="Tue", "4"="Wed", "5"="Thu", "6"="Fri", "7"="Sat", "1"="Sun", .default=NA_character_) %>% factor(levels=c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", NA)) -> acc$DAY_WEEK
+```
+
+```{r}
+acc %>%
+  group_by(DAY_WEEK) %>%
+  summarise(Count=n(), .groups="keep") %>%
+  ggplot(aes(x=DAY_WEEK, y=Count)) +
+  geom_bar(stat="identity", width=.7, aes(fill=DAY_WEEK)) +
+  scale_fill_brewer(palette="Reds")
+  
+```
+
+### Notes
+* The party days are more accident prone.
+
+# Fatally Injured Persons
+```{r}
+per %>% filter(INJ_SEV==4) -> fatal
+nrow(fatal)
+```
+
+# Most Dangerous Vehicle Makes by State
+```{r}
+fatal %>%
+  drop_na(MAKE) %>%
+  group_by(STATE, MAKE) %>%
+  summarise(Fatalities = sum(PER_NO), .groups="keep") %>%
+  group_by(STATE) %>%
+  top_n(1, Fatalities) -> dangMakeByState
+```
+
+# Map of States with Most Dangerous Vehicle Make
+```{r}
+states <- map_data("state")
+makeCodes <- read.csv("makeCodes.csv", header=TRUE)
+stateCodes <- read.csv("stateCodes.csv", header=TRUE)
+stateCodes$State <- tolower(stateCodes$State)
+
+dangMakeByState %>%
+  left_join(makeCodes, by=c("MAKE"="Codes")) %>%
+  left_join(stateCodes, by=c("STATE"="Codes")) -> dangMakeByStateClean
+
+dangMakeByStateClean %>%
+  left_join(states, by=c("State"="region")) -> dangMakeByStateMap
+
+states %>%
+  group_by(region) %>%
+  summarise(long=mean(long), lat=mean(lat), .groups="keep") %>%
+  left_join(dangMakeByStateClean, by=c("region"="State")) -> stateLabels
+```
+
+```{r}
+ggplot(dangMakeByStateMap, aes(x=long, y=lat, fill=Fatalities)) +
+  geom_polygon(aes(group=group)) +
+  scale_fill_distiller(palette = "YlOrRd", direction=0) +
+  geom_text_repel(data=stateLabels, color="black", aes(label=Make), size=3) +
+  ggtitle("Most Dangerous Car Makes by State with Fatalities") +
+  theme_map()
+```
+
+### Notes
+* There's lots of Chevrolet
+
+# Combing Accidents and Persons Dataframes
+```{r}
+acc %>%
+  left_join(per, by="ST_CASE") %>%
+  distinct(ST_CASE, .keep_all = TRUE) -> accPer
+```
+
+# Accidents every hour by Day of Week
+```{r}
+accPer %>% filter(HOUR.x < 25) -> accPer
+
+accPer %>%
+  group_by(DAY_WEEK, HOUR.x) %>%
+  summarise(Count=n(), .groups="keep") %>%
+  ggplot(aes(x=HOUR.x, y=Count)) +
+  geom_point() +
+  facet_wrap(facets = "DAY_WEEK") +
+  ggtitle("Accidents by Hour, Day")
+
+#accPer %>%
+#  ggplot(aes(x=DAY_WEEK, group=SEX, fill=HOUR.x)) +
+#  geom_bar(position="stack", stat="count")
+```
+
+### Notes
+* Accidents are relatively low in the mornings, except for Saturday and Sunday early monrings
+* More accidents during the afternoon/evening
+
+
+# Loading State and County Codes
+```{r}
+counties <- map_data("county")
+
+glc <- readxl::read_xlsx("GLC.xlsx") %>% select(State_Code, State_Name, County_Code, County_Name)
+glc$County_Code <- as.numeric(glc$County_Code)
+glc$State_Code <- as.numeric(glc$State_Code)
+glc$State_Name <- tolower(glc$State_Name)
+glc$County_Name <- tolower(glc$County_Name)
+```
+
+# Fatalities by County
+```{r}
+fatal %>%
+  group_by(STATE, COUNTY) %>%
+  summarise(Fatalities = sum(PER_NO), .groups="keep") %>%
+  left_join(glc, by=c("COUNTY"="County_Code", "STATE"="State_Code")) %>%
+  distinct(STATE, COUNTY, .keep_all = TRUE) %>%
+  left_join(counties, by=c("State_Name"="region","County_Name"="subregion")) %>%
+  ggplot(aes(x=long, y=lat, group=group, fill=Fatalities)) +
+  geom_polygon() +
+  scale_fill_distiller(palette = "YlOrRd", direction=0) +
+  ggtitle("Fatalities by County") +
+  theme_map()
+```
+
+### Notes
+* Southern California and Arizona counties have many fatalities
+* Some high fatalities in Texas coutnies
+* Chicago area has high fatalities
+* Southern Florida counties have significantly high fatalities
+
+# Summer Fatalities DF
+```{r}
+fatal %>%
+  filter(MONTH >= 6 & MONTH <=8) -> fatalSummer
+unique(fatalSummer$MONTH)
+
+fatalSummer %>%
+  select(ST_CASE, STATE, PER_NO) %>%
+  group_by(STATE) %>%
+  summarise(Fatalities=sum(PER_NO)) %>%
+  mutate(Summer_Fatalities=Fatalities) -> fatalSummerByState
+```
+
+# Winter Fatalities DF
+```{r}
+fatal %>%
+  filter(MONTH == 12 | MONTH <= 2) -> fatalWinter
+unique(fatalWinter$MONTH)
+
+fatalWinter %>%
+  select(ST_CASE, STATE, PER_NO) %>%
+  group_by(STATE) %>%
+  summarise(Fatalities=sum(PER_NO))  %>%
+  mutate(Winter_Fatalities=Fatalities) -> fatalWinterByState
+```
+
+```{r}
+full_join(fatalSummerByState, fatalWinterByState, by="STATE") %>%
+  select(STATE, Summer_Fatalities, Winter_Fatalities) %>%
+  mutate(`Summer - Winter Fatalities`=Summer_Fatalities - Winter_Fatalities) %>%
+  left_join(stateCodes, by=c("STATE"="Codes")) %>%
+  left_join(states, by=c("State"="region")) %>%
+  ggplot(aes(x=long, y=lat, group=group, fill=`Summer - Winter Fatalities`)) +
+  geom_polygon() +
+  scale_fill_distiller(palette = "RdBu") +
+  ggtitle("Fatality Differences Between Summer and Winter") +
+  theme_map()
+```
+
+### Notes
+* Most states have more fatalities in the Summer
+* Florida is an outlier, with many more fatalities in the winter.

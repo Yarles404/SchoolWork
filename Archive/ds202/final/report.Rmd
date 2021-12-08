@@ -1,0 +1,168 @@
+---
+title: "Project Report on Open Psychometric Data Analysis"
+author: "Charles Yang, Bennet Brosseau, Carter Wunsch, Nicholas Heger, Isaac Tegeler"
+date: "11/19/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+
+# Data was stored in CSV (Comma Delimited), but was tab delimited.
+data <- read.table("VIQT_data.csv", sep="\t", header=TRUE)
+originalData <- data
+```
+
+# Background and Questions Raised
+**Psychological traits may point toward a stronger vocabulary. This has applications for teaching and further research**
+
+1. How do answers to each supplemental question relate to the vocabulary?
+2. How do demographics affect the vocabulary?
+3. Which questions were the hardest?
+4. How does childhood living region correlate with vocabulary?
+5. Which supplemental questions were similar to others?
+6. How does education level affect vocabulary?
+
+# Data Acquisition/Preparation/Wrangling
+
+* Data imported from [Open Psychometrics](http://openpsychometrics.org/_rawdata/VIQT_data.zip)
+* .csv file was tab-delimited, so was read into R like a .tsv
+* Question answers were in binary, so they were treated as their decimal equivalent
+* Changed several columns to numeric type
+* Demographics mapped from their code to actual value (IE: Urban, Education)
+* Created and merged separate table with correct answers to each vocab question
+
+# Visualization
+
+## Heatmap for question 5
+#### We can see some supplemental questions correlate with each other, meaning we can group them by personality indications
+```{r}
+x <- data %>% select(S1:S30)
+
+c <- cor(x)
+c <- data.frame(Var1 = row.names(c), c)
+c <- c %>% pivot_longer(cols=S1:S30, names_to="Var2", values_to="value")
+
+ggplot(c,aes(x=Var1, y=Var2, fill=value)) + geom_tile() + scale_fill_distiller(palette='YlGn')
+```
+
+## Bargraphs, Lineplots, Boxplot for questions 1, 2, 4, and 6
+#### People who do the bare minimum to get by tend to have lower scores
+```{r}
+data %>%
+  group_by(S26) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S26 > 0) %>%
+  ggplot(aes(x=S26, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by S26 Response")
+```
+
+#### It is clear that more educated individuals tend to have higher vocabulary.
+```{r}
+data$education <- recode(data$education, `1`="< HS", `2`="HS", `3`="UNI", `4`="GRAD") %>% factor(levels=c("< HS", "HS", "UNI", "GRAD"))
+data %>%
+  group_by(education) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  ggplot(aes(x=education, y=`Full Score`)) +
+  geom_bar(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by Education")
+```
+
+#### Native English speakers clearly performed better in an English vocabular test.
+```{r}
+group_by(data, engnat) %>%
+  summarise(`Full Score` = mean(score_full), .groups = 'drop') %>%
+  filter(engnat > 0) %>%
+  mutate(engnat = ifelse(engnat == 1, "Yes", "No")) %>%
+  ggplot(aes(x = engnat, y = `Full Score`, fill = engnat)) + 
+  geom_bar(stat = 'identity') +
+  ggtitle("Mean Full Scores by Native English Speakers") +
+  xlab("Native English Speaker")
+```
+
+#### There doesn't seem to be much of a relationship with Gender and Vocabulary
+```{r}
+dataGender <- data
+dataGender$gender <- as.factor(dataGender$gender)
+levels(dataGender$gender)[levels(dataGender$gender)==0] <- 'Did not answer'
+levels(dataGender$gender)[levels(dataGender$gender)==1] <- 'Male'
+levels(dataGender$gender)[levels(dataGender$gender)==2] <- 'Female'
+levels(dataGender$gender)[levels(dataGender$gender)==3] <- 'Other'
+ggplot(dataGender, aes(x=gender, y=score_full)) + geom_boxplot() + ggtitle('Gender vs Full Score') + xlab('Gender') + ylab('Full Score')
+```
+
+#### Age makes you wiser, at least in terms of vocabulary
+```{r}
+data %>%
+  group_by(age) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(age < 100) %>%
+  ggplot(aes(x=age, y=`Full Score`)) +
+  geom_line(stat="identity", width=.7) +
+  ggtitle("Mean Full Scores by Age")
+```
+
+## Linear regression for question 1
+```{r}
+data %>%
+  group_by(S5) %>%
+  summarise(`Full Score`=mean(score_full), .groups="drop") %>%
+  filter(S5 > 0) %>%
+  ggplot(aes(x=S5, y=`Full Score`)) +
+  geom_point() +
+  stat_smooth(method = "lm", col = "red")
+```
+
+## Tables for question 2
+```{r}
+answers <- read.table("answers.tsv", sep="\t", header=TRUE)
+answers %>% pivot_wider(names_from = item, values_from = ans) -> answers
+
+data %>% select(1:45, score_full) %>% arrange(-score_full) %>% top_frac(.5, score_full) -> topHalf
+data %>% select(1:45, score_full) %>% arrange(-score_full) %>% top_frac(-.5, score_full) -> botHalf
+
+discrimIdx <- data.frame(Question=character(), Discrimination=numeric())
+
+#print("DISCRIMINATION INDICES BY QUESTION")
+for (i in 1:45) {
+  discrimIdx <- rbind(discrimIdx, data.frame(Question=paste(sep="","Q", i), Discrimination=as.numeric(table(as.numeric(topHalf[,i]) == as.numeric(answers[1,i]))[2]) / nrow(topHalf) - as.numeric(table(as.numeric(botHalf[,i]) == as.numeric(answers[1,i]))[2]) / nrow(botHalf)))
+  
+  #paste(sep="","Q", i, " ", as.numeric(table(as.numeric(topHalf[,i]) == as.numeric(answers[1,i]))[2]) / nrow(topHalf) - as.numeric(table(as.numeric(botHalf[,i]) == as.numeric(answers[1,i]))[2]) / nrow(botHalf)) %>% print
+  
+}
+discrimIdx %>% arrange(-Discrimination)
+```
+
+# Answers to Questions Raised
+
+1. Most did not correlate with vocab scores
+  + S5, 21, 25, 26, 14, 16, 27, 10, 11, 20 had significant correlations
+2. Demographics
+  + Native english speakers performed better
+  + Urban areas have greater variance in scores, with more in the lower ranges
+  + Rural and Suburban have similar distributions
+  + Age correlates postiively, and the trend is logarithmic, as it plateaus as people get older
+  + Both male and Female had signfiicant outliers
+    - Respondents who did not answer the gender question performed better
+3. Questions 42, 21, and 41 were the hardest
+4.Urban locations had more scores in a lower range than Rural. Suburban locations had double the values, but siilar distribution as Rural
+5. Correlations between supplemental questions
+  + Positive: S2 & S4, S6 & S12, etc.
+  + Negative: S20 & S26, S18 & S26, etc.
+6. Education correlates positively with scores
+
+# Conclusion
+### Correlation of Personalities and Vocabulary
+* Low concientiousness correlates with lower final score, and vice versa
+* Openness to experience correlates with a higher final score, and vice versa
+* Neuroticism correlates with a lower final score
+
+### Demographics
+* Age, Education, English as a Native Language correlate positively with vocabulary
+* Non-Urban individuals tend to perform better
+* No significant differences between the two genders
+
+
+**Raise kids to be concientious, open to new experiences, and in control of their emotinos to maximize their chance of having a strong vocabulary**

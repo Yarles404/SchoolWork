@@ -1,0 +1,109 @@
+---
+title: "Liquor Sales in Iowa"
+author: "Charles Yang"
+date: "10/28/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readr)
+library(lubridate)
+library(ggrepel)
+
+```
+
+# Loading Data
+```{r}
+data <- readr::read_csv("2019_Iowa_Liquor_Sales.csv")
+```
+
+
+# Cleaning
+```{r}
+data$`Store Location` <- str_remove_all(data$`Store Location`, "[POINT()]")
+data$`Store Location` <- substr(data$`Store Location`, 2, nchar(data$`Store Location`))
+data <- data %>% separate(`Store Location`, sep = " ", remove = TRUE, into = c("long","lat"))
+data$Date <- mdy(data$Date)
+```
+
+# Final DataFrame Structure
+```{r}
+str(data)
+```
+
+# First Overview
+```{r}
+liters_summary <- data %>%
+  group_by(`Category Name`) %>%
+  summarize(
+    Date=max(Date),
+    Liters_Sold = sum(`Volume Sold (Liters)`)
+  )
+
+library(scales)
+liters_summary %>% 
+  arrange(Liters_Sold) %>%
+  ggplot(aes(x=`Category Name`, y=`Liters_Sold`)) +
+  geom_bar(stat="identity") +
+  geom_text(data=liters_summary %>% filter(Liters_Sold > 18000), aes(x=`Category Name`, y=`Liters_Sold`, label=`Category Name`), hjust=0) +
+  scale_y_continuous(labels = comma) +
+  ylim(c(0, 160000)) +
+  xlab("Category") +
+  theme(axis.text.y=element_blank(), axis.ticks.y=element_blank()) +
+  coord_flip()
+```
+
+### Notes
+* American Vodkas are the most popular
+
+# Orders by Day of the Week
+```{r}
+data <- data %>%
+  mutate(day = wday(Date, label=TRUE), month=month(Date, label=TRUE))
+
+data %>%
+  group_by(day) %>%
+  summarise(Bottles = sum(`Bottles Sold`)) %>%
+  ggplot(aes(day, Bottles)) +
+  geom_bar(stat="identity")
+
+```
+
+## Notes
+* Wednesday and Thursday result in the most bottle sales
+* Possible Causes: Thirsty Thursday, Friday Night, and the Weekend.+
+
+# Liquor Orders by Month, Day
+```{r}
+day_month <- data %>%
+  group_by(day, month) %>%
+  summarise(Bottles = sum(`Bottles Sold`))
+
+day_month %>%
+  ggplot(aes(day, Bottles)) +
+    geom_bar(stat="identity") +
+    facet_wrap(day_month$month)
+```
+
+### Notes
+* October seems to have the most sales total, mainly on Wed and Thu
+
+
+# Monthly Volume Sold by Category
+```{r}
+liters_summary <- data %>%
+  group_by(month, `Category Name`) %>%
+  summarise(Liters.Sold=sum(`Volume Sold (Liters)`))
+
+liters_labels <- liters_summary %>% group_by(`Category Name`) %>% arrange(-Liters.Sold) %>% distinct(`Category Name`, .keep_all = TRUE)
+
+liters_summary %>% ggplot(aes(x=month, y=Liters.Sold, group=`Category Name`)) +
+  geom_line() +
+  geom_text_repel(data= liters_labels %>% head(5), aes(x=month, y=Liters.Sold, label=`Category Name`))
+```
+
+### Notes
+* American Vodkas sells the best across all months, with a spike around August
+* Special Order and Cocktails RTD have a spike around Spring Graduation

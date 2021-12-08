@@ -1,0 +1,1 @@
+"0","acc$DAY_WEEK %>% recode(""2""=""Mon"", ""3""=""Tue"", ""4""=""Wed"", ""5""=""Thu"", ""6""=""Fri"", ""7""=""Sat"", ""1""=""Sun"", .default=NA_character_) %>% factor(levels=c(""Mon"", ""Tue"", ""Wed"", ""Thu"", ""Fri"", ""Sat"", ""Sun"", NA)) -> acc$DAY_WEEK"

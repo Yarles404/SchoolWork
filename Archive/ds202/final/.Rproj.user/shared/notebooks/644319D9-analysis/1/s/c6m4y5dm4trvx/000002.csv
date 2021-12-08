@@ -1,0 +1,9 @@
+"0","countByState <- markets"
+"0","countByState$State <- tolower(countByState$State)"
+"0",""
+"0","countByState %>%"
+"0","  group_by(State) %>%"
+"0","  summarise(`Farmer's Markets` = n()) %>%"
+"0","  left_join(states, by = c(""State""=""region"")) -> countByState"
+"2","`summarise()` ungrouping output (override with `.groups` argument)
+"

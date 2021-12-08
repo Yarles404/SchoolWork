@@ -1,0 +1,8 @@
+"0","gss$schoolyrcat[gss$schoolyears < 12] <- ""less education"""
+"2","Unknown or uninitialised column: `schoolyrcat`."
+"0","gss$schoolyrcat[gss$schoolyears >= 12] <- ""more education"""
+"0","dat3 <- gss[gss$maried %in% c('Married', 'Never married', 'Divorced'),]"
+"0","dat4 <- dat3[dat3$schoolyrcat %in% c('less education', 'more education'),]"
+"0","ggplot(dat4, aes(x=schoolyrcat , fill=maried)) +"
+"0","  geom_bar(position='fill') +"
+"0","  xlab(""Education"")"

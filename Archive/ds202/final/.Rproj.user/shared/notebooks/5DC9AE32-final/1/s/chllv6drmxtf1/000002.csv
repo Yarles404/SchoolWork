@@ -1,0 +1,7 @@
+"0","dataGender <- data"
+"0","dataGender$gender <- as.factor(dataGender$gender)"
+"0","levels(dataGender$gender)[levels(dataGender$gender)==0] <- 'Did not answer'"
+"0","levels(dataGender$gender)[levels(dataGender$gender)==1] <- 'Male'"
+"0","levels(dataGender$gender)[levels(dataGender$gender)==2] <- 'Female'"
+"0","levels(dataGender$gender)[levels(dataGender$gender)==3] <- 'Other'"
+"0","ggplot(dataGender, aes(x=gender, y=score_full)) + geom_boxplot() + ggtitle('Gender vs Full Score') + xlab('Gender') + ylab('Full Score')"

@@ -1,0 +1,45 @@
+---
+title: "firstShiny"
+author: "Charles Yang"
+date: "12/19/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(shiny)
+library(shinydashboard)
+```
+
+```{r setup, include=FALSE}
+library(RSQLite)
+```
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(dplyr`)
+```
+
+```{r}
+con <- dbConnect(drv = RSQLite::SQLite(), dbname = "FPA_FOD.sqlite")
+dbListTables(con)
+```
+
+```{r}
+fires <- dbReadTable(con, "Fires")
+summary(fires)
+```
+
+
+```{r}
+ui <- dashboardPage(
+  dashboardHeader(),
+  dashboardSidebar(),
+  dashboardBody()
+)
+
+server <- function(input, output) {}
+
+shinyApp(ui, server)
+```
+

@@ -1,0 +1,95 @@
+---
+title: "DS202 HW3"
+author: "Charles Yang"
+date: "9/15/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include=FALSE}
+data(tips, package="reshape2")
+library(tidyverse)
+library(dplyr)
+```
+
+```{r}
+str(tips)
+```
+
+# Total Bill vs Tip, with 15% tip rate line
+```{r}
+ggplot(tips, aes(x=total_bill, y=tip)) + 
+  geom_point() + 
+  geom_abline(slope=.15, intercept=0) + 
+  ylim(0, 10)
+```
+
+### Notes
+* Some bills have very high tip amounts at a low total bill. Some are over 50%
+* Vice versa; Some high bills have low tip %
+
+# Customers per Day
+```{r}
+days <- c("Thur", "Fri", "Sat", "Sun")
+ggplot(tips, aes(x=factor(day, levels = days))) + 
+  geom_bar(width=.5) + 
+  xlab("Day") + 
+  ylab("# of Customers") + 
+  ggtitle("Customers per Day") + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### Notes
+* Friday is the least popular
+* Saturday is the most popular
+* Thursday, Saturday, and Sunday are popular
+
+# Tip Rate by Gender
+```{r}
+tips %>% mutate(tip_rate = tip / total_bill) -> tips
+
+ggplot(tips, aes(x=factor(sex, levels=c("Male", "Female")), y=tip_rate)) + 
+  geom_boxplot(width=.5) + xlab("Gender") + 
+  ggtitle("Tip Rate by Gender") + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### Notes
+* Little difference in tip rates between genders
+* Males have the highest outlier
+
+# Tip Rate by Day
+```{r}
+ggplot(tips, aes(x=factor(day, levels=days), y=tip_rate)) + 
+  geom_boxplot(width=.5)
+```
+
+### Notes
+* Tip rate does not seem to vary much by day
+* Weekends have high outliers and higher variance
+
+# Tip Rate, by Smoking Behavior and Gender
+```{r}
+ggplot(tips, aes(x=tip_rate)) + geom_boxplot() + 
+  facet_wrap(~sex~smoker) +
+  theme(axis.text.y=element_blank(), axis.ticks.y=element_blank())
+```
+
+### Notes
+* Smoking increases the ranges of tip rate
+* Male smokers tip slightly less than Male non-smokers
+* Female smokers tip slightly better than Female non-smokers
+
+# Gender which pays, by day
+```{r}
+ggplot(tips, aes(x=factor(day, levels=c("Thur", "Fri", "Sat", "Sun")), fill=sex)) + 
+  geom_bar() +
+  xlab("Day")
+```
+
+### Notes
+* Males and Females pay the bill at similar frequencies on Thur and Fri
+* Males pay more often on the weekend

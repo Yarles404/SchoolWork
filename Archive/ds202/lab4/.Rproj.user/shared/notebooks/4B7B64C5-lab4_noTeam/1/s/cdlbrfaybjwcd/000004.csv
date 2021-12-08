@@ -1,0 +1,7 @@
+"0","defLonger[which((defLonger$Opponent_Opponent == ""Iowa"" | defLonger$Opponent_Opponent == ""Notre Dame"") & defLonger$stat == ""Tackles_Solo""),] %>%"
+"0","  pivot_wider(names_from = Opponent_Opponent, values_from = value) %>%"
+"0","  ggplot(aes(x = Iowa, y = `Notre Dame`)) +"
+"0","    geom_point(alpha=.1) +"
+"0","    ggtitle(""Solo Tackles by Player by Game"") +"
+"0","    xlab(""Iowa Solo Tackles"") +"
+"0","    ylab(""Notre Dame Solo Tackles"")"

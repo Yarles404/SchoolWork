@@ -1,0 +1,5 @@
+"0","#3"
+"0","dat1 <- gss[gss$happy %in% c('Pretty happy', 'Very happy', 'Not too happy'),]"
+"0","dat2 <- dat1[dat1$maried %in% c('Married', 'Never married', 'Divorced'),]"
+"0","ggplot(dat2, aes(x=maried , fill=happy)) + geom_bar(position='fill')"
+"0",""

@@ -1,0 +1,8 @@
+"0","partyfactor <- factor(dat2$party, levels=c(""Strong democrat"", ""Not str democrat"", ""Ind,near dem"", ""Independent"", ""Ind,near rep"", ""Not str republican"", ""Strong republican"",""Don't know"", ""No answer"", ""Other party""))"
+"0",""
+"0","ggplot(dat2, aes(x=maried, fill=happy)) +"
+"0","  geom_bar(position=""fill"") +"
+"0","  facet_wrap(partyfactor) +"
+"0","  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +"
+"0","  xlab(""Marital Status"") +"
+"0","  ylab(""Percent of total"")"

@@ -1,0 +1,90 @@
+---
+title: "HW4"
+author: "Charles Yang"
+date: "9/30/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(nycflights13)
+```
+
+# Are there any duplicate flight numbers?
+```{r}
+flights$flight <- factor(flights$flight)
+
+group_by(flights, time_hour)$flight %>% duplicated() %>% any()
+```
+
+### Notes
+* Some flight numbers are repeated.
+
+# Add Origin and Destination to flights.
+```{r}
+airports %>% 
+  select(origin_code=faa, origin_name=name, origin_lat=lat, origin_lon=lon) %>%
+  right_join(y=flights, by = c("origin_code"="origin")) -> myFlights
+
+airports %>% 
+  select(dest_code=faa, dest_name=name, dest_lat=lat, dest_lon=lon) %>%
+  right_join(y=flights, by = c("dest_code"="dest")) -> myFlights
+
+head(myFlights)
+
+```
+
+# How does visibility affect delays?
+## Departure Delay
+```{r}
+nycflights13::flights %>%
+  left_join(y=weather %>% select(origin, visib, time_hour),
+            by=c("time_hour", "origin")) -> weatherFlights
+
+weatherFlights %>%
+  group_by(visib) %>%
+  summarize(dep_delay_median = median(dep_delay, na.rm = TRUE),
+            dep_delay_mean = mean(dep_delay, na.rm = TRUE),
+            .groups="keep")
+```
+
+## Arrival Delay
+```{r}
+weatherFlights %>%
+  group_by(visib) %>%
+  summarize(arr_delay_median = median(arr_delay, na.rm = TRUE),
+            arr_delay_mean = mean(arr_delay, na.rm = TRUE),
+            .groups="keep")
+```
+
+### Notes
+* Higher visibility tends to reduce delays, and vice versa.
+
+# Computing and Creating Delay Severity Column
+```{r}
+myFlights %>%
+  mutate(severe=if_else(!is.na(arr_delay), if_else(arr_delay >= 30, 1, 0), 0)) %>%
+  group_by(dest_code) %>%
+  summarize(delay_severity = as.double(sum(severe)) / n(), .groups="keep") -> delaySeverity_by_faa
+
+delaySeverity_by_faa %>% arrange(-delay_severity) %>% head(3)
+```
+
+### Notes
+* Columbia, Tulsa, and Oklahoma City had the highest Delay Severity
+
+# Delay Severity by Airport on June 13, 2013
+```{r}
+myFlights %>%
+  filter(month==6, day==13) %>%
+  mutate(severe=if_else(!is.na(arr_delay), if_else(arr_delay >= 30, 1, 0), 0)) %>%
+  group_by(dest_code) %>%
+  summarize(delay_severity = as.double(sum(severe)) / n(), .groups="keep") %>%
+  arrange(-delay_severity)
+```
+
+### Notes
+* This was the time of the 2-13 Derecho Series, where two massive storm systems impacted almost the entirety of Eastern United States.
+* The extreme delays were caused by this storm.
+

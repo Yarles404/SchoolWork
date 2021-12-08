@@ -1,0 +1,73 @@
+---
+title: "Individual Analysis of Choco.csv"
+author: "Charles Yang"
+date: "9/3/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+choco <- read.csv("https://raw.githubusercontent.com/xdaiISU/ds202materials/master/hwlabs/data/choco.csv") 
+str(choco)
+```
+
+### 1. Distribution of Rating
+```{r}
+hist(choco$Rating)
+```
+
+#### Notes
+* Left skewed
+  + Most chocolates have decent rating
+  + Extremes taper off
+```{r}
+boxplot(choco$Rating, horizontal=TRUE, xlab="Rating")
+title("Boxplot of Ratings")
+```
+
+#### Notes
+* Most chocolates have positive rating
+* Some outliers at the lower range
+
+### 2. How do the number of ratings change per year?
+```{r}
+barplot(table(choco$Date))
+title("Ratings per Year")
+```
+
+#### Notes
+* Number of ratings increase gradually until 2015
+* After 2015, number of ratings are less, but unpredictable.
+
+### 3. Are Ratings and Cocoa_Percent correlated?
+```{r}
+cor(choco$Rating, choco$Cocoa_Percent)
+plot(choco$Rating, choco$Cocoa_Percent)
+#lm(choco$Cocoa_Percent ~ choco$Rating)
+abline(77.8, -1.93)
+```
+
+#### Notes
+* Graph and line of best fit do not show obvious correlation
+  + Small negative relationship?
+* Correlation Coefficient = -.15. Weak/Insignificant correlation.
+
+## 4. Favorable characteristics
+```{r}
+top <- choco[choco$Rating >= 4,]
+allCharacteristics <- c(as.character(top$Characteristics1), as.character(top$Characteristics2), as.character(top$Characteristics3), as.character(top$Characteristics4))
+top10Chars <- sort(table(allCharacteristics), decreasing=TRUE)[1:10]
+top10Chars
+```
+
+#### Notes
+* Creamy, Cocoa, and Nutty stand out as the only double digit count in the top 100 chocolates by Rating
+
+```{r}
+barplot(top10Chars, xlab="Count", las=2, horiz=TRUE, xaxt="n")
+axis(1, at=c(seq(from=0, to=35, by=5 ), 36))
+title("Counts of characteristics in the top 100 chocolates")
+```

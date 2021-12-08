@@ -1,0 +1,11 @@
+"0",""
+"0","x <- dataEducation %>% "
+"0","  select(S7, S8, S9, S10, S11, S12, education) %>%"
+"0","  group_by(education, S7, S8, S9, S10, S11, S12) %>% "
+"0","  summarise(count = n()) %>% "
+"0","  pivot_longer(cols=S7:S12, names_to=""question"", values_to=""answer"")"
+"2","`summarise()` regrouping output by 'education', 'S7', 'S8', 'S9', 'S10', 'S11' (override with `.groups` argument)
+"
+"0","x$question = factor(x$question, levels=c(""S7"", ""S8"", ""S9"", ""S10"", ""S11"", ""S12""))"
+"0","x <- x%>%filter(answer!=0)"
+"0","ggplot(x, aes(x=answer, y=count, fill=education)) + geom_bar(stat=""identity"") + facet_wrap(~question) + ggtitle(""S7-S12 Responses by Education"") + xlab('Response (1=Disagree, 5=Agree)')"

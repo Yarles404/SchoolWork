@@ -1,0 +1,1 @@
+"0","ggplot(x%>%filter(question==""S11""), aes(x=score_full)) + geom_histogram() + facet_wrap(~answer, scales=""free_y"")"

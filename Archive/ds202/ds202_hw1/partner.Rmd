@@ -1,0 +1,13 @@
+---
+title: "partner"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Charles Yang
+
+
+Charles upladed a commit called hw1 Rmd and HTML output

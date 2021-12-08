@@ -1,0 +1,7 @@
+"0","x <- data %>% select(S1:S30)"
+"0",""
+"0","c <- cor(x)"
+"0","c <- data.frame(Var1 = row.names(c), c)"
+"0","c <- c %>% pivot_longer(cols=S1:S30, names_to=""Var2"", values_to=""value"")"
+"0",""
+"0","ggplot(c,aes(x=Var1, y=Var2, fill=value)) + geom_tile() + scale_fill_distiller(palette='YlGn')"

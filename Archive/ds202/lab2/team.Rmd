@@ -1,0 +1,40 @@
+---
+title: "Team"
+author: "Charles Yang, Carter Wunsch"
+date: "9/9/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+choco <- read.csv("https://raw.githubusercontent.com/xdaiISU/ds202materials/master/hwlabs/data/choco.csv") 
+str(choco)
+```
+
+# Charles' Analysis
+## Top ten average ratings by Origin
+```{r}
+MeanRatingByOrigin <- aggregate(choco[, "Rating"], list(choco$Bean_Origin), mean)
+MeanRatingByOrigin <- MeanRatingByOrigin[order(-MeanRatingByOrigin$x),]
+head(MeanRatingByOrigin, 10)
+```
+
+### Notes
+* Tobago has the highest mean Rating for their Cacao beans
+  + Significant difference between Tobago and next best
+
+## Graphical representation: Barplot
+```{r}
+bp <- barplot(head(MeanRatingByOrigin, 10)$x,
+        ylab="Mean Chocolate Rating",
+        ylim = c(3, 4),
+        xpd = FALSE,
+        names=head(MeanRatingByOrigin, 10)$Group.1,
+        las=3)
+title("Mean Ratings by Cocao Bean Origin")
+grid()
+```
+

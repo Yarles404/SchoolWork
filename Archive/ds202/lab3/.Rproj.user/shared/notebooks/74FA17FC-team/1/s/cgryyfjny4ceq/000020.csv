@@ -1,0 +1,6 @@
+"0","educatedParents <- gss[gss$daddegree %in% c(""Lt high school"",""Bachelor"",""High school"",""Not applicable"",""Don't know"",""Graduate"",""Junior college""),]"
+"0","and3Happy <- educatedParents[educatedParents$happy %in% c('Very happy', 'Pretty happy', 'Not too happy'),]"
+"0",""
+"0","daddegreeFactor <- factor(and3Happy$daddegree, c(""Not applicable"",""Lt high school"",""High school"",""Junior college"",""Bachelor"",""Graduate"",""Don't know""))"
+"0","ggplot(and3Happy, aes(x=happy, fill=daddegreeFactor)) +"
+"0","  geom_bar(position=""fill"")"

@@ -1,0 +1,27 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1598537707986.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1609082044",
+    "id" : "CCF05B0C",
+    "lastKnownWriteTime" : 1598716969,
+    "last_content_update" : 1598716969817,
+    "path" : "C:/Users/15155/Desktop/DS_202/ds202_hw2/ds202_hw2.Rmd",
+    "project_path" : "ds202_hw2.Rmd",
+    "properties" : {
+        "cursorPosition" : "10,4",
+        "last_setup_crc32" : "",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

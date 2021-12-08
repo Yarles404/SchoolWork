@@ -1,0 +1,6 @@
+"0","fatal %>%"
+"0","  drop_na(MAKE) %>%"
+"0","  group_by(STATE, MAKE) %>%"
+"0","  summarise(Fatalities = sum(PER_NO), .groups=""keep"") %>%"
+"0","  group_by(STATE) %>%"
+"0","  top_n(1, Fatalities) -> dangMakeByState"

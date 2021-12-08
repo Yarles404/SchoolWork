@@ -1,0 +1,3 @@
+"0","MeanRatingByOrigin <- aggregate(choco[, ""Rating""], list(choco$Bean_Origin), mean)"
+"0","MeanRatingByOrigin <- MeanRatingByOrigin[order(-MeanRatingByOrigin$x),]"
+"0","head(MeanRatingByOrigin, 10)"

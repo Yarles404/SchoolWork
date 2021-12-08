@@ -1,0 +1,16 @@
+answers <- read.table("answers.tsv", sep="\t", header=TRUE)
+answers %>% pivot_wider(names_from = item, values_from = ans) -> answers
+
+data %>% select(1:45, score_full) %>% arrange(-score_full) %>% top_frac(.5, score_full) -> topHalf
+data %>% select(1:45, score_full) %>% arrange(-score_full) %>% top_frac(-.5, score_full) -> botHalf
+
+discrimIdx <- data.frame(Question=character(), Discrimination=numeric())
+
+#print("DISCRIMINATION INDICES BY QUESTION")
+for (i in 1:45) {
+  discrimIdx <- rbind(discrimIdx, data.frame(Question=paste(sep="","Q", i), Discrimination=as.numeric(table(as.numeric(topHalf[,i]) == as.numeric(answers[1,i]))[2]) / nrow(topHalf) - as.numeric(table(as.numeric(botHalf[,i]) == as.numeric(answers[1,i]))[2]) / nrow(botHalf)))
+  
+  #paste(sep="","Q", i, " ", as.numeric(table(as.numeric(topHalf[,i]) == as.numeric(answers[1,i]))[2]) / nrow(topHalf) - as.numeric(table(as.numeric(botHalf[,i]) == as.numeric(answers[1,i]))[2]) / nrow(botHalf)) %>% print
+  
+}
+discrimIdx %>% arrange(-Discrimination)

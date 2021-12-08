@@ -1,0 +1,5 @@
+"0","x <- data %>% select(S7, S8, S9, S10, S11, S12, score_full) %>%"
+"0","  pivot_longer(cols=S7:S12, names_to=""question"", values_to=""answer"")"
+"0","x$question = factor(x$question, levels=c(""S7"", ""S8"", ""S9"", ""S10"", ""S11"", ""S12""))"
+"0","x <- x%>%filter(answer!=0)"
+"0","ggplot(x%>%filter(question==""S7""), aes(x=score_full)) + geom_histogram() + facet_wrap(~answer, scales=""free_y"")"

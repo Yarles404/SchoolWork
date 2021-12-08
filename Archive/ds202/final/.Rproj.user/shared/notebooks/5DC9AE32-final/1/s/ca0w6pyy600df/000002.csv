@@ -1,0 +1,7 @@
+"0","data %>%"
+"0","  group_by(S25) %>%"
+"0","  summarise(`Full Score`=mean(score_full), .groups=""drop"") %>%"
+"0","  filter(S25 > 0) %>%"
+"0","  ggplot(aes(x=S25, y=`Full Score`)) +"
+"0","  geom_point() +"
+"0","  stat_smooth(method = ""lm"", col = ""red"")"

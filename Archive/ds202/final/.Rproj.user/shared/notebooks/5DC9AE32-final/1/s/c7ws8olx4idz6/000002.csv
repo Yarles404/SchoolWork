@@ -1,0 +1,7 @@
+"0","data %>%"
+"0","  group_by(S26) %>%"
+"0","  summarise(`Full Score`=mean(score_full), .groups=""drop"") %>%"
+"0","  filter(S26 > 0) %>%"
+"0","  ggplot(aes(x=S26, y=`Full Score`)) +"
+"0","  geom_bar(stat=""identity"", width=.7) +"
+"0","  ggtitle(""Mean Full Scores by S26 Response"")"

@@ -1,0 +1,8 @@
+"0","data %>%"
+"0","  group_by(age) %>%"
+"0","  summarise(`Full Score`=mean(score_full), .groups=""drop"") %>%"
+"0","  filter(age < 100) %>%"
+"0","  ggplot(aes(x=age, y=`Full Score`)) +"
+"0","  geom_line(stat=""identity"", width=.7) +"
+"0","  ggtitle(""Mean Full Scores by Age"")"
+"2","Ignoring unknown parameters: width"

@@ -1,0 +1,96 @@
+---
+title: "Project Proposal"
+author: "Charles Yang, Isaac Tegeler, Carter Wunsch, Bennet Brosseau, Nicholas Heger"
+date: "10/25/2020"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+
+# Data was stored in CSV (Comma Delimited), but was tab delimited.
+data <- read.table("VIQT_data.csv", sep="\t", header=TRUE)
+```
+
+## Group Members:
+* Charles Yang (Coordinator)
+* Isaac Tegeler
+* Carter Wunsch
+* Bennet Brosseau
+* Nicholas Heger
+
+## Data:
+**Data is from Open Psychometrics**
+[Download Dataset](http://openpsychometrics.org/_rawdata/VIQT_data.zip)
+
+```{r}
+head(data)
+```
+
+```{r}
+names(data)
+```
+
+# Overview via codebook
+
+The main body of the test had 45 vocabulary questions. Each question was a list of five words. Subjects were instructed to select the two on the list that had the same meaning. Subjects were also instructed to not guess and were told there was a -0.35 point penalty for a wrong answer.
+
+* Calculated scores are availible in these three variables:
+* score_right	Number of questions that were answered correctly.
+* score_wrong	Number of questions that were answered incorrectly.
+* score_full	= score_right - 0.35 * score_wrong
+
+The given answer is an integer converted from a binary representation of words selected, where 1=selected, 0=unselected
+
+* 3 = 11000
+* 5 = 10100
+* 6 = 01100
+* 9 = 10010
+* 10 = 01010
+* 12 = 00110
+* 17 = 10001
+* 18 = 01001
+* 20 = 00101
+* 24 = 00011
+
+The following items were rated on a five point scale (1=Disagree, 5=Agree):
+
+* S1	I prefer to be barefoot.
+* S2	I avoid contacts with others.
+* S3	I had an imaginary friend as a child.
+* S4	I'd rather not people pay attention to me.
+* S5	I would be interested in getting my fortune told.
+* S6	I am not what society wants me to be.
+* S7	I don't pack much luggage when I travel.
+* S8	I try my best to follow the rules.
+* S9	I did not work very hard in school.
+* S10	I don't like to analyze literature.
+* S11	I sometimes feel like crying when I get angry.
+* S12	I am very unusual.
+* S13	I have been very interested in historical wars.
+* S14	I think ancient philosophy still is meaningful today.
+* S15	I have kept a personal journal.
+* S16	I have lots of my own theories.
+* S17	I could do an impressive amount of push ups.
+* S18	I put work first.
+* S19	I do not have a very expressive face.
+* S20	I do more than what's expected of me.
+* S21	I sit on my legs.
+* S22	I am a perfectionist.
+* S23	I have studied how to win at gambling.
+* S24	I naturally emerge as a leader.
+* S25	I wish people were more spiritual.
+* S26	I always do the bare minimum I need to get by.
+* S27	I like to play devils advocate.
+* S28	I am not bothered by messy people.
+* S29	I am more artistic than scientific.
+* S30	I am not quite sure what I want.
+
+Age, Gender, English as Native Language, and Childhood Living Area and Education are included.
+
+# Plan
+
+We intend to analyze the relationship between answers to supplementary questions and final full score, which is a measure of vocabulary IQ. We may also look at which questions were missed the most. We will compare observations by demographics.
+

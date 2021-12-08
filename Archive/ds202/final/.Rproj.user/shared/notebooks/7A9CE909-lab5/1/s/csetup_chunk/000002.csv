@@ -1,0 +1,4 @@
+"0","knitr::opts_chunk$set(echo = TRUE)"
+"0",""
+"0","acc <- read.csv(""https://raw.githubusercontent.com/xdaiISU/ds202materials/master/hwlabs/fars2017/accident.csv"", stringsAsFactors = FALSE)"
+"0","per <- read.csv(""https://raw.githubusercontent.com/xdaiISU/ds202materials/master/hwlabs/fars2017/person.csv"", stringsAsFactors = FALSE)"

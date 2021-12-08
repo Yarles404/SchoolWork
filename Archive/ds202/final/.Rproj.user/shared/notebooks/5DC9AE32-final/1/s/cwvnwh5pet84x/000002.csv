@@ -1,0 +1,8 @@
+"0","data %>%"
+"0","  group_by(S17) %>%"
+"0","  summarise(`Full Score`=mean(score_full), .groups=""drop"") %>%"
+"0","  filter(S17 > 0) %>%"
+"0","  ggplot(aes(x=S17, y=`Full Score`)) +"
+"0","  geom_bar(stat=""identity"", width=.7) +"
+"0","  ggtitle(""Mean Full Scores by S17 Response"") +"
+"0","  xlab('Response (1=Disagree, 5=Agree)')"

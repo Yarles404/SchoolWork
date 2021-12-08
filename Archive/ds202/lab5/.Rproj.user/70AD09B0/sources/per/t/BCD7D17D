@@ -1,0 +1,27 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1604595156838.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3327646883",
+    "id" : "BCD7D17D",
+    "lastKnownWriteTime" : 1611608148,
+    "last_content_update" : 1611608148140,
+    "path" : "C:/Users/15155/Desktop/DS_202/lab5/lab5.Rmd",
+    "project_path" : "lab5.Rmd",
+    "properties" : {
+        "cursorPosition" : "191,53",
+        "last_setup_crc32" : "",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

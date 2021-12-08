@@ -1,0 +1,5 @@
+"0","defLonger %>%"
+"0","  group_by(stat) %>%"
+"0","  summarise(median = mean(value))"
+"2","`summarise()` ungrouping output (override with `.groups` argument)
+"

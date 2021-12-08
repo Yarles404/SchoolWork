@@ -1,0 +1,5 @@
+"0","penguins %>% ggplot(aes(x=body_mass_g)) +"
+"0","  geom_histogram(aes(color=species, fill=species), position = ""dodge"", bins = 18) +"
+"0","  xlab(""Body mass (g)"") +"
+"0","  ylab(""Frequency"") +"
+"0","  ggtitle(""Body mass of penguins"")"

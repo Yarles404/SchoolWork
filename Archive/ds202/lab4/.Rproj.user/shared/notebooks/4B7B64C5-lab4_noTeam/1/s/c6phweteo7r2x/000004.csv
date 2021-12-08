@@ -1,0 +1,7 @@
+"0","bioClean <- bioClean %>%"
+"0","  separate(col = Hometown, into = c(""City"", ""State""), sep = "", "")"
+"0",""
+"0","bioClean %>%"
+"0","  distinct(Name, .keep_all = TRUE) %>%"
+"0","  group_by(State) %>%"
+"0","  summarise(Players = n(), .groups=""keep"")"

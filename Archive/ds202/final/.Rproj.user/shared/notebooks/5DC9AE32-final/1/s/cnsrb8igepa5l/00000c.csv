@@ -1,0 +1,10 @@
+"0",""
+"0","dataEducation %>%"
+"0","  filter(S26 > 0) %>%"
+"0","  group_by(education, S26) %>% "
+"0","  summarise(count = n()) %>% "
+"0","  ggplot(aes(x = S26, y = count, fill = education)) +"
+"0","  geom_bar(stat=""identity"") + ggtitle(""S26 Responses by Education"") +"
+"0","  xlab('Response (1=Disagree, 5=Agree)')"
+"2","`summarise()` regrouping output by 'education' (override with `.groups` argument)
+"

@@ -1,0 +1,8 @@
+"0",""
+"0","avgs <- x %>% "
+"0","  group_by(question, answer) %>%"
+"0","  summarise(avgs = mean(score_full)) %>%"
+"0","  ungroup()"
+"2","`summarise()` regrouping output by 'question' (override with `.groups` argument)
+"
+"0","ggplot(avgs, aes(x=answer, y=avgs)) + geom_bar(stat=""identity"") + facet_wrap(~question)"
