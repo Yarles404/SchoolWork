@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charles Yang DS 303 Final</title>
+</head>
+<body>
+
+    <style type="text/css">
+        @import url("https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css");
+    </style>
+
+<section class="section">
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+
+                1. Concept Review
+
+            </p>
+        </header>
+
+        <div class="card-content">
+            <div class="content">
+
+                a. False. Bias and Variance are abstract values for models, and cannot be directly computed.
+                We use cross validation on cvMSE to identify an optimal lambda.
+
+            </div>
+        </div>
+
+        <div class="card-content">
+            <div class="content">
+
+                b. False. We implement cross-validation on the training set.
+
+            </div>
+        </div>
+
+        <div class="card-content">
+            <div class="content">
+
+                c. False. QDA would overfit if the true decision boundary is linear because it would try to account for curves in the imperfect data.
+                Linear Discriminant Analysis is ideal of this situation.
+                
+            </div>
+        </div>
+
+        <div class="card-content">
+            <div class="content">
+
+                d. True. Highly correlated trees result in higher variance in the model.
+                Decorrelation is a necessary step to reduce the variance.
+
+            </div>
+        </div>
+
+        <div class="card-content">
+            <div class="content">
+
+                e. False. It is possible for Lasso to set insignificant coefficients to zero, potentially giving better predictions.
+                It also depends on the data.
+
+            </div>
+        </div>
+
+        <div class="card-content">
+            <div class="content">
+
+                f. False. 3 and 4 are not grouped at the same level in that subtree.
+                They could be somewhat similar, though.
+
+            </div>
+        </div>
+
+        <div class="card-content">
+            <div class="content">
+
+                g. It has been proven that the k-means algorithm causes a monotonic decrease in within-cluster variation for each iteration.
+                It was also mentioned in class.
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="section">
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+
+                2. Classification
+
+            </p>
+        </header>
+
+        <div class="card-content">
+            <div class="content">
+
+                a. 0.5 threshhold always minimizes the missclassification rate.
+                <br> 52 20
+                <br> 9 19 <br>
+                missclassification rate: 0.29
+
+            </div>
+        </div>
+
+        <div class="card-content">
+            <div class="content">
+
+                a. 0.5 threshhold always minimizes the missclassification rate.
+                <br> 52 20
+                <br> 9 19 <br>
+                missclassification rate: 0.29
+
+            </div>
+        </div>
+
+        <div class="card-content">
+            <div class="content">
+
+                b. mtry = 2 best with cvError of 0.298554 <br>
+                mtry = 3 with error 0.3150685 <br>
+                mtry = 4 with error 0.3094749 <br>
+                mtry = 5 with error 0.3011035
+
+            </div>
+        </div>
+
+        <div class="card-content">
+            <div class="content">
+
+                c. missclassification rate: 0.29, OOB Error gives 0.3176796, which is very similar.
+
+            </div>
+        </div>
+
+        <div class="card-content">
+            <div class="content">
+
+                d. 0.1707317
+
+            </div>
+        </div>
+
+        <div class="card-content">
+            <div class="content">
+
+                e.  2.137118e-16. This is probably wrong because there's something wrong with my code :(
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="section">
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+
+                3. Clustering
+
+            </p>
+        </header>
+
+        <div class="card-content">
+            <div class="content">
+
+                a. We will use k-means clustering because we know exactly how many groups we want.
+                K = 2.
+
+            </div>
+        </div>
+
+        <div class="card-content">
+            <div class="content">
+
+                b. We need to scale the variables because of their wildly differing variances.
+                Higher variance variables will have an arbitrarily massive effect on the distance measures.
+
+            </div>
+        </div>
+
+        <div class="card-content">
+            <div class="content">
+
+                c. K means classified most of the data as low risk, but missclassified many of the high risk patients.
+                It did not do so well.
+
+            </div>
+        </div>
+
+    </div>
+</section>
+    
+</body>
+</html>

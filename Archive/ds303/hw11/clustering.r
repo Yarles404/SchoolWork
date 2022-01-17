@@ -133,3 +133,7 @@ table(nci_2means$cluster, nci_2cut)
 # 4d
 nci_4cut <- cutree(nci_clust, 4)
 table(nci_4means$cluster, nci_4cut)
+
+# 4e
+nci_4means$cluster
+nci_4cut
