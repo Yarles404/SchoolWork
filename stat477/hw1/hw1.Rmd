@@ -1,0 +1,96 @@
+---
+title: STAT 477 HW1
+author: Charles Yang
+date: 1/18/2022
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(results = "hide")
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(plyr)
+library(ggplot2)
+```
+
+
+# 1. Examples of Categorical RVs
+1. Education
+    + Ordinal, ordered by level
+    + Example: GED, High School, Bachelor's Degree, Master's Degree, Doctorate
+2. Approach Difficulty (in rock climbing)
+    + Ordinal, ordered by difficulty of approach
+    + Example: Class 1, Class 2, Class 3, Class 4, Class 5
+3. Rock Climbing Discipline
+    + Nominal
+    + Example: Lead, Speed, Bouldering, Ice, Mixed
+4. Climbing Style
+    + Nominal
+    + Example: Static, Dynamic, Unorthodox
+5. Climbing Hold Type
+    + Nominal
+    + Example: Jug, Crimp, Sloper, Pinch, Pocket, Volume, Aid
+
+<hr>
+
+# 2. STAT 477 Spring 2022 Data
+
+```{r load_data}
+#setwd("stat477/hw1")
+class_spring_22 <- read.csv("SPRING2022STAT_477_577.csv", header = T) # nolint
+class_spring_22 <- dplyr::rename(class_spring_22, Classification = Clsfn.Year)
+```
+
+```{r}
+classes_summary <- count(class_spring_22$Classification)
+classes_summary$rel <- round(prop.table(classes_summary[2]), 4)
+classes_summary
+```
+
+```{r}
+ggplot(data = class_spring_22, aes(x = Classification)) +
+  geom_bar(fill = "purple") +
+  labs(x = "Classification", y = "Number of Students") +
+    ggtitle("STAT 477 Spring 2022 Students by Classification")
+```
+
+```{r}
+pie(t(classes_summary[2]), labels = t(classes_summary[1]),
+  col = c("blue", "aquamarine", "green"),
+  main = "STAT 477 Spring 2022 Students by Classification")
+```
+
+## Year Classification
+* Most students are year 4 classification
+* There are a significant number of year 3s
+* There are a few graduate students
+* Besides missing absolute values, the pie chart is nice here
+
+```{r}
+majors_summary <- count(class_spring_22$Major)
+majors_summary$rel <- round(prop.table(majors_summary[2]), 4)
+majors_summary
+```
+
+```{r}
+ggplot(data = class_spring_22, aes(x = Major)) +
+  geom_bar(fill = "gold") +
+  labs(x = "Major", y = "Number of Students") +
+    ggtitle("STAT 477 Spring 2022 Students by Major")
+```
+
+```{r}
+pie(t(majors_summary[2]), labels = t(majors_summary[1]),
+  main = "STAT 477 Spring 2022 Students by Major")
+```
+
+## Major
+* Nearly half of the students are DS
+* The number of STAT majors is about half that of DS
+* There is an assortment of other majors with 1-2 students
+* The pie chart is hard to interpret because there are so many majors.
+* Additionally, it is hard to tell absolute differences between categories.
