@@ -142,11 +142,9 @@ counts
 ```
 
 ### 2b
-The exact binomial test is appropriate here because our event has 
-two outcomes, 
-a category of interest, 
-independent and identical trials.
-Additionally, we have an idea of what the probability of success could be, which will be our null hypothesis (old treatment).
+Well, this example meets the dichotomous and independence assumptions.
+Although the sample size is relatively small, it still satisfies np and n(1-p) >= 10.
+So I'm just confused. I'm guessing it's because the sample size is relatively small.
 
 ### 2c
 Null Hypothesis: p = 0.62 <br>
@@ -198,7 +196,7 @@ ggplot(powerplot, aes(x = pa, y = powers)) +
     labs(
         x = "True Population Proportion",
         y = "Probability of Rejecting the Null Hypothesis",
-        title = "Power Curve for TTreatments"
+        title = "Power Curve for Treatments"
     ) +
     theme_bw() +
     theme(
@@ -210,3 +208,100 @@ ggplot(powerplot, aes(x = pa, y = powers)) +
     )
 ```
 
+As true population proportion increases, Power increases logistically between 0 and 1
+
+<hr>
+
+# Problem 3: Printer Superbowl Commercial
+### 3a
+```{r}
+commercial <- read.csv("printer.csv", header = TRUE)
+
+counts <- commercial %>%
+    group_by(KnowName) %>%
+    summarise(count = n())
+
+rel <- counts$count / sum(counts$count)
+counts <- cbind(counts, rel)
+
+ggplot(counts, aes(x = KnowName, y = count)) +
+    geom_bar(stat = "identity") +
+    labs(
+        title = "Printer Superbowl Commercial Results",
+        x = "Knows About the Printers",
+        y = "Count"
+    )
+
+counts
+```
+
+### 3b
+The results are dichotomous and the sample size is sufficiently large to make a binomial exact test hard to do by hand.
+The score test may be more appropriate than binomial exact here because we can't exactly assume independence of trials.
+Groups of people within the sample could know eachother and talked about the printers.
+
+### 3c
+```{r}
+prop.test(181, 420, p = 0.4, alternative = "greater", correct = F)
+```
+
+There is little to no evidence that printer recognition is greater than 40%
+
+```{r include = FALSE}
+powerprop.test <- function(n, p0, pa, alternative, alpha) {
+    diff <- p0 - pa
+    sep0 <- sqrt(p0 * (1 - p0) / n)
+    sepa <- sqrt(pa * (1 - pa) / n)
+    probone <- 1 - alpha
+    probtwo <- 1 - alpha / 2
+
+    switch(alternative,
+        two.sided = 2 * (1 - pnorm((abs(diff) + qnorm(probtwo) * sep0) / sepa)),
+        greater = 1 - pnorm((diff + qnorm(probone) * sep0) / sepa),
+        less = pnorm((diff - qnorm(probone) * sep0) / sepa)
+    )
+}
+
+## Enter the function npowerprop.test necessary to calculate the sample size
+## necessary to obtain a certain power.
+npowerprop.test <- function(p0, pa, alternative, alpha, power) {
+    diff <- p0 - pa
+    sep0 <- sqrt(p0 * (1 - p0))
+    sepa <- sqrt(pa * (1 - pa))
+    probone <- 1 - alpha
+    probtwo <- 1 - alpha / 2
+    powerone <- power
+    powertwo <- power / 2
+
+    switch(alternative,
+        two.sided = ceiling((qnorm(powertwo) * sepa + qnorm(probtwo) * sep0)^2 / diff^2),
+        greater = ceiling((qnorm(powerone) * sepa + qnorm(probone) * sep0)^2 / diff^2),
+        less = ceiling((qnorm(powerone) * sepa + qnorm(probone) * sep0)^2 / diff^2)
+    )
+}
+```
+
+### 3d
+```{r}
+powerprop.test(420, 0.4, 0.45, alternative = "less", 0.01)
+powerprop.test(420, 0.4, 0.45, alternative = "less", 0.05)
+powerprop.test(420, 0.4, 0.45, alternative = "less", 0.1)
+
+powerprop.test(420, 0.4, 0.50, alternative = "less", 0.01)
+powerprop.test(420, 0.4, 0.50, alternative = "less", 0.05)
+powerprop.test(420, 0.4, 0.50, alternative = "less", 0.1)
+
+powerprop.test(420, 0.4, 0.55, alternative = "less", 0.01)
+powerprop.test(420, 0.4, 0.55, alternative = "less", 0.05)
+powerprop.test(420, 0.4, 0.55, alternative = "less", 0.1)
+```
+
+As the confidence level increases, our power increases. <br>
+As our hypothesized proportion gets further from the null, our power decreases.
+
+<hr>
+
+# Problem 4: Printer Survey Sample size
+```{r}
+paste0("n = ", npowerprop.test(0.4, 0.44, alternative = "greater", 0.05, 0.8))
+```
