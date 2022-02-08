@@ -1,0 +1,212 @@
+---
+title: STAT 477 HW3
+author: Charles Yang
+date: 2/6/2022
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(results = "hide")
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+# Problem 1: Sampling Distribution of Proportions
+
+### 1a
+```{r}
+n <- 50
+p <- 0.16
+
+pphat <- c(0:n) / n
+# Find probability of each possible value from binomial dist.
+probpphat <- dbinom(0:n, n, p)
+# Form the prior two variables into a dataframe
+sdpphat <- as.data.frame(cbind(pphat, probpphat))
+
+# Use ggplot to plot the distribution of phat
+ggplot(sdpphat, aes(x = pphat, y = probpphat)) +
+    geom_bar(stat = "identity", fill = "blue", colour = "black") +
+    theme_bw() +
+    theme(
+        axis.title.y = element_text(size = rel(1.4)),
+        axis.title.x = element_text(size = rel(1.4)),
+        axis.text.x = element_text(size = rel(1.6)),
+        axis.text.y = element_text(size = rel(1.6)),
+        plot.title = element_text(hjust = 0.5, size = rel(2))
+    ) +
+    labs(
+        x = "Sample Proportion",
+        y = "Probability",
+        title = "Distribution of Sample Proportion"
+    )
+```
+
+The mean of the sampling distribution is roughly 0.16 as expected.
+It has noticeable bars spreading out between 0 and 0.375, indicating some variance.
+The distribution is roughly normal, with the tiniest right skew.
+
+### 1b
+```{r}
+n <- 50
+p <- 0.5
+
+pphat <- c(0:n) / n
+# Find probability of each possible value from binomial dist.
+probpphat <- dbinom(0:n, n, p)
+# Form the prior two variables into a dataframe
+sdpphat <- as.data.frame(cbind(pphat, probpphat))
+
+# Use ggplot to plot the distribution of phat
+ggplot(sdpphat, aes(x = pphat, y = probpphat)) +
+    geom_bar(stat = "identity", fill = "blue", colour = "black") +
+    theme_bw() +
+    theme(
+        axis.title.y = element_text(size = rel(1.4)),
+        axis.title.x = element_text(size = rel(1.4)),
+        axis.text.x = element_text(size = rel(1.6)),
+        axis.text.y = element_text(size = rel(1.6)),
+        plot.title = element_text(hjust = 0.5, size = rel(2))
+    ) +
+    labs(
+        x = "Sample Proportion",
+        y = "Probability",
+        title = "Distribution of Sample Proportion"
+    )
+```
+
+The mean of the sampling distribution is roughly 0.5 as expected.
+It has noticeable bars spreading out between 0.25 and 0.75, indicating some variance.
+The distribution is roughly normal and visually symmetric.
+
+### 1c
+```{r}
+n <- 65
+p <- 0.3
+
+pphat <- c(0:n) / n
+# Find probability of each possible value from binomial dist.
+probpphat <- dbinom(0:n, n, p)
+# Form the prior two variables into a dataframe
+sdpphat <- as.data.frame(cbind(pphat, probpphat))
+
+# Use ggplot to plot the distribution of phat
+ggplot(sdpphat, aes(x = pphat, y = probpphat)) +
+    geom_bar(stat = "identity", fill = "blue", colour = "black") +
+    theme_bw() +
+    theme(
+        axis.title.y = element_text(size = rel(1.4)),
+        axis.title.x = element_text(size = rel(1.4)),
+        axis.text.x = element_text(size = rel(1.6)),
+        axis.text.y = element_text(size = rel(1.6)),
+        plot.title = element_text(hjust = 0.5, size = rel(2))
+    ) +
+    labs(
+        x = "Sample Proportion",
+        y = "Probability",
+        title = "Distribution of Sample Proportion"
+    )
+```
+
+The mean of the sampling distribution is roughly 0.3 as expected.
+It has noticeable bars spreading out between 0.175 and 0.52, indicating some variance, but more narrow and taller than the previous two.
+The distribution is roughly normal, with the tiniest right skew.
+
+<hr>
+
+# Problem 2: Disease Treatment
+### 2a
+```{r}
+treatment <- read.csv("treatment.csv", header = TRUE)
+
+counts <- treatment %>%
+    group_by(Status) %>%
+    summarise(count = n())
+
+rel <- counts$count / sum(counts$count)
+counts <- cbind(counts, rel)
+
+ggplot(counts, aes(x = Status, y = count)) +
+    geom_bar(stat = "identity") +
+    labs(
+        title = "Treatment Results",
+        x = "Is Cured",
+        y = "Count"
+    )
+
+counts
+```
+
+### 2b
+The exact binomial test is appropriate here because our event has 
+two outcomes, 
+a category of interest, 
+independent and identical trials.
+Additionally, we have an idea of what the probability of success could be, which will be our null hypothesis (old treatment).
+
+### 2c
+Null Hypothesis: p = 0.62 <br>
+Alternative Hypothesis: p > 0.62 <br>
+Alpha: 0.05, 95% confidence
+```{r}
+binom.test(
+    x = counts$count,
+    p = 0.62,
+    alternative = "greater",
+    conf.level = 0.95
+)
+```
+
+There is very strong evidence that the new treatment had a higher cure rate than the current treatment.
+
+### 2d
+```{r}
+for (i in 50:79) {
+    prob <- sum(dbinom(i:80, 80, 0.62))
+    if (prob <= 0.05) {
+        print(paste0("Successes: ", i, "; Probability: ", prob))
+        break
+    }
+}
+```
+
+Rejection region: 58 <= x <= 80
+
+### 2e
+Type 1 error is probability of landing in the rejection region, so it's 0.0324
+
+### 2f
+```{r}
+paste0("Power: ", sum(dbinom(58:80, 80, 0.75)))
+```
+
+### 2g
+```{r}
+pa <- c(50:100) / 100
+# initialize the vector powers with value 99
+powers <- rep(99, length(pa))
+# calculate the power for each of the values in the vector pa
+for (i in 1:length(pa)) powers[i] <- sum(dbinom(58:80, 80, pa[i]))
+
+powerplot <- as.data.frame(cbind(pa, powers))
+ggplot(powerplot, aes(x = pa, y = powers)) +
+    geom_line() +
+    labs(
+        x = "True Population Proportion",
+        y = "Probability of Rejecting the Null Hypothesis",
+        title = "Power Curve for TTreatments"
+    ) +
+    theme_bw() +
+    theme(
+        axis.title.y = element_text(size = rel(1.4)),
+        axis.title.x = element_text(size = rel(1.4)),
+        axis.text.x = element_text(size = rel(1.6)),
+        axis.text.y = element_text(size = rel(1.6)),
+        plot.title = element_text(hjust = 0.5, size = rel(2))
+    )
+```
+
