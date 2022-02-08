@@ -1,0 +1,15 @@
+Week 3 DONE:
+	Finished three separate drafts of database create table scripts
+	Started AWS Aurora PostgreSQL Server
+		Created users with specific permissions
+	Met with each team member individually for 30+ minutes
+		Twitch practically done
+		Most others working on API OAuth or learning open-source APIs
+	Learned AWS Lambda for JS and Python
+
+Week 4 TODO:
+	Make Lambda function for automating OAuth process and token storage
+	Create session store database
+	Work on Youtube API
+	Create platform-specific CRUD roles
+		Revoke universal CRUD access from twitterIngestion
