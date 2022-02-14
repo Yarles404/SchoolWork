@@ -146,6 +146,11 @@ normal_coverage
 wilson_coverage
 ```
 
+Wilson's coverage seemed to cover better for smaller n, for all p. The difference becomes more dramatic as p increases. <br>
+There isn't a consistent pattern for coverage as p increases across all n. <br>
+Coverage for both methods varies less for each p as n increases. <br>
+
+
 <hr>
 
 # Problem 3: Flies

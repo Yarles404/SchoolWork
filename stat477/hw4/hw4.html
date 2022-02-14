@@ -198,39 +198,40 @@ a.sourceLine {
 <span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    normal_coverage<span class="sc">$</span>n250[<span class="fu">which</span>(normal_coverage<span class="sc">$</span>p <span class="sc">==</span> p)] <span class="ot">&lt;-</span> <span class="fu">coverage.ci</span>(<span class="dv">250</span>, p, <span class="st">&quot;normal&quot;</span>, <span class="fl">0.95</span>)</span>
 <span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    normal_coverage<span class="sc">$</span>n1000[<span class="fu">which</span>(normal_coverage<span class="sc">$</span>p <span class="sc">==</span> p)] <span class="ot">&lt;-</span> <span class="fu">coverage.ci</span>(<span class="dv">1000</span>, p, <span class="st">&quot;normal&quot;</span>, <span class="fl">0.95</span>)</span>
 <span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<pre><code>## 95.645 
-## 95.111 
-## 94.558 
-## 89.222 
-## 94.053 
-## 94.524 
-## 91.771 
-## 93.359 
-## 95.205</code></pre>
+<pre><code>## 95.586 
+## 94.855 
+## 94.583 
+## 89.094 
+## 94.095 
+## 94.624 
+## 91.888 
+## 93.339 
+## 95.303</code></pre>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (p <span class="cf">in</span> ps) {</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    wilson_coverage<span class="sc">$</span>n25[<span class="fu">which</span>(wilson_coverage<span class="sc">$</span>p <span class="sc">==</span> p)] <span class="ot">&lt;-</span> <span class="fu">coverage.ci</span>(<span class="dv">25</span>, p, <span class="st">&quot;score&quot;</span>, <span class="fl">0.95</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    wilson_coverage<span class="sc">$</span>n250[<span class="fu">which</span>(wilson_coverage<span class="sc">$</span>p <span class="sc">==</span> p)] <span class="ot">&lt;-</span> <span class="fu">coverage.ci</span>(<span class="dv">250</span>, p, <span class="st">&quot;score&quot;</span>, <span class="fl">0.95</span>)</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    wilson_coverage<span class="sc">$</span>n1000[<span class="fu">which</span>(wilson_coverage<span class="sc">$</span>p <span class="sc">==</span> p)] <span class="ot">&lt;-</span> <span class="fu">coverage.ci</span>(<span class="dv">1000</span>, p, <span class="st">&quot;score&quot;</span>, <span class="fl">0.95</span>)</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<pre><code>## 95.714 
-## 94.979 
-## 94.774 
-## 93.671 
-## 94.383 
-## 94.624 
-## 96.622 
-## 95.575 
-## 94.869</code></pre>
+<pre><code>## 95.596 
+## 94.972 
+## 94.621 
+## 93.87 
+## 94.382 
+## 94.546 
+## 96.682 
+## 95.56 
+## 94.86</code></pre>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>normal_coverage</span></code></pre></div>
 <pre><code>##      p    n25   n250  n1000
-## 1 0.50 95.645 95.111 94.558
-## 2 0.75 89.222 94.053 94.524
-## 3 0.90 91.771 93.359 95.205</code></pre>
+## 1 0.50 95.586 94.855 94.583
+## 2 0.75 89.094 94.095 94.624
+## 3 0.90 91.888 93.339 95.303</code></pre>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>wilson_coverage</span></code></pre></div>
 <pre><code>##      p    n25   n250  n1000
-## 1 0.50 95.714 94.979 94.774
-## 2 0.75 93.671 94.383 94.624
-## 3 0.90 96.622 95.575 94.869</code></pre>
+## 1 0.50 95.596 94.972 94.621
+## 2 0.75 93.870 94.382 94.546
+## 3 0.90 96.682 95.560 94.860</code></pre>
+<p>Wilson’s coverage seemed to cover better for smaller n, for all p. The difference becomes more dramatic as p increases. <br> There isn’t a consistent pattern for coverage as p increases across all n. <br> Coverage for both methods varies less for each p as n increases. <br></p>
 <hr>
 </div>
 <div id="problem-3-flies" class="section level1">
