@@ -1,0 +1,206 @@
+---
+title: STAT 477 HW4
+author: Charles Yang
+date: 2/15/2022
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(results = "hide")
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+
+prop.ci <- function(y, n, type, conf.level) {
+  phat <- y / n
+  alpha <- 1 - conf.level
+  z <- qnorm(1 - alpha / 2)
+  newy <- y + z^2 / 2
+  newn <- n + z^2
+  newphat <- newy / newn
+
+  if (type == "normal") {
+    lowerci <- phat - z * sqrt(phat * (1 - phat) / n)
+    upperci <- phat + z * sqrt(phat * (1 - phat) / n)
+  } else if (type == "score") {
+    lowerci <- (phat + (1 / (2 * n)) * z^2 - z * sqrt(phat * (1 - phat) / n + z^2 / (4 * n^2))) / (1 + (1 / n) * z^2)
+    upperci <- (phat + (1 / (2 * n)) * z^2 + z * sqrt(phat * (1 - phat) / n + z^2 / (4 * n^2))) / (1 + (1 / n) * z^2)
+  } else {
+    lowerci <- newphat - z * sqrt(newphat * (1 - newphat) / newn)
+    upperci <- newphat + z * sqrt(newphat * (1 - newphat) / newn)
+  }
+  cat(lowerci, mean(c(lowerci, upperci)), upperci)
+}
+
+coverage.ci<- function(n, p, type, conf.level){
+  sample<- rbinom(100000, n, p)
+  
+  phat<- sample/n
+  alpha<- 1 - conf.level
+  z<- qnorm(1 - alpha/2)
+  newy<- sample + z^2/2
+  newn<- n + z^2
+  newphat<- newy/newn
+  
+  lowerci<- rep(0, 100000)
+  upperci<- rep(0, 100000)
+  nocov<- rep(0, 100000)
+  
+  for (i in 1:100000){
+    if (type=="normal") {
+      lowerci[i]<- phat[i] - z*sqrt(phat[i]*(1-phat[i])/n)
+      upperci[i]<- phat[i] + z*sqrt(phat[i]*(1-phat[i])/n)
+    }
+    else if (type=="score") {
+      lowerci[i]<- (phat[i] + (1/(2*n))*z^2 - z*sqrt(phat[i]*(1-phat[i])/n + z^2/(4*n^2)))/(1 + (1/n)*z^2)
+      upperci[i]<- (phat[i] + (1/(2*n))*z^2 + z*sqrt(phat[i]*(1-phat[i])/n + z^2/(4*n^2)))/(1 + (1/n)*z^2)
+    }
+    else {
+      lowerci[i]<- newphat[i] - z*sqrt(newphat[i]*(1-newphat[i])/newn)
+      upperci[i]<- newphat[i] + z*sqrt(newphat[i]*(1-newphat[i])/newn)
+    }
+    nocov[i]<- ifelse(lowerci[i] > p, 1, 0) + ifelse(upperci[i] < p, 1, 0)
+  }
+  covrate<- 1 - sum(nocov)/100000
+  cat(covrate*100, "\n")
+  covrate*100
+}
+```
+
+# Problem 1: Global Warming Gallup Poll
+### a
+p is the proportion of US adults 18 or older
+
+### b
+0.65
+
+### c & d
+Confidence Interval
+```{r}
+phat <- 0.65
+n <- 1000
+z <- 1.96 # for alpha = 0.05
+v <- phat * (1 - phat) / n
+
+lower <- phat - sqrt(v) * z
+upper <- phat + sqrt(v) * z
+c(lower, mean(c(lower, upper)), upper)
+```
+
+We are 95% confident that the proportion of 18 or older US adults who believe global warming is more of a result of human actions than natural causes is between 0.620 and 0.680
+
+### e
+```{r}
+prop.ci(phat * n, n, "score", 0.95)
+prop.ci(phat * n, n, "other", 0.95)
+```
+
+The normal approximation is centered at exactly the sample proportion, but the other two methods aren't.
+I notice that the score and Agresti-Coull CIs were barely narrower.
+Agresti-Coull CI was barely narrower than the score CI.
+
+### f
+```{r}
+phat * (1 - phat) * 1.96^2 / 0.025^2
+```
+
+Using the normal approximation method for CIs, we should use a sample size of 1399 to obtain a margin error of no more than 2.5%
+
+
+
+<hr>
+
+# Problem 2: Confidence Interval Coverage
+```{r}
+ps <- c(0.5, 0.75, 0.9)
+normal_coverage <- data.frame(
+  p = ps,
+  n25 = rep(NA, 3),
+  n250 = rep(NA, 3),
+  n1000 = rep(NA, 3)
+)
+
+wilson_coverage <- data.frame(
+  p = ps,
+  n25 = rep(NA, 3),
+  n250 = rep(NA, 3),
+  n1000 = rep(NA, 3)
+)
+
+for (p in ps) {
+    normal_coverage$n25[which(normal_coverage$p == p)] <- coverage.ci(25, p, "normal", 0.95)
+    normal_coverage$n250[which(normal_coverage$p == p)] <- coverage.ci(250, p, "normal", 0.95)
+    normal_coverage$n1000[which(normal_coverage$p == p)] <- coverage.ci(1000, p, "normal", 0.95)
+}
+
+for (p in ps) {
+    wilson_coverage$n25[which(wilson_coverage$p == p)] <- coverage.ci(25, p, "score", 0.95)
+    wilson_coverage$n250[which(wilson_coverage$p == p)] <- coverage.ci(250, p, "score", 0.95)
+    wilson_coverage$n1000[which(wilson_coverage$p == p)] <- coverage.ci(1000, p, "score", 0.95)
+}
+
+normal_coverage
+wilson_coverage
+```
+
+<hr>
+
+# Problem 3: Flies
+```{r}
+flies <- read.csv("flies.csv")
+```
+
+### a
+```{r}
+counts <- flies %>%
+    group_by(Traits) %>%
+    summarise(count = n())
+
+rel <- counts$count / sum(counts$count)
+counts <- cbind(counts, rel)
+
+ggplot(counts, aes(x = Traits, y = count)) +
+    geom_bar(stat = "identity") +
+    labs(
+        title = "Trait Frequency",
+        x = "Traits",
+        y = "Count"
+    )
+
+counts
+```
+
+### b
+H0: The proportions of flies with certain traits are consistent with the presented genetic theory. <br>
+HA: At least one proportion is wrong within the genetic theory.
+
+### c
+```{r}
+n <- nrow(flies)
+expected_traits <- data.frame(
+  YellowNormal = n * (9 / 16),
+  YellowShort = n * (3 / 16),
+  BlackNormal = n * (3 / 16),
+  BlackShort = n * (1 / 16)
+)
+expected_traits
+```
+
+### d
+```{r}
+(counts$count[3] - expected_traits$YellowNormal)^2 / expected_traits$YellowNormal
+(counts$count[4] - expected_traits$YellowShort)^2 / expected_traits$YellowShort
+(counts$count[1] - expected_traits$BlackNormal)^2 / expected_traits$BlackNormal
+(counts$count[2] - expected_traits$BlackShort)^2 / expected_traits$BlackShort
+```
+
+### e, f
+```{r}
+chisq.test(counts[2], p = c(3/16, 1/16, 9/16, 3/16))
+```
+
+There is significant evidence that the genetic theory is not correct.
+It appears that the probabilities for Black Normal and Short contributed the most to this result.
