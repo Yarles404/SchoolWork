@@ -7,8 +7,11 @@
   *****************************************
   */
 
+
 import java.io.IOException;
-import java.util.StringTokenizer;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.regex.Pattern;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -28,13 +31,13 @@ public class Driver {
 	public static void main(String[] args) throws Exception {
 
 		// Change following paths accordingly
-		String input = "/cpre419/shakespeare"; 
-		String temp = "/user/<your id>/lab2/exp2/temp";
-		String output = "/user/<your id>/lab2/exp2/output/"; 
+		String input = "lab2/gutenburg";
+		String temp = "lab2/temp/";
+		String output = "lab2/out/";
 
-		// The number of reduce tasks 
-		int reduce_tasks = 4; 
-		
+		// The number of reduce tasks
+		int reduce_tasks = 1;
+
 		Configuration conf = new Configuration();
 
 		// Create job for round 1
@@ -47,7 +50,6 @@ public class Driver {
 		// If not provided, the system decides on its own
 		job_one.setNumReduceTasks(reduce_tasks);
 
-		
 		// The datatype of the mapper output Key, Value
 		job_one.setMapOutputKeyClass(Text.class);
 		job_one.setMapOutputValueClass(IntWritable.class);
@@ -74,20 +76,22 @@ public class Driver {
 		// The path can be a directory containing several files
 		// You can add multiple input paths including multiple directories
 		FileInputFormat.addInputPath(job_one, new Path(input));
-		
+
 		// This is legal
 		// FileInputFormat.addInputPath(job_one, new Path(another_input_path));
-		
+
 		// The output HDFS path for this job
 		// The output path must be one and only one
 		// This must not be shared with other running jobs in the system
 		FileOutputFormat.setOutputPath(job_one, new Path(temp));
-		
+
 		// This is not allowed
-		// FileOutputFormat.setOutputPath(job_one, new Path(another_output_path)); 
+		// FileOutputFormat.setOutputPath(job_one, new Path(another_output_path));
 
 		// Run the job
 		job_one.waitForCompletion(true);
+		
+		///////////////////////////////////////////////////////////////////////////////
 
 		// Create job for round 2
 		// The output of the previous job can be passed as the input to the next
@@ -98,10 +102,10 @@ public class Driver {
 		job_two.setNumReduceTasks(reduce_tasks);
 
 		// Should be match with the output datatype of mapper and reducer
-		job_two.setMapOutputKeyClass(Text.class);
-		job_two.setMapOutputValueClass(IntWritable.class);
+		job_two.setMapOutputKeyClass(BigramCount.class);
+		job_two.setMapOutputValueClass(Text.class);
 		job_two.setOutputKeyClass(Text.class);
-		job_two.setOutputValueClass(IntWritable.class);
+		job_two.setOutputValueClass(Text.class);
 
 		// If required the same Map / Reduce classes can also be used
 		// Will depend on logic if separate Map / Reduce classes are needed
@@ -111,7 +115,7 @@ public class Driver {
 
 		job_two.setInputFormatClass(TextInputFormat.class);
 		job_two.setOutputFormatClass(TextOutputFormat.class);
-		
+
 		// The output of previous job set as input of the next
 		FileInputFormat.addInputPath(job_two, new Path(temp));
 		FileOutputFormat.setOutputPath(job_two, new Path(output));
@@ -120,16 +124,13 @@ public class Driver {
 		job_two.waitForCompletion(true);
 
 		/**
-		 * **************************************
-		 * ************************************** 
-		 * FILL IN CODE FOR MORE JOBS IF YOU NEED 
-		 * **************************************
+		 * ************************************** **************************************
+		 * FILL IN CODE FOR MORE JOBS IF YOU NEED **************************************
 		 * **************************************
 		 */
 
 	}
 
-	
 	// The Map Class
 	// The input to the map method would be a LongWritable (long) key and Text
 	// (String) value
@@ -144,6 +145,7 @@ public class Driver {
 	public static class Map_One extends Mapper<LongWritable, Text, Text, IntWritable> {
 		private final static IntWritable one = new IntWritable(1);
 		private Text bigramText = new Text();
+
 		// The map method
 		public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
@@ -152,26 +154,28 @@ public class Driver {
 			String line = value.toString().replaceAll("[^a-zA-Z0-9 .!?]", "");
 
 			// Tokenize to get the individual words
-			StringTokenizer tokens = new StringTokenizer(line);
+			Iterator<String> tokens = Arrays.asList(line.split("\\s+")).iterator();
 
 			String bigram;
 			String temp;
-			if (tokens.hasMoreTokens)
-				temp  = tokens.nextToken();
-			while (tokens.hasMoreTokens()) {
-				bigram = temp + " " + tokens.nextToken();
-				bigram = bigram.toLowerCase();
-
-
-			// TODO: ignore bigrams that contain sentence ending punctuation.
-
-				bigramText.set(bigram);
-				context.write(bigramText, one);
+			if (tokens.hasNext()) {
+				temp = tokens.next();
+				while (tokens.hasNext()) {
+					String next = tokens.next();
+					if (!Pattern.matches("[!.?]", temp)) {
+						bigram = (temp + " " + next).toLowerCase().replaceAll("[!.?]", "");
+						
+						// sometimes a single word with trailing white space is counted as a bigram, this checks for that
+						if (bigram.lastIndexOf(' ') == bigram.length() - 1) continue;
+						bigramText.set(bigram);
+						context.write(bigramText, one);
+					}
+					temp = next;
+				}
 			}
-		} 
-	} 
+		}
+	}
 
-	
 	// The Reduce class
 	// The key is Text and must match the datatype of the output key of the map
 	// method
@@ -181,7 +185,7 @@ public class Driver {
 
 		// The reduce method
 		// For key, we have an Iterable over all values associated with this key
-		// The values come in a sorted fasion.
+		// The values come in a sorted fashion.
 		public void reduce(Text key, Iterable<IntWritable> values, Context context)
 				throws IOException, InterruptedException {
 			int sum = 0;
@@ -192,35 +196,40 @@ public class Driver {
 
 			context.write(key, new IntWritable(sum));
 		}
-	} 
+	}
 
 	// The second Map Class
-	public static class Map_Two extends Mapper<LongWritable, Text, Text, Text> {
+	public static class Map_Two extends Mapper<LongWritable, Text, BigramCount, Text> {
 
 		public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-			context.write(new IntWritable(1), value);
-		} 
-	} 
+			String[] data = value.toString().split("\\s+");
+			String bigram = String.format("%s %s", data[0], data[1]);
+			long count = Long.parseLong(data[2]);
+			BigramCount bigramCount = new BigramCount(count, bigram);
+			context.write(bigramCount, value);
+		}
+	}
 
 	// The second Reduce class
-	public static class Reduce_Two extends Reducer<Text, Text, Text, IntWritable> {
+	public static class Reduce_Two extends Reducer<BigramCount, Text, Text, Text> {
 
-		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-			String value;
-                    String[] data;
-                    int sum = 0;
-                    
-                    for (Text val : values) {
-                        
-                        value = val.toString();
-                        data = value.split("\\s+");
-  
-                        sum += Integer.parseInt(data[2]);
-                    }
-                    
-                    context.write(new IntWritable(sum), new Text());
-                    
-		} 
-	} 
+		public void reduce(BigramCount key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+//			String value;
+//			String[] data;
+//			int sum = 0;
+//
+//			for (Text val : values) {
+//
+//				value = val.toString();
+//				data = value.split("\\s+");
+//
+//				sum += Integer.parseInt(data[2]);
+//			}
+//
+//			context.write(String.format(, arg1), new IntWritable(sum));
+			
+			context.write(new Text(key.toString()), new Text());
 
+		}
+	}
 }
