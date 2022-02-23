@@ -1,0 +1,191 @@
+---
+title: STAT 477 Exam 1
+author: Charles Yang
+date: 2/23/2022
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(RColorBrewer)
+
+planning <- read.csv("Planning.csv", header = FALSE)
+names(planning)[1] <- "Entrepreneurialism"
+csfindings <- read.csv("CSFindings.csv")
+
+normal_confidence_interval <- function(n, phat, z = 1.645) {
+    v <- phat * (1 - phat) / n
+
+    lower <- phat - sqrt(v) * z
+    upper <- phat + sqrt(v) * z
+    center <- mean(c(lower, upper))
+
+    str_glue("90% CI: ({lower}, {upper}), Center: {center}")
+}
+
+wilson_confidence_interval <- function(n, phat, z = 1.96) {
+    v <- phat * (1 - phat) / n
+    
+    lower = (phat + (1 / (2 * n)) * z^2 - z * sqrt(phat * (1 - phat) / n + z^2 / (4 * n^2))) / (1 + (1 / n) * z^2)
+    upper = (phat + (1 / (2 * n)) * z^2 + z * sqrt(phat * (1 - phat) / n + z^2 / (4 * n^2))) / (1 + (1 / n) * z^2)
+    center <- mean(c(lower, upper))
+
+    str_glue("90% CI: ({lower}, {upper}), Center: {center}")
+}
+```
+
+# Town Planners
+```{r}
+counts <- planning %>%
+    group_by(Entrepreneurialism) %>%
+    summarise(count = n())
+
+rel <- counts$count / sum(counts$count)
+counts <- cbind(counts, rel)
+
+ggplot(counts, aes(x = Entrepreneurialism, y = count, fill = Entrepreneurialism)) +
+    geom_bar(stat = "identity") +
+    labs(
+        title = "Midwest Town Entrepreneurialism",
+        x = "Entrepreneurialism",
+        y = "Count"
+    ) +
+    scale_fill_brewer(palette = "Pastel1")
+
+counts
+```
+
+### Normal Approximation CIs
+```{r}
+normal_confidence_interval(n = sum(counts$count), phat = rel[1])
+normal_confidence_interval(n = sum(counts$count), phat = rel[2])
+```
+
+### Wilson Score CIs
+```{r}
+wilson_confidence_interval(n = sum(counts$count), phat = rel[1])
+wilson_confidence_interval(n = sum(counts$count), phat = rel[2])
+```
+
+### Are two thirds of towns in the midwest entrepreneurial? Should the organization invest?
+Null: p = 2/3, Alt: p > 1/3, alpha: 0.01, 99% Confidence
+```{r}
+binom.test(
+    x = counts$count,
+    p = 2 / 3,
+    alternative = "greater",
+    conf.level = 0.99
+)
+```
+
+### Rejection Region
+```{r}
+for (i in 27:30) {
+    prob <- sum(dbinom(i:30, 30, 2 / 3))
+    if (prob <= 0.05) {
+        print(paste0("Successes: ", i, "; Probability: ", prob))
+        break
+    }
+}
+```
+
+Type 1 Error rate: 0.00323
+
+```{r}
+pa <- c(50:100) / 100
+# initialize the vector powers with value 99
+powers <- rep(99, length(pa))
+# calculate the power for each of the values in the vector pa
+for (i in 1:length(pa)) powers[i] <- sum(dbinom(27:30, 30, pa[i]))
+
+powerplot <- as.data.frame(cbind(pa, powers))
+ggplot(powerplot, aes(x = pa, y = powers)) +
+    geom_line() +
+    labs(
+        x = "True Population Proportion",
+        y = "Probability of Rejecting the Null Hypothesis",
+        title = "Power Curve for Treatments"
+    ) +
+    theme_bw() +
+    theme(
+        axis.title.y = element_text(size = rel(1.4)),
+        axis.title.x = element_text(size = rel(1.4)),
+        axis.text.x = element_text(size = rel(1.6)),
+        axis.text.y = element_text(size = rel(1.6)),
+        plot.title = element_text(hjust = 0.5, size = rel(2))
+    )
+```
+
+<hr>
+
+# CS Interest
+```{r}
+counts <- csfindings %>%
+    group_by(CSInterest) %>%
+    summarise(count = n())
+
+rel <- counts$count / sum(counts$count)
+counts <- cbind(counts, rel)
+
+ggplot(counts, aes(x = CSInterest, y = count, fill = CSInterest)) +
+    geom_bar(stat = "identity") +
+    labs(
+        title = "Interest in CS",
+        x = "Interested",
+        y = "Count"
+    ) +
+    scale_fill_brewer(palette = "Pastel2")
+
+counts
+```
+
+### Normal Approximation CIs
+```{r}
+normal_confidence_interval(n = sum(counts$count), phat = rel[1])
+normal_confidence_interval(n = sum(counts$count), phat = rel[2])
+```
+
+### Wilson Score CIs
+```{r}
+wilson_confidence_interval(n = sum(counts$count), phat = rel[1])
+wilson_confidence_interval(n = sum(counts$count), phat = rel[2])
+```
+
+```{r}
+counts <- csfindings %>%
+    group_by(CSJobs) %>%
+    summarise(count = n())
+
+rel <- counts$count / sum(counts$count)
+counts <- cbind(counts, rel)
+
+ggplot(counts, aes(x = CSJobs, y = count, fill = CSJobs)) +
+    geom_bar(stat = "identity") +
+    labs(
+        title = "Plans for CS Job",
+        x = "Has Plans",
+        y = "Count"
+    ) +
+    scale_fill_brewer(palette = "Pastel2")
+
+counts
+```
+
+### Normal Approximation CIs
+```{r}
+normal_confidence_interval(n = sum(counts$count), phat = rel[1])
+normal_confidence_interval(n = sum(counts$count), phat = rel[2])
+normal_confidence_interval(n = sum(counts$count), phat = rel[3])
+```
+
+### Wilson Score CIs
+```{r}
+wilson_confidence_interval(n = sum(counts$count), phat = rel[1])
+wilson_confidence_interval(n = sum(counts$count), phat = rel[2])
+wilson_confidence_interval(n = sum(counts$count), phat = rel[3])
+```
