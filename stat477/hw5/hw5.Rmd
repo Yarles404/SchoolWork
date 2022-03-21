@@ -1,0 +1,228 @@
+---
+title: STAT 477 HW5
+author: Charles Yang
+date: 3/6/2022
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(ggmosaic)
+
+titanic <- read.csv("Titanic.csv")
+titanic$Class <- factor(titanic$Class, levels = c("First", "Second", "Third", "Crew"))
+titanic$Status <- factor(titanic$Status)
+
+GSS <- read.csv("GSS.csv")
+GSS$Wrong <- factor(GSS$Wrong, levels = c("Never", "Sometimes", "Almost.Always", "Always"))
+
+aspirin <- read.csv("aspirin.csv")
+
+# functions
+rr_ci <- function(y, n, conf_level) {
+  y1 <- y[1]
+  y2 <- y[2]
+  n1 <- n[1]
+  n2 <- n[2]
+  alpha <- 1 - conf_level
+  z <- qnorm(1 - alpha / 2)
+
+  phat1 <- y1 / n1
+  phat2 <- y2 / n2
+
+  rr <- phat1 / phat2
+
+  selogrr <- sqrt((1 - phat1) / (n1 * phat1) + (1 - phat2) / (n2 * phat2))
+
+  logrr.lower <- log(rr) - z * selogrr
+  logrr.upper <- log(rr) + z * selogrr
+
+  rr.lower <- exp(logrr.lower)
+  rr.upper <- exp(logrr.upper)
+
+  cat("Estimated Relative Risk = ", rr, "\n")
+  cat("Confidence Interval for Population Relative Risk = ", rr.lower, rr.upper, "\n")
+}
+
+or_ci <- function(y, n, conf_level) {
+  y1 <- y[1]
+  y2 <- y[2]
+  n1 <- n[1]
+  n2 <- n[2]
+  alpha <- 1 - conf_level
+  z <- qnorm(1 - alpha / 2)
+
+  phat1 <- y1 / n1
+  phat2 <- y2 / n2
+
+  or <- (phat1 / (1 - phat1)) / (phat2 / (1 - phat2))
+
+  selogor <- sqrt(1 / (n1 * phat1) + 1 / (n1 * (1 - phat1)) + 1 / (n2 * phat2) + 1 / (n2 * (1 - phat2)))
+
+  logor.lower <- log(or) - z * selogor
+  logor.upper <- log(or) + z * selogor
+
+  or.lower <- exp(logor.lower)
+  or.upper <- exp(logor.upper)
+
+  cat("Estimated Odds Ratio = ", or, "\n")
+  cat("Confidence Interval for Population Odds Ratio = ", or.lower, or.upper, "\n")
+}
+```
+
+
+# Problem 1: Titanic Outcome by Class
+### Contingency Table & Mosaic Plot
+```{r}
+twoway <- table(titanic$Class, titanic$Status)
+twoway
+
+ggplot(data = titanic) +
+  geom_mosaic(aes(x = product(Class, Status), fill = Class)) +
+  labs(
+    x = "Status",
+    y = "Class",
+    title = "Titanic Class by Status"
+  )
+```
+
+The mosaic plot shows a much larger proportion of first and second class passengers who survived.
+
+### Overall Hypothesis Test
+```{r}
+gn <- margin.table(twoway, 1)
+prop.test(twoway[, 1], gn, alternative = "two.sided", correct = F)
+```
+
+H0: p1 = p2 = p3 = p4, HA: !(p1 = p2 = p3 = p4), X-squared = 187.79, p-value < 2.2e-16 <br>
+There is overwhelming evidence that the proportion of passengers rescued is not the same across all classes.
+
+### Pairwise Hypothesis Tests
+```{r}
+prop.table(twoway)
+
+pairwise.prop.test(twoway[, 1], gn, p.adjust.method = "BH")
+connected_letters <- matrix(c(
+  "Third", sum(prop.table(twoway)[2, ]), "A", "", "",
+  "Crew", sum(prop.table(twoway)[1, ]), "A", "", "",
+  "Second", sum(prop.table(twoway)[3, ]), "", "B", "",
+  "First", sum(prop.table(twoway)[4, ]), "", "", "C"
+),
+ncol = 5, byrow = TRUE
+)
+colnames(connected_letters) <- c("Class", "Sample Proportion", "Levels", "       ", "       ")
+as.table(connected_letters)
+```
+
+It appears that third and crew had similar rescue rates.
+Second class is different from all others, and so is First.
+The perception from the movie was correct.
+
+<hr>
+
+# Problem 2: Premarital Sex Opinion by Religion
+### Contingency Table and Mosaic Plot
+```{r}
+twoway <- table(GSS$Wrong, GSS$Religion)
+twowayprop <- prop.table(twoway)
+twoway
+
+ggplot(data = GSS) +
+  geom_mosaic(aes(x = product(Wrong, Religion), fill = Religion)) +
+  labs(
+    x = "Religion",
+    y = "Wrong",
+    title = "When is premarital sex wrong?"
+  )
+```
+
+Protestants seem to be on the extremes only, where Always and Never are the most common.
+The non-religious and jewish people have majorities that don't mind premarital sex is a problem.
+Catholic and other religious groups are less chill, but disproval of premarital sex for all groups but protestants has a negative relationship with the number of people.  
+
+### Conditional Distribution of Catholics
+```{r}
+twoway[, 1] / sum(twoway[, 1])
+```
+
+### Conditional Distribution of Protestants
+```{r}
+twoway[, 5] / sum(twoway[, 5])
+```
+
+### Overall Hypothesis Test
+```{r}
+gn <- margin.table(twoway, 1)
+prop.test(twoway[, 1], gn, alternative = "two.sided", correct = F)
+```
+
+There is overwhelming evidence that the opinions on premarital sex between at least two religious groups are different.
+
+### Fix expected value problem
+I would combine collapse jewish with other religious groups since they are relatively low in numbers.
+
+<hr>
+
+# Problem 3: Aspirin and Heart Attacks
+### Contingency Table and Mosaic Plot
+```{r}
+twoway <- table(aspirin$Heart.Attack, aspirin$Group)
+twowayprop <- prop.table(twoway)
+twoway
+
+ggplot(data = aspirin) +
+  geom_mosaic(aes(x = product(Heart.Attack, Group), fill = Group)) +
+  labs(
+    x = "Treatment",
+    y = "Heart Attack",
+    title = "Aspirin x Heart Attack"
+  )
+```
+
+It appears that aspirin is more effective than placebo in reducing heart attack risk.
+
+### Conditional Probabilities
+```{r}
+paste0("Aspirin: ", toString(twoway[, 1] / sum(twoway[, 1])))
+paste0("Placebo: ", toString(twoway[, 2] / sum(twoway[, 2])))
+```
+
+### Overall Hypothesis Test
+```{r}
+gn <- margin.table(twoway, 1)
+prop.test(twoway[, 1], gn, alternative = "greater", correct = F)
+```
+
+There is overwhelming evidence that aspirin is more effective than placebo in reducing heart attack risk.b 
+
+### CI for Difference in Heart Attack Risk Between Groups
+```{r}
+diff <- 0.009 - 0.017
+p <- length(aspirin$Heart.Attack[aspirin$Heart.Attack == "Yes"]) / length(aspirin$Heart.Attack)
+z <- 1.96
+se <- sqrt(p * (1 - p) / sum(twoway[, 1]) + p * (1 - p) / sum(twoway[, 2]))
+ci <- c(diff - se * z, diff + se * z)
+ci
+```
+
+We are 95% confident that the true difference in proportions of hearta attack between placebo and aspirin treatments is between -0.011 and -0.0050.
+Apsirin is more effective than placebo in preventing heart attacks.
+
+### Relative Risk
+```{r}
+rr_ci(twoway[, 1], gn, conf_level = 0.95)
+```
+
+We are 95% confident that the relative risk of heart attack when taking placebo instead of aspirin is between 1.21 and 1.65 times higher.
+
+### Odds Ratio
+```{r}
+or_ci(twoway[, 1], gn, conf_level = 0.95)
+```
+
+We are 95% confident that the odds of heart attack when taking placebo instead of aspirin is between 1.44 and 2.33 times higher.

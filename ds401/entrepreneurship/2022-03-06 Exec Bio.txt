@@ -1,0 +1,19 @@
+Charles Yang received his education in data science and is a self taught fullstack developer at Iowa State University EH&S.
+At this job, he has upgraded numerous infrastructure components and applications to the latest technologies in Azure and .NET 6.
+Additionally, Mr. Yang created several in-house web applications to further to department's mission, including a vehicle reservation system, HR system, and more.
+His efforts has led to highly increased efficiency and employee satisfaction in the IT department.
+He has vast knowledge of modern development frameworks, allowing him to architect solutions at an organization scale.
+Additionally, Mr. Yang has spent much time in the Cloud industry researching the strengths and weaknesses of major cloud providers, such as AWS, Azure, and Google Cloud Platform.
+As a direct result of his experiences and research, Mr. Yang became a seasoned cloud native developer who heavily focuses on planning for the future.
+
+Mr. Yang's own words:
+"
+When creating large-scale software, especially from scratch, it's important to architect your infrastucture and software to be scalable.
+Thanks to the power of modern cloud technologies, we have the power of serverless computing and microservice architecture to keep our software modular.
+Modularity allows developing client and developer tools to be put together like legos, making building from scratch far more manageable.
+
+I believe in the power of User Interface Experience (UIX). Everyone knows the pain of navigating a poorly designed website or application with nonsensical organization.
+Thanks to our modular design, client customization is far simpler, as any services provide are inherently separable and integratable.
+With this advantage, our clients with will feel like they have full control and understanding of their analytical dashboards.
+"
+
