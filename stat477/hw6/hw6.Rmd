@@ -1,0 +1,152 @@
+---
+title: STAT 477 HW6
+author: Charles Yang
+date: 3/20/2022
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(results = "hide")
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
+library(tidyverse)
+
+library(ggmosaic)
+library(vcdExtra)
+
+correlation_coefficient <- function(table) {
+  chisqstat <- chisq.test(table, correct = F)$statistic
+  n <- sum(table)
+  sgn <- sign(table[1, 1] * table[2, 2] - table[1, 2] * table[2, 1])
+  sgn * sqrt(chisqstat / n)
+}
+
+crammer_v <- function(table) {
+  chisqstat <- chisq.test(table,
+    correct = F
+  )$statistic
+  min.dim <- min(dim(table))
+  numobs <- sum(table)
+  sqrt((chisqstat / numobs) / (min.dim - 1))
+}
+
+
+tires <- read.csv("tires.csv")
+names(tires)[2] <- "perfect"
+
+norc <- read.csv("norc.csv")
+norc$Income <- factor(norc$Income, levels = c("Below", "Average", "Above"))
+norc$Happy <- factor(norc$Happy, levels = c("Not Too", "Pretty", "Very"))
+```
+
+# Problem 1: Gun Registration & Death Penalty
+### Test of Independence
+```{r}
+opinions <- matrix(c(784, 236, 311, 66),
+  nrow = 2,
+  ncol = 2,
+  byrow = TRUE,
+)
+
+opinions_independence <- chisq.test(opinions)
+opinions_independence
+```
+
+I tabulated the opinions in R and ran a chi-squared test.
+It calculates the joint probability of all pairs of categories and the product of their respective marginal probabilities.
+Then it tests if those are equal. If the data suggests they aren"t equal, then we get a lower p-value.
+There is strong envidence that the opinions are not independent.
+
+### Correlation Coefficient
+```{r}
+opinions_correlation <- correlation_coefficient(opinions) %>% as.double
+opinions_correlation
+```
+
+A tiny negative correlation. Seems uncorrelated.
+
+----------
+
+# Problem 2: Tires
+### Test of Independence with Grouping Variable
+Whether or not a variable is a grouping variable does not matter.
+We can still test for independence because it is categorical.
+Addtionall, we may want to see if tire condition is dependent on the shift.
+
+### Alternative Universe and Data/Test
+Suppose we wanted to test if there was a difference in the proportion of tires that were perfect between the shifts.
+In this case, we would test for equality of these proportions.
+
+### Contigency Table & Mosaic Plot
+```{r}
+ggplot(data = tires) +
+  geom_mosaic(aes(x = product(perfect, shift), fill = perfect)) +
+  labs(
+    x = "Shift",
+    y = "Perfect",
+    title = "Tires Perfect by Shift"
+  )
+
+tires_contigency <- table(tires$shift, tires$perfect)
+tires_contigency
+```
+
+The number of tires decreases as shift increases.
+Shifts 1 & 2 seem to have 50/50 perfect tires, but shift 3 has less perfect tires.
+
+### Test of Independence
+```{r}
+tires_independence <- chisq.test(tires_contigency)
+tires_independence
+```
+
+H0: The tires" conditions are independent of the shift. <br>
+H1: The tires" conditions are not independent on the shift. <br>
+
+Chi-squared test statistic: 5.2942, df = 2 <br>
+p-value: 0.07085 <br>
+
+There is moderate strength evidence that the tires" conditions are not independent of the shift.
+
+### Correlation Coefficient & Crammer V
+```{r}
+tires_correlation <- correlation_coefficient(tires_contigency) %>% as.double
+tires_correlation
+
+tires_crammer <- crammer_v(tires_contigency) %>% as.double
+tires_crammer
+```
+
+----------
+
+# Problem 3: Perceived Happiness & Income
+### Contigency Table
+```{r}
+norc_contigency <- table(norc$Income, norc$Happy)
+norc_contigency
+```
+
+### Test of Independence
+```{r}
+norc_independence <- chisq.test(norc_contigency)
+norc_independence
+```
+
+### Concordant with Very Happy & Below Average Income
+1. Pretty Happy - Above Income
+2. Very Happy - Below Income
+
+### Disconcordant with Pretty Happy - Below Average Income
+1. Very Happy - Average Income
+2. Not Too Happy - Below Income
+
+### Goodman-Kruskal Gamma
+```{r}
+GKgamma(norc_contigency)
+```
+
+There appears to be a weak positive-directional relationship between happiness and income level.
