@@ -136,13 +136,13 @@ norc_independence <- chisq.test(norc_contigency)
 norc_independence
 ```
 
-### Concordant with Very Happy & Below Average Income
-1. Pretty Happy - Above Income
-2. Very Happy - Below Income
+### Concordant with Very Happy & Average Income
+1. Pretty Happy - Below Income
+2. Not Too Happy - Below Income
 
 ### Disconcordant with Pretty Happy - Below Average Income
-1. Very Happy - Average Income
-2. Not Too Happy - Below Income
+1. Not Too Happy - Above Income
+2. Not Too Happy - Average Income
 
 ### Goodman-Kruskal Gamma
 ```{r}
