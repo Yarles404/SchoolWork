@@ -1,0 +1,56 @@
+---
+title: STAT 477 HW7
+author: Charles Yang
+date: 3/30/2022
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(irr)
+
+mcnemar_ci <- function(table, conf_leve = 0.95) {
+    alpha <- 1 - conf_leve
+    z <- qnorm(1 - alpha / 2)
+
+    n <- sum(table)
+    y1_ <- margin.table(table, 1)[1]
+    y_1 <- margin.table(table, 2)[1]
+    diff12 <- table[1, 2] - table[2, 1]
+    add12 <- table[1, 2] + table[2, 1]
+    se <- sqrt(add12 - diff12^2 / n) / n
+    lowerci <- y1_ / n - y_1 / n - z * se
+    upperci <- y1_ / n - y_1 / n + z * se
+    cat("Confidence Interval = ", lowerci, upperci, "\n")
+}
+```
+
+# Problem 1: Baby Pictures
+### McNemar's Test
+```{r}
+judgements <- matrix(
+    c(
+        12 + 43 + 14, 45 + 22 + 20,
+        54, 36
+    ),
+    nrow = 2,
+    ncol = 2,
+    byrow = TRUE,
+)
+
+mcnemar.test(judgements, correct = F)
+```
+
+There is overhwelming evidence that the judges perform differently in identifying Dr. Floelich's baby when looking at a baby or adult picture of Dr. Foelich.
+
+### McNemar's Confidence Interval
+```{r}
+mcnemar_ci(judgements)
+```
+
+We are 95% confident that the proportion of judges that can identify Dr. Foelich's baby is 4.1% to 22.7% more when looking at her adult picture compared to her baby picture.
